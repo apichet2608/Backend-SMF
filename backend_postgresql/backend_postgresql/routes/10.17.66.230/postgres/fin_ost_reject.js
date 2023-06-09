@@ -189,4 +189,24 @@ from
   }
 });
 
+router.get("/distinct-reject", async (req, res) => {
+  try {
+    const { product } = req.query;
+
+    const result = await query(
+      `select
+      distinct  osr_rej_name
+      from
+      public.fin_ost_reject_day
+      where osi_prd_name = $1`,
+      [product]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
