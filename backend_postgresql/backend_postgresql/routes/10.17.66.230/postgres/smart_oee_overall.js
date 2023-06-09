@@ -152,37 +152,18 @@ and buiding = $2`,
 
 router.get("/data-notall-notall", async (req, res) => {
   try {
-    let { date, build, process } = req.query;
-
-    // เข้ารหัสอักขระพิเศษในค่า Query Parameters
-    router.get("/data-notall-notall", async (req, res) => {
-      try {
-        let { date, build, process } = req.query;
-
-        // แปลงอักขระ "+" เป็น "%2B"
-        date = date.replace(/\+/g, "%2B");
-        build = build.replace(/\+/g, "%2B");
-        process = process.replace(/\+/g, "%2B");
-
-        const result = await query(
-          `SELECT * FROM public.smart_oee_overall WHERE date_time = $1 AND buiding = $2 AND process_group = $3`,
-          [date, build, process]
-        );
-
-        res.status(200).json(result.rows);
-      } catch (error) {
-        console.error(error);
-        res
-          .status(500)
-          .json({ error: "An error occurred while fetching data" });
-      }
-    });
-
+    const { date, build, process } = req.query;
+    console.log(process);
     const result = await query(
-      `SELECT * FROM public.smart_oee_overall WHERE date_time = $1 AND buiding = $2 AND process_group = $3`,
+      `select
+*
+from
+public.smart_oee_overall
+where date_time = $1
+and buiding = $2
+and process_group = $3`,
       [date, build, process]
     );
-
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
