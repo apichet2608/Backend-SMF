@@ -154,10 +154,10 @@ router.get("/data-notall-notall", async (req, res) => {
   try {
     let { date, build, process } = req.query;
 
-    // แปลงอักขระพิเศษในค่า Query Parameters
-    date = decodeURIComponent(date);
-    build = decodeURIComponent(build);
-    process = decodeURIComponent(process);
+    // เข้ารหัสอักขระพิเศษในค่า Query Parameters
+    date = encodeURIComponent(date);
+    build = encodeURIComponent(build);
+    process = encodeURIComponent(process);
 
     const result = await query(
       `SELECT * FROM public.smart_oee_overall WHERE date_time = $1 AND buiding = $2 AND process_group = $3`,
