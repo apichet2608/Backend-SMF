@@ -209,4 +209,33 @@ router.get("/distinct-reject", async (req, res) => {
   }
 });
 
+router.get("/reject-plot", async (req, res) => {
+  try {
+    const { startdate, stopdate, product, reject } = req.query;
+
+    const result = await query(
+      `SELECT
+      osi_date,
+      osi_prd_name,
+      osr_rej_name,
+      ost_input,
+      ost_rej_qty,
+      ost_percent_rej
+  FROM
+      public.fin_ost_reject_day
+  WHERE
+      osi_date >= $1
+      AND osi_date <= $2
+      and osi_prd_name = $3
+      and osr_rej_name = $4
+  order by osi_date asc`,
+      [startdate, stopdate, product, reject]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 module.exports = router;
