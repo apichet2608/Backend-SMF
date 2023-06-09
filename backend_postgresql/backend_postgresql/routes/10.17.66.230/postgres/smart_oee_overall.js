@@ -152,18 +152,18 @@ and buiding = $2`,
 
 router.get("/data-notall-notall", async (req, res) => {
   try {
-    const { date, build, process } = req.query;
+    let { date, build, process } = req.query;
+
+    // แปลงอักขระพิเศษในค่า Query Parameters
+    date = decodeURIComponent(date);
+    build = decodeURIComponent(build);
+    process = decodeURIComponent(process);
 
     const result = await query(
-      `select
-*
-from
-public.smart_oee_overall
-where date_time = $1
-and buiding = $2
-and process_group = $3`,
+      `SELECT * FROM public.smart_oee_overall WHERE date_time = $1 AND buiding = $2 AND process_group = $3`,
       [date, build, process]
     );
+
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
