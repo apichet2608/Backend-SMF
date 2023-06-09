@@ -29,13 +29,14 @@ from
 
 router.get("/room", async (req, res) => {
   try {
-    const { factory } = req.query;
+    const factory = req.query.aoi_side || "";
     const result = await query(
       `select
 	distinct area 
 from
 	public.smart_enviro_cleanroomparticle
-where factory = $1`,
+where factory = $1
+    `,
       [factory]
     );
     res.status(200).json(result.rows);
@@ -47,17 +48,12 @@ where factory = $1`,
 
 router.get("/processmachine", async (req, res) => {
   try {
-    const { factory, room } = req.query;
-    const result = await query(
-      `
+    const result = await query(`
 select
 	distinct process_machine
 from
 	public.smart_enviro_cleanroomparticle
-   where factory = $1
-   and area =$2`,
-      [factory, room]
-    );
+    `);
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
@@ -67,7 +63,7 @@ from
 
 router.get("/querry", async (req, res) => {
   try {
-    const { process_machine, factory, area } = req.query;
+    const { process_machine, factory } = req.query;
     const day = parseInt(req.query.day); // ชั่วโมงที่ผู้ใช้กำหนด
 
     if (isNaN(day)) {
@@ -75,15 +71,15 @@ router.get("/querry", async (req, res) => {
     }
     const result = await query(
       `select
+process_machine ,
+factory ,
 	*
 from
 	public.smart_enviro_cleanroomparticle
 where process_machine = $1
 and factory = $2
-and area = $3
-and measuretime :: timestamp >= (now() - interval '${day}' day)
-order by measuretime asc`,
-      [process_machine, factory, area]
+and measuretime :: timestamp >= (now() - interval '${day}' day)`,
+      [process_machine, factory]
     );
     res.status(200).json(result.rows);
   } catch (error) {
