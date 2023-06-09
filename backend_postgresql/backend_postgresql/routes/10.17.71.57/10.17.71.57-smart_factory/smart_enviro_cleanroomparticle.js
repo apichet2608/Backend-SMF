@@ -92,6 +92,32 @@ order by measuretime asc`,
   }
 });
 
+router.get("/isoclass", async (req, res) => {
+  try {
+    const { process_machine, factory, area } = req.query;
+    const day = parseInt(req.query.day); // ชั่วโมงที่ผู้ใช้กำหนด
+
+    if (isNaN(day)) {
+      return res.status(400).send("Hours are required");
+    }
+    const result = await query(
+      `select
+      distinct iso_class 
+from
+	public.smart_enviro_cleanroomparticle
+where process_machine = $1
+and factory = $2
+and area = $3
+and measuretime :: timestamp >= (now() - interval '${day}' day)`,
+      [process_machine, factory, area]
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
 
 // http://10.17.77.111:3001/api/smart_enviro_cleanroomparticle/querry?process_machine=RCLL-B&factory=B&hours=48
