@@ -12,21 +12,6 @@ const pool = new Pool({
 
 const query = (text, params) => pool.query(text, params);
 
-router.get("/processmachine", async (req, res) => {
-  try {
-    const result = await query(`
-select
-	distinct process_machine
-from
-	public.smart_enviro_cleanroomparticle
-    `);
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "An error occurred while fetching data" });
-  }
-});
-
 router.get("/factory", async (req, res) => {
   try {
     const result = await query(`
@@ -42,14 +27,48 @@ from
   }
 });
 
+router.get("/room", async (req, res) => {
+  try {
+    const factory = req.query.aoi_side || "";
+    const result = await query(
+      `select
+	distinct area 
+from
+	public.smart_enviro_cleanroomparticle
+where factory = $1
+    `,
+      [factory]
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+router.get("/processmachine", async (req, res) => {
+  try {
+    const result = await query(`
+select
+	distinct process_machine
+from
+	public.smart_enviro_cleanroomparticle
+    `);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/querry", async (req, res) => {
   try {
     const { process_machine, factory } = req.query;
     const day = parseInt(req.query.day); // ชั่วโมงที่ผู้ใช้กำหนด
 
-  if(isNaN(day)) {
-    return res.status(400).send('Hours are required');
-  }
+    if (isNaN(day)) {
+      return res.status(400).send("Hours are required");
+    }
     const result = await query(
       `select
 process_machine ,
@@ -70,7 +89,6 @@ and measuretime :: timestamp >= (now() - interval '${day}' day)`,
 });
 
 module.exports = router;
-
 
 // http://10.17.77.111:3001/api/smart_enviro_cleanroomparticle/querry?process_machine=RCLL-B&factory=B&hours=48
 // http://10.17.77.111:3001/api/smart_enviro_cleanroomparticle/querry?process_machine=B&factory=RLSP&hours=48
