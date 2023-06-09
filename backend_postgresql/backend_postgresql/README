@@ -1,0 +1,8 @@
+// #P-Tee IP : WIFI
+// const pool = new Pool({
+// host: "192.168.0.53",
+// port: 5432,
+// user: "postgres",
+// password: "chanut.l",
+// database: "postgres", // แทนที่ด้วยชื่อฐานข้อมูลของคุณ
+// });
