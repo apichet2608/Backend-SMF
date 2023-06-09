@@ -178,7 +178,7 @@ router.get("/data-all-all-plot", async (req, res) => {
     const result = await query(
       `SELECT *
       FROM public.smart_oee_overall
-      WHERE date_time >= $1::DATE - INTERVAL '6 days'
+      WHERE date_time >= $1::DATE - INTERVAL '90 days'
       AND date_time <= $1::DATE
       AND mc_code = $2
       order by date_time asc`,
@@ -198,7 +198,7 @@ router.get("/data-all-notall-plot", async (req, res) => {
     const result = await query(
       `SELECT *
       FROM public.smart_oee_overall
-      WHERE date_time >= $1::DATE - INTERVAL '6 days'
+      WHERE date_time >= $1::DATE - INTERVAL '90 days'
       AND date_time <= $1::DATE
       AND process_group = $2
       AND mc_code = $3
@@ -219,7 +219,7 @@ router.get("/data-notall-all-plot", async (req, res) => {
     const result = await query(
       `SELECT *
       FROM public.smart_oee_overall
-      WHERE date_time >= $1::DATE - INTERVAL '6 days' 
+      WHERE date_time >= $1::DATE - INTERVAL '90 days' 
       AND date_time <= $1::DATE
       AND buiding = $2
       AND mc_code = $3
@@ -240,7 +240,7 @@ router.get("/data-notall-notall-plot", async (req, res) => {
     const result = await query(
       `SELECT *
       FROM public.smart_oee_overall
-      WHERE date_time >= $1::DATE - INTERVAL '6 days'
+      WHERE date_time >= $1::DATE - INTERVAL '90 days'
       AND date_time <= $1::DATE
       AND buiding = $2
       AND process_group = $3
