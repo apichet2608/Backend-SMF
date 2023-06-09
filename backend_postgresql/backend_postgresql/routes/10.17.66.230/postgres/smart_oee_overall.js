@@ -180,7 +180,8 @@ router.get("/data-all-all-plot", async (req, res) => {
       FROM public.smart_oee_overall
       WHERE date_time >= $1::DATE - INTERVAL '6 days'
       AND date_time <= $1::DATE
-      AND mc_code = $2`,
+      AND mc_code = $2
+      order by date_time asc`,
       [date, mc_code]
     );
     res.status(200).json(result.rows);
@@ -200,7 +201,8 @@ router.get("/data-all-notall-plot", async (req, res) => {
       WHERE date_time >= $1::DATE - INTERVAL '6 days'
       AND date_time <= $1::DATE
       AND process_group = $2
-      AND mc_code = $3`,
+      AND mc_code = $3
+      order by date_time asc`,
       [date, process, mc_code]
     );
     res.status(200).json(result.rows);
@@ -220,7 +222,8 @@ router.get("/data-notall-all-plot", async (req, res) => {
       WHERE date_time >= $1::DATE - INTERVAL '6 days' 
       AND date_time <= $1::DATE
       AND buiding = $2
-      AND mc_code = $3`,
+      AND mc_code = $3
+      order by date_time asc`,
       [date, build, mc_code]
     );
     res.status(200).json(result.rows);
@@ -241,7 +244,8 @@ router.get("/data-notall-notall-plot", async (req, res) => {
       AND date_time <= $1::DATE
       AND buiding = $2
       AND process_group = $3
-      AND mc_code = $4`,
+      AND mc_code = $4
+      order by date_time asc`,
       [date, build, process, mc_code]
     );
     res.status(200).json(result.rows);
