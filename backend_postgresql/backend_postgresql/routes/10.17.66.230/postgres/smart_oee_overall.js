@@ -7,16 +7,15 @@ const pool = new Pool({
   port: 5432,
   user: "postgres",
   password: "postgres",
-  database: "postgres", 
+  database: "postgres",
 });
 
 const query = (text, params) => pool.query(text, params);
 
-
 router.get("/distinct-build", async (req, res) => {
   try {
-    const { date} = req.query;
-    
+    const { date } = req.query;
+
     const result = await query(
       `select
 distinct  buiding 
@@ -32,11 +31,10 @@ where date_time = $1`,
   }
 });
 
-
 router.get("/fix-mccode", async (req, res) => {
   try {
-    const { date ,build,mc} = req.query;
-    
+    const { date, build, mc } = req.query;
+
     const result = await query(
       `select
 *
@@ -45,7 +43,7 @@ public.smart_oee_overall
 where date_time = $1
 and buiding = $2
 and mc_code =$3`,
-      [date,build,mc]
+      [date, build, mc]
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -56,8 +54,8 @@ and mc_code =$3`,
 
 router.get("/distinct-process", async (req, res) => {
   try {
-    const { date ,build} = req.query;
-    
+    const { date, build } = req.query;
+
     const result = await query(
       `select
 distinct  process_group  
@@ -65,7 +63,7 @@ from
 public.smart_oee_overall
 where date_time = $1
 and buiding = $2`,
-      [date,build]
+      [date, build]
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -76,8 +74,8 @@ and buiding = $2`,
 
 router.get("/distinct-process-all", async (req, res) => {
   try {
-    const { date} = req.query;
-    
+    const { date } = req.query;
+
     const result = await query(
       `select
 distinct  process_group  
@@ -93,13 +91,10 @@ where date_time = $1`,
   }
 });
 
-
-
-
 router.get("/data-all-all", async (req, res) => {
   try {
-    const { date} = req.query;
-    
+    const { date } = req.query;
+
     const result = await query(
       `select
 *
@@ -117,8 +112,8 @@ where date_time = $1`,
 
 router.get("/data-all-notall", async (req, res) => {
   try {
-    const { date,process} = req.query;
-    
+    const { date, process } = req.query;
+
     const result = await query(
       `select
 *
@@ -126,7 +121,7 @@ from
 public.smart_oee_overall
 where date_time = $1
 and process_group = $2`,
-      [date,process]
+      [date, process]
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -137,8 +132,8 @@ and process_group = $2`,
 
 router.get("/data-notall-all", async (req, res) => {
   try {
-    const { date,build} = req.query;
-    
+    const { date, build } = req.query;
+
     const result = await query(
       `select
 *
@@ -146,7 +141,7 @@ from
 public.smart_oee_overall
 where date_time = $1
 and buiding = $2`,
-      [date,build]
+      [date, build]
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -155,11 +150,10 @@ and buiding = $2`,
   }
 });
 
-
 router.get("/data-notall-notall", async (req, res) => {
   try {
-    const { date,build,process} = req.query;
-    
+    const { date, build, process } = req.query;
+
     const result = await query(
       `select
 *
@@ -168,7 +162,7 @@ public.smart_oee_overall
 where date_time = $1
 and buiding = $2
 and process_group = $3`,
-      [date,build,process]
+      [date, build, process]
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -177,15 +171,15 @@ and process_group = $3`,
   }
 });
 
-
 router.get("/data-all-all-plot", async (req, res) => {
   try {
-    const { date,mc_code } = req.query;
-    
+    const { date, mc_code } = req.query;
+
     const result = await query(
       `SELECT *
       FROM public.smart_oee_overall
-      WHERE date_time = $1
+      WHERE date_time >= $1::DATE - INTERVAL '6 days'
+      AND date_time <= $1::DATE;
       AND mc_code = $2`,
       [date, mc_code]
     );
@@ -198,12 +192,13 @@ router.get("/data-all-all-plot", async (req, res) => {
 
 router.get("/data-all-notall-plot", async (req, res) => {
   try {
-    const { date, process,mc_code } = req.query;
-    
+    const { date, process, mc_code } = req.query;
+
     const result = await query(
       `SELECT *
       FROM public.smart_oee_overall
-      WHERE date_time = $1
+      WHERE date_time >= $1::DATE - INTERVAL '6 days'
+      AND date_time <= $1::DATE;
       AND process_group = $2
       AND mc_code = $3`,
       [date, process, mc_code]
@@ -217,12 +212,13 @@ router.get("/data-all-notall-plot", async (req, res) => {
 
 router.get("/data-notall-all-plot", async (req, res) => {
   try {
-    const { date, build,mc_code } = req.query;
-    
+    const { date, build, mc_code } = req.query;
+
     const result = await query(
       `SELECT *
       FROM public.smart_oee_overall
-      WHERE date_time = $1
+      WHERE date_time >= $1::DATE - INTERVAL '6 days' 
+      AND date_time <= $1::DATE;
       AND buiding = $2
       AND mc_code = $3`,
       [date, build, mc_code]
@@ -237,11 +233,12 @@ router.get("/data-notall-all-plot", async (req, res) => {
 router.get("/data-notall-notall-plot", async (req, res) => {
   try {
     const { date, build, process, mc_code } = req.query;
-    
+
     const result = await query(
       `SELECT *
       FROM public.smart_oee_overall
-      WHERE date_time = $1
+      WHERE date_time >= $1::DATE - INTERVAL '6 days'
+      AND date_time <= $1::DATE;
       AND buiding = $2
       AND process_group = $3
       AND mc_code = $4`,
@@ -255,5 +252,3 @@ router.get("/data-notall-notall-plot", async (req, res) => {
 });
 
 module.exports = router;
-
-
