@@ -46,7 +46,7 @@ router.get("/data-plot", async (req, res) => {
       where
       mc_code = $1
       and ptime >= NOW() - INTERVAL '${hours} hour'
-      order by ptime  desc`,
+      order by ptime  asc`,
       [machine]
     );
 
