@@ -24,4 +24,33 @@ router.get("/distinctMachine", async (req, res) => {
   }
 });
 
+router.get("/data-plot", async (req, res) => {
+  try {
+    const { machine, hours } = req.query;
+
+    const result = await query(
+      `select 
+      ptime,
+      mc_code,
+      
+      creanroll_exch_period_actv_pv,
+      lamiroll_exch_period_actv_pv,
+      
+      temp_upper_lami_roll_pv,
+      temp_lower_lami_roll_pv
+      from jwdb_rdflv_mck_actv
+      where
+      mc_code = $1
+      and ptime >= NOW() - INTERVAL $2 hour
+      order by ptime  desc`,
+      [machine, hours]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
