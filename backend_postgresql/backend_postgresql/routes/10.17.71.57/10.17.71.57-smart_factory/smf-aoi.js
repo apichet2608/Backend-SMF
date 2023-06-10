@@ -16,11 +16,11 @@ router.get("/distinctaoi_prd_name", async (req, res) => {
   try {
     const result = await query(`
 select
-	distinct product
+	distinct aoi_prd_name
 from
 	cfm_aoi_reject_lot
 order by
-	product
+	aoi_prd_name
     `);
     res.status(200).json(result.rows);
   } catch (error) {
@@ -39,7 +39,7 @@ router.get("/filteredDataAoiSides", async (req, res) => {
 from
 	cfm_aoi_reject_lot
 where
-	product = $1`,
+	aoi_prd_name = $1`,
       [product]
     );
 
@@ -62,7 +62,7 @@ from
 	cfm_aoi_reject_lot
 where
 	aoi_side = $1
-	and product = $2 AND aoi_date >= CURRENT_DATE - INTERVAL '7 days'`,
+	and aoi_prd_name = $2 AND aoi_date >= CURRENT_DATE - INTERVAL '7 days'`,
       [aoi_side, product]
     );
 
@@ -85,7 +85,7 @@ from
 	cfm_aoi_reject_lot
 where
 	aoi_side = $1
-	and product = $2 AND aoi_date >= CURRENT_DATE - INTERVAL '1 days'`,
+	and aoi_prd_name = $2 AND aoi_date >= CURRENT_DATE - INTERVAL '1 days'`,
       [aoi_side, product]
     );
 
@@ -108,7 +108,7 @@ from
 	cfm_aoi_reject_lot
 where
 	aoi_side = $1
-	and product = $2
+	and aoi_prd_name = $2
       and aoi_date >= CURRENT_DATE - interval '1 months'`,
       [aoi_side, product]
     );
@@ -132,7 +132,7 @@ from
 	cfm_aoi_reject_lot
 where
 	aoi_side = $1
-	and product = $2
+	and aoi_prd_name = $2
       and aoi_date >= CURRENT_DATE - interval '3 months'`,
       [aoi_side, product]
     );
