@@ -28,6 +28,7 @@ const foxsystem_json_backup_header_summary = require("./routes/ADMIN/postgres/fo
 const foxsystem_json_backup_header_defect = require("./routes/ADMIN/postgres/foxsystem_json_backup_header_defect");
 const smart_oee_overall = require("./routes/10.17.66.230/postgres/smart_oee_overall");
 const fin_ost_reject_day = require("./routes/10.17.66.230/postgres/fin_ost_reject");
+const jwdb_rdflv_mck_actv = require("./routes/10.17.71.21/postgres/jwdb_rdflv_mck_actv");
 
 const app = express();
 
@@ -65,6 +66,7 @@ app.use(
 );
 app.use("/api/smart_oee_overall", smart_oee_overall);
 app.use("/api/fin_ost_reject", fin_ost_reject_day);
+app.use("/api/jwdb_rdflv_mck_actv", jwdb_rdflv_mck_actv);
 
 app.use(function (req, res, next) {
   next(createError(404));
