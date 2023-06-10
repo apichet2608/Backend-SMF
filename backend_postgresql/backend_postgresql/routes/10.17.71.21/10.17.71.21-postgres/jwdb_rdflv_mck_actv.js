@@ -26,8 +26,12 @@ router.get("/distinctMachine", async (req, res) => {
 
 router.get("/data-plot", async (req, res) => {
   try {
-    const { machine, hours } = req.query;
+    const { machine } = req.query;
+    const hours = parseInt(req.query.hours); // ชั่วโมงที่ผู้ใช้กำหนด
 
+    if (isNaN(hours)) {
+      return res.status(400).send("Hours are required");
+    }
     const result = await query(
       `select 
       ptime,
@@ -41,9 +45,9 @@ router.get("/data-plot", async (req, res) => {
       from jwdb_rdflv_mck_actv
       where
       mc_code = $1
-      and ptime >= NOW() - INTERVAL $2 hour
+      and ptime >= NOW() - INTERVAL '${hours} hour'
       order by ptime  desc`,
-      [machine, hours]
+      [machine]
     );
 
     res.status(200).json(result.rows);
