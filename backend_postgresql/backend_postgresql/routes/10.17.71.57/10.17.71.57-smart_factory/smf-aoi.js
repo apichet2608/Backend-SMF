@@ -37,7 +37,7 @@ router.get("/filteredDataAoiSides", async (req, res) => {
       `select
 	distinct aoi_side
 from
-	cfm_aoi_reject_day
+	cfm_aoi_reject_lot
 where
 	aoi_prd_name = $1`,
       [product]
@@ -62,7 +62,8 @@ from
 	cfm_aoi_reject_lot
 where
 	aoi_side = $1
-	and aoi_prd_name = $2 AND aoi_date >= CURRENT_DATE - INTERVAL '7 days'`,
+	and aoi_prd_name = $2
+	and aoi_date::Timestamp  >= CURRENT_DATE - interval '7 days'`,
       [aoi_side, product]
     );
 
