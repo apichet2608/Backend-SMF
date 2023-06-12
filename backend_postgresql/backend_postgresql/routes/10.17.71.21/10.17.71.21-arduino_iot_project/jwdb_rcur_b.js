@@ -15,7 +15,7 @@ const query = (text, params) => pool.query(text, params);
 router.get("/distinctFactory", async (req, res) => {
   try {
     const result = await query(
-      `select distinct factory from public.jwdb_rcur-b`
+      `select distinct factory from public.jwdb_rcur_b`
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -28,7 +28,7 @@ router.get("/distinctMccode", async (req, res) => {
   try {
     const { factory } = req.query;
     const result = await query(
-      `select distinct mc_code from public.jwdb_rcur-b where factory = $1`,
+      `select distinct mc_code from public.jwdb_rcur_b where factory = $1`,
       [factory]
     );
     res.status(200).json(result.rows);
@@ -50,7 +50,7 @@ router.get("/dataplot", async (req, res) => {
       `select
       *
     from
-      public.jwdb_rcur-b
+      public.jwdb_rcur_b
       
     where factory = $1
     and mc_code = $2
