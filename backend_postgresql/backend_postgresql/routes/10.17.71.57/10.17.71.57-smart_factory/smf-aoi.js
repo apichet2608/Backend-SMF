@@ -142,7 +142,7 @@ where
 
 router.get("/cfm_aoi_reject_day_7day", async (req, res) => {
   try {
-    const { aoi_side, product } = req.query;
+    const { aoi_side, aoi_prd_name } = req.query;
 
     const result = await query(
       `select
@@ -166,7 +166,7 @@ order by aoi_date`,
 
 router.get("/cfm_aoi_reject_day_1day", async (req, res) => {
   try {
-    const { aoi_side, product } = req.query;
+    const { aoi_side, aoi_prd_name } = req.query;
     const result = await query(
       `select
 	*
@@ -189,7 +189,7 @@ order by aoi_date`,
 
 router.get("/cfm_aoi_reject_day_30day_2", async (req, res) => {
   try {
-    const { aoi_side, product } = req.query;
+    const { aoi_side, aoi_prd_name } = req.query;
 
     const result = await query(
       `select
@@ -237,7 +237,7 @@ order by aoi_date`,
 
 router.get("/cfm_aoi_reject_day_90day", async (req, res) => {
   try {
-    const { aoi_side, product } = req.query;
+    const { aoi_side, aoi_prd_name } = req.query;
 
     const result = await query(
       `select
