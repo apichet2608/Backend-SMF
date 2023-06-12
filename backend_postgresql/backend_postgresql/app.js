@@ -32,6 +32,7 @@ const jwdb_rdflv_mck_actv = require("./routes/10.17.71.21/10.17.71.21-postgres/j
 const jwdb_rdfl_mck_actv = require("./routes/10.17.71.21/10.17.71.21-postgres/jwdb_rdfl_mck_actv");
 const jwdb_rdflv_gro_up_actv = require("./routes/10.17.71.21/10.17.71.21-postgres/jwdb_rdflv_gro_up_actv");
 const jwdb_rexp_two_line = require("./routes/10.17.71.21/10.17.71.21-arduino_iot_project/jwdb_rexp_two_line");
+const jwdb_rlse_beac = require("./routes/10.17.71.21/10.17.71.21-arduino_iot_project/jwdb_rlse_beac");
 
 const app = express();
 
@@ -73,6 +74,7 @@ app.use("/api/jwdb_rdflv_mck_actv", jwdb_rdflv_mck_actv);
 app.use("/api/jwdb_rdfl_mck_actv", jwdb_rdfl_mck_actv);
 app.use("/api/jwdb_rdflv_gro_up_actv", jwdb_rdflv_gro_up_actv);
 app.use("/api/jwdb_rexp_two_line", jwdb_rexp_two_line);
+app.use("/api/jwdb_rlse_beac", jwdb_rlse_beac);
 
 app.use(function (req, res, next) {
   next(createError(404));
