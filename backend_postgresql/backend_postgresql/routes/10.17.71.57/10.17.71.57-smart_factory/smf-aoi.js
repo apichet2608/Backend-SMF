@@ -52,9 +52,7 @@ where
 
 router.get("/filteredData7day", async (req, res) => {
   try {
-    const aoi_side = req.query.aoi_side || "";
-    const product = req.query.aoi_prd_name || "";
-
+    const { aoi_side, product } = req.query;
     const result = await query(
       `select
 	*
@@ -144,8 +142,6 @@ where
     res.status(500).json({ error: "An error occurred while fetching data." });
   }
 });
-
-
 
 router.get("/cfm_aoi_reject_day_7day", async (req, res) => {
   try {
@@ -306,6 +302,5 @@ order by
     res.status(500).json({ error: "An error occurred while fetching data." });
   }
 });
-
 
 module.exports = router;
