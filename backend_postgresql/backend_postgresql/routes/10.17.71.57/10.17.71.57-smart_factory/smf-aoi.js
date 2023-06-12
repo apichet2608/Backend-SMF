@@ -18,7 +18,7 @@ router.get("/distinctaoi_prd_name", async (req, res) => {
 select
 	distinct aoi_prd_name
 from
-	cfm_aoi_reject_lot
+	cfm_aoi_reject_day
 order by
 	aoi_prd_name
     `);
@@ -37,7 +37,7 @@ router.get("/filteredDataAoiSides", async (req, res) => {
       `select
 	distinct aoi_side
 from
-	cfm_aoi_reject_lot
+	cfm_aoi_reject_day
 where
 	aoi_prd_name = $1`,
       [product]
