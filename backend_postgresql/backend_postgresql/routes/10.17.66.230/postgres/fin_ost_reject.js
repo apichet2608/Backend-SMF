@@ -73,7 +73,7 @@ router.get("/fix-product-month-select", async (req, res) => {
       `select
       osi_prd_name,
       osr_rej_name,
-      "MONTH",
+      month,
       ost_input,
       ost_rej_qty,
       ost_percent_rej
@@ -81,9 +81,9 @@ router.get("/fix-product-month-select", async (req, res) => {
       public.fin_ost_reject_month
     where
       osi_prd_name = $1
-      and "MONTH" = $2
+      and month = $2
     order by
-      "MONTH"`,
+      month`,
       [product, month]
     );
 
@@ -115,7 +115,7 @@ router.get("/fix-product-week-select", async (req, res) => {
     week`,
       [product, week]
     );
-
+    fix - product - month;
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
@@ -154,7 +154,7 @@ router.get("/fix-product-month", async (req, res) => {
 
     const result = await query(
       `select
-      "MONTH",
+      month,
       osi_prd_name,
       osr_rej_name,
       ost_input,
@@ -163,7 +163,7 @@ router.get("/fix-product-month", async (req, res) => {
     from
       public.fin_ost_reject_month
     where osi_prd_name = $1
-    order by "MONTH" asc`,
+    order by month asc`,
       [product]
     );
 
