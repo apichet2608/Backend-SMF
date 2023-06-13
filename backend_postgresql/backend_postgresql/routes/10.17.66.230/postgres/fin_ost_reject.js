@@ -115,7 +115,6 @@ router.get("/fix-product-week-select", async (req, res) => {
     week`,
       [product, week]
     );
-    fix - product - month;
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
