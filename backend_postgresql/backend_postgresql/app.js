@@ -35,6 +35,8 @@ const jwdb_rexp_two_line = require("./routes/10.17.71.21/10.17.71.21-arduino_iot
 const jwdb_rlse_beac = require("./routes/10.17.71.21/10.17.71.21-arduino_iot_project/jwdb_rlse_beac");
 const jwdb_rcur_b = require("./routes/10.17.71.21/10.17.71.21-arduino_iot_project/jwdb_rcur_b");
 const jwdb_rcll = require("./routes/10.17.71.21/10.17.71.21-arduino_iot_project/jwdb_rcll");
+const elgop_mto_ni = require("./routes/10.17.71.57/10.17.71.57-smart_factory/elgop_mto_ni");
+
 const app = express();
 
 // app.use(compression()); // ใช้งาน compression middleware
@@ -78,6 +80,8 @@ app.use("/api/jwdb_rexp_two_line", jwdb_rexp_two_line);
 app.use("/api/jwdb_rlse_beac", jwdb_rlse_beac);
 app.use("/api/jwdb_rcur_b", jwdb_rcur_b);
 app.use("/api/jwdb_rcll", jwdb_rcll);
+app.use("/api/elgop_mto_ni", elgop_mto_ni);
+
 app.use(function (req, res, next) {
   next(createError(404));
 });
