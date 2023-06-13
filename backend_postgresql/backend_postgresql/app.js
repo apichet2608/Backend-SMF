@@ -36,6 +36,8 @@ const jwdb_rlse_beac = require("./routes/10.17.71.21/10.17.71.21-arduino_iot_pro
 const jwdb_rcur_b = require("./routes/10.17.71.21/10.17.71.21-arduino_iot_project/jwdb_rcur_b");
 const jwdb_rcll = require("./routes/10.17.71.21/10.17.71.21-arduino_iot_project/jwdb_rcll");
 const elgop_mto_ni = require("./routes/10.17.71.57/10.17.71.57-smart_factory/elgop_mto_ni");
+const smt_vacuum_seal_data = require("./routes/10.17.71.21/10.17.71.21-arduino_iot_project/smt_vacuum_seal_data");
+const smt_binder_oven_data = require("./routes/10.17.71.21/10.17.71.21-arduino_iot_project/smt_binder_oven_data");
 
 const app = express();
 
@@ -81,6 +83,8 @@ app.use("/api/jwdb_rlse_beac", jwdb_rlse_beac);
 app.use("/api/jwdb_rcur_b", jwdb_rcur_b);
 app.use("/api/jwdb_rcll", jwdb_rcll);
 app.use("/api/elgop_mto_ni", elgop_mto_ni);
+app.use("/api/smt_vacuum_seal_data", smt_vacuum_seal_data);
+app.use("/api/smt_binder_oven_data", smt_binder_oven_data);
 
 app.use(function (req, res, next) {
   next(createError(404));
