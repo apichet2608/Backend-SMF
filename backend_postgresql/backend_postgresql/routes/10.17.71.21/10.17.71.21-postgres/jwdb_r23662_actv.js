@@ -7,7 +7,7 @@ const pool = new Pool({
   port: 5432,
   user: "postgres",
   password: "postgres",
-  database: "postgres", 
+  database: "postgres",
 });
 
 const query = (text, params) => pool.query(text, params);
@@ -29,11 +29,11 @@ order by ptime  asc
   }
 });
 
-router.get('/data', async (req, res) => {
+router.get("/data", async (req, res) => {
   const hours = parseInt(req.query.hours); // ชั่วโมงที่ผู้ใช้กำหนด
 
-  if(isNaN(hours)) {
-    return res.status(400).send('Hours are required');
+  if (isNaN(hours)) {
+    return res.status(400).send("Hours are required");
   }
 
   try {
@@ -50,7 +50,8 @@ order by
     res.json(result.rows);
   } catch (err) {
     console.error(err);
-    res.status(500).send('Server error');
+    res.status(500).send("Server error");
   }
 });
+
 module.exports = router;
