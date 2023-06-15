@@ -7,7 +7,7 @@ const pool = new Pool({
   port: 5432,
   user: "postgres",
   password: "postgres",
-  database: "postgres", 
+  database: "postgres",
 });
 
 const query = (text, params) => pool.query(text, params);
@@ -19,7 +19,7 @@ select
 	*
 from
 	public.smart_mil_common
-order by process 
+order by no 
     `);
     res.status(200).json(result.rows);
   } catch (error) {
@@ -27,8 +27,6 @@ order by process
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
-
-
 
 router.get("/apple-dri", async (req, res) => {
   try {
@@ -58,10 +56,9 @@ from
   }
 });
 
-
 router.get("/year-agenda-status-appledri", async (req, res) => {
   try {
-    const { year, agenda, status,apple_dri } = req.query;
+    const { year, agenda, status, apple_dri } = req.query;
 
     const result = await query(
       `SELECT *
@@ -70,8 +67,8 @@ router.get("/year-agenda-status-appledri", async (req, res) => {
          AND agenda = $2
          AND status = $3
          AND apple_dri = $4
-         order by process `,
-      [year, agenda, status,apple_dri]
+         order by no `,
+      [year, agenda, status, apple_dri]
     );
 
     res.status(200).json(result.rows);
@@ -91,7 +88,7 @@ router.get("/year-agenda-status", async (req, res) => {
        WHERE EXTRACT(YEAR FROM mil_date) = $1
          AND agenda = $2
          AND status = $3
-         order by process `,
+         order by no `,
       [year, agenda, status]
     );
 
@@ -111,7 +108,7 @@ router.get("/year-agenda", async (req, res) => {
        FROM public.smart_mil_common
        WHERE EXTRACT(YEAR FROM mil_date) = $1
          AND agenda = $2
-         order by process `,
+         order by no `,
       [year, agenda]
     );
 
@@ -130,7 +127,7 @@ router.get("/year", async (req, res) => {
       `SELECT *
        FROM public.smart_mil_common
        WHERE EXTRACT(YEAR FROM mil_date) = $1
-       order by process `,
+       order by no `,
       [year]
     );
 
@@ -146,7 +143,10 @@ router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    const result = await query("DELETE FROM public.smart_mil_common WHERE id = $1;", [id]);
+    const result = await query(
+      "DELETE FROM public.smart_mil_common WHERE id = $1;",
+      [id]
+    );
 
     res.status(200).json({ message: "Data deleted successfully" });
   } catch (error) {
@@ -173,7 +173,8 @@ router.put("/:id", async (req, res) => {
       cp_date,
       status,
       share_link_report,
-      email_list
+      email_list,
+      no,
     } = req.body;
 
     const result = await query(
@@ -192,8 +193,9 @@ router.put("/:id", async (req, res) => {
          cp_date = $11,
          status = $12,
          share_link_report = $13,
-         "email_list " = $14
-       WHERE id = $15;`,
+         "email_list " = $14,
+         no =  $15
+       WHERE id = $16;`,
       [
         agenda,
         apple_dri,
@@ -209,7 +211,7 @@ router.put("/:id", async (req, res) => {
         status,
         share_link_report,
         email_list,
-        id
+        id,
       ]
     );
 
@@ -219,7 +221,6 @@ router.put("/:id", async (req, res) => {
     res.status(500).json({ error: "An error occurred while updating data" });
   }
 });
-
 
 // POST route to add new data
 router.post("/", async (req, res) => {
@@ -238,13 +239,14 @@ router.post("/", async (req, res) => {
       cp_date,
       status,
       share_link_report,
-      email_list
+      email_list,
+      no,
     } = req.body;
 
     const result = await query(
       `INSERT INTO public.smart_mil_common 
-       (agenda, apple_dri, mil_date, process, smart_topic, sub_topic, risk, findings, corrective_action, fjk_dri, cp_date, status, share_link_report, "email_list ")
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14);`,
+       (agenda, apple_dri, mil_date, process, smart_topic, sub_topic, risk, findings, corrective_action, fjk_dri, cp_date, status, share_link_report, "email_list ","no")
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,$15);`,
       [
         agenda,
         apple_dri,
@@ -259,7 +261,8 @@ router.post("/", async (req, res) => {
         cp_date,
         status,
         share_link_report,
-        email_list
+        email_list,
+        no,
       ]
     );
 
@@ -273,7 +276,7 @@ router.post("/", async (req, res) => {
 // POST route to add new data
 router.post("/agenda", async (req, res) => {
   try {
-    const {agenda} = req.body;
+    const { agenda } = req.body;
 
     const result = await query(
       `INSERT INTO public.smart_mil_common 
