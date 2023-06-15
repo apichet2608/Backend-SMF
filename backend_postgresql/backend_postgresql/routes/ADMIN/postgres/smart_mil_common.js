@@ -211,6 +211,7 @@ router.put("/:id", async (req, res) => {
         status,
         share_link_report,
         email_list,
+        no,
         id,
       ]
     );
