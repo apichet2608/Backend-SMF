@@ -7,7 +7,7 @@ const pool = new Pool({
   port: 5432,
   user: "postgres",
   password: "postgres",
-  database: "postgres", 
+  database: "postgres",
 });
 
 const query = (text, params) => pool.query(text, params);
@@ -27,10 +27,10 @@ router.get("/fox-summary", async (req, res) => {
     MAX(CASE WHEN station_process = 'TEST18_aoi' THEN total_count END) AS test18_aoi_total_count,
     MAX(CASE WHEN station_process = 'TEST18_aoi' THEN result_pass END) AS test18_aoi_result_pass,
     MAX(CASE WHEN station_process = 'TEST18_aoi' THEN result_fail END) AS test18_aoi_result_fail,
-    MAX(CASE WHEN station_process = 'TEST27_holding_time' THEN percent_yield END) AS test27_holding_time,
-    MAX(CASE WHEN station_process = 'TEST27_holding_time' THEN total_count END) AS test27_holding_time_total_count,
-    MAX(CASE WHEN station_process = 'TEST27_holding_time' THEN result_pass END) AS test27_holding_time_result_pass,
-    MAX(CASE WHEN station_process = 'TEST27_holding_time' THEN result_fail END) AS test27_holding_time_result_fail,
+    MAX(CASE WHEN station_process = 'TEST27_holding_time_27' THEN percent_yield END) AS test27_holding_time,
+    MAX(CASE WHEN station_process = 'TEST27_holding_time_27' THEN total_count END) AS test27_holding_time_total_count,
+    MAX(CASE WHEN station_process = 'TEST27_holding_time_27' THEN result_pass END) AS test27_holding_time_result_pass,
+    MAX(CASE WHEN station_process = 'TEST27_holding_time_27' THEN result_fail END) AS test27_holding_time_result_fail,
     MAX(CASE WHEN station_process = 'TEST12_xray' THEN percent_yield END) AS test12_xray,
     MAX(CASE WHEN station_process = 'TEST12_xray' THEN total_count END) AS test12_xray_total_count,
     MAX(CASE WHEN station_process = 'TEST12_xray' THEN result_pass END) AS test12_xray_result_pass,
@@ -51,19 +51,19 @@ router.get("/fox-summary", async (req, res) => {
     MAX(CASE WHEN station_process = 'TEST13_oqc_fai' THEN total_count END) AS test13_oqc_fai_total_count,
     MAX(CASE WHEN station_process = 'TEST13_oqc_fai' THEN result_pass END) AS test13_oqc_fai_result_pass,
     MAX(CASE WHEN station_process = 'TEST13_oqc_fai' THEN result_fail END) AS test13_oqc_fai_result_fail,
-    MAX(CASE WHEN station_process = 'TEST39_holding_time' THEN percent_yield END) AS test39_holding_time,
-    MAX(CASE WHEN station_process = 'TEST39_holding_time' THEN total_count END) AS test39_holding_time_total_count,
-    MAX(CASE WHEN station_process = 'TEST39_holding_time' THEN result_pass END) AS test39_holding_time_result_pass,
-    MAX(CASE WHEN station_process = 'TEST39_holding_time' THEN result_fail END) AS test39_holding_time_result_fail,
-    MAX(CASE WHEN station_process = 'TEST74_holding_time' THEN percent_yield END) AS test74_holding_time,
-    MAX(CASE WHEN station_process = 'TEST74_holding_time' THEN total_count END) AS test74_holding_time_total_count,
-    MAX(CASE WHEN station_process = 'TEST74_holding_time' THEN result_pass END) AS test74_holding_time_result_pass,
-    MAX(CASE WHEN station_process = 'TEST74_holding_time' THEN result_fail END) AS test74_holding_time_result_fail
+    MAX(CASE WHEN station_process = 'TEST39_holding_time_39' THEN percent_yield END) AS test39_holding_time,
+    MAX(CASE WHEN station_process = 'TEST39_holding_time_39' THEN total_count END) AS test39_holding_time_total_count,
+    MAX(CASE WHEN station_process = 'TEST39_holding_time_39' THEN result_pass END) AS test39_holding_time_result_pass,
+    MAX(CASE WHEN station_process = 'TEST39_holding_time_39' THEN result_fail END) AS test39_holding_time_result_fail,
+    MAX(CASE WHEN station_process = 'TEST74_holding_time_74' THEN percent_yield END) AS test74_holding_time,
+    MAX(CASE WHEN station_process = 'TEST74_holding_time_74' THEN total_count END) AS test74_holding_time_total_count,
+    MAX(CASE WHEN station_process = 'TEST74_holding_time_74' THEN result_pass END) AS test74_holding_time_result_pass,
+    MAX(CASE WHEN station_process = 'TEST74_holding_time_74' THEN result_fail END) AS test74_holding_time_result_fail
 FROM
     foxsystem_json_backup_header_summary
 GROUP BY
     production_date,
-    sendresultdetails_product`,
+    sendresultdetails_product`
     );
 
     res.status(200).json(result.rows);
@@ -72,7 +72,5 @@ GROUP BY
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
-
-
 
 module.exports = router;
