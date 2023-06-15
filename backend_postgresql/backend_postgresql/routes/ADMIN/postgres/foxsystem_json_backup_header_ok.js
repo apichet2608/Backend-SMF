@@ -7,7 +7,7 @@ const pool = new Pool({
   port: 5432,
   user: "postgres",
   password: "postgres",
-  database: "postgres", 
+  database: "postgres",
 });
 
 const query = (text, params) => pool.query(text, params);
@@ -45,9 +45,7 @@ router.get("/product-fail", async (req, res) => {
 
     const result = await query(
       `SELECT
-        test_attributes_uut_stop,
-        accumulate,
-        station_process
+        *
       FROM
         public.foxsystem_json_backup_header_ok
       WHERE
@@ -98,6 +96,5 @@ order by process
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
-
 
 module.exports = router;
