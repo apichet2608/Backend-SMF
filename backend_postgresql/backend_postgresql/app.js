@@ -40,6 +40,8 @@ const smt_vacuum_seal_data = require("./routes/10.17.71.21/10.17.71.21-arduino_i
 const smt_binder_oven_data = require("./routes/10.17.71.21/10.17.71.21-arduino_iot_project/smt_binder_oven_data");
 const smt_reflow_tamura_temp_log = require("./routes/10.17.71.21/10.17.71.21-data_log/smt_reflow_tamura_temp_log");
 const jwdb_rphp_beac_actv = require("./routes/10.17.71.21/10.17.71.21-postgres/jwdb_rphp_beac_actv");
+const foxsystem_post_by_hr = require("./routes/ADMIN/postgres/foxsystem_post_by_hr");
+const foxsystem_post_by_day = require("./routes/ADMIN/postgres/foxsystem_post_by_day");
 
 const app = express();
 
@@ -89,6 +91,8 @@ app.use("/api/smt_vacuum_seal_data", smt_vacuum_seal_data);
 app.use("/api/smt_binder_oven_data", smt_binder_oven_data);
 app.use("/api/smt_reflow_tamura_temp_log", smt_reflow_tamura_temp_log);
 app.use("/api/jwdb_rphp_beac_actv", jwdb_rphp_beac_actv);
+app.use("/api/foxsystem_post_by_hr", foxsystem_post_by_hr);
+app.use("/api/foxsystem_post_by_day", foxsystem_post_by_day);
 
 app.use(function (req, res, next) {
   next(createError(404));
