@@ -61,7 +61,7 @@ router.get("/plot-all", async (req, res) => {
 
 router.get("/info-fix-today", async (req, res) => {
   try {
-    const { startdate, stopdate, product } = req.query;
+    const { product, station } = req.query;
 
     const result = await query(
       `select
@@ -88,7 +88,7 @@ router.get("/info-fix-today", async (req, res) => {
 });
 router.get("/info-fix-yesterday", async (req, res) => {
   try {
-    const { startdate, stopdate, product } = req.query;
+    const { product, station } = req.query;
 
     const result = await query(
       `select
