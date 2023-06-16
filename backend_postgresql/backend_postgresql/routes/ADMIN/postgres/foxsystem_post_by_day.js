@@ -59,7 +59,7 @@ router.get("/plot-all", async (req, res) => {
   }
 });
 
-router.get("/info-fix", async (req, res) => {
+router.get("/info-fix-today", async (req, res) => {
   try {
     const { startdate, stopdate, product } = req.query;
 
@@ -71,8 +71,35 @@ router.get("/info-fix", async (req, res) => {
     from
       public.foxsystem_post_by_day
     where
-      timestamp_group::date >= current_date -1
-      and timestamp_group::date <= current_date -1
+      timestamp_group::date >= current_date 
+      and timestamp_group::date <= current_date 
+      and sendresultdetails_product = $1
+      and sendresultdetails_station_type = $2
+    order by
+      timestamp_group asc`,
+      [product, station]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+router.get("/info-fix-yesterday", async (req, res) => {
+  try {
+    const { startdate, stopdate, product } = req.query;
+
+    const result = await query(
+      `select
+      sendresultdetails_station_type,
+      timestamp_group,
+      total_count
+    from
+      public.foxsystem_post_by_day
+    where
+     	timestamp_group::date >= current_date - 1
+	    and timestamp_group::date <= current_date - 1 
       and sendresultdetails_product = $1
       and sendresultdetails_station_type = $2
     order by
@@ -87,7 +114,7 @@ router.get("/info-fix", async (req, res) => {
   }
 });
 
-router.get("/info-all", async (req, res) => {
+router.get("/info-all-today", async (req, res) => {
   try {
     const { product } = req.query;
 
@@ -99,7 +126,35 @@ router.get("/info-all", async (req, res) => {
     from
       public.foxsystem_post_by_day
     where
-      timestamp_group::date = current_date
+      timestamp_group::date >= current_date 
+      and timestamp_group::date <= current_date 
+      and sendresultdetails_product = $1
+    order by
+      timestamp_group asc;`,
+      [product]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+router.get("/info-all-yesterday", async (req, res) => {
+  try {
+    const { product } = req.query;
+
+    const result = await query(
+      `select
+      sendresultdetails_station_type,
+      timestamp_group,
+      total_count
+    from
+      public.foxsystem_post_by_day
+    where
+      timestamp_group::date >= current_date - 1 
+      and timestamp_group::date <= current_date - 1 
       and sendresultdetails_product = $1
     order by
       timestamp_group asc;`,
