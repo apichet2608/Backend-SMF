@@ -40,20 +40,27 @@ router.get("/data-plot", async (req, res) => {
       return res.status(400).send("Hours are required");
     }
     const result = await query(
-      `select *
-      from public.jwdb_rphp_beac_actv
-      where mc_code in ('V2-47-11',
-      'V2-47-12',
-      'V2-47-13',
-      'R2-47-22',
-      'R2-47-23',
-      'R2-47-25',
-      'R2-47-18',
-      'R2-47-17')
-      and l_arm_measurement_x_value_pv < 200 and l_arm_measurement_y_value_pv < 200
-      and mc_code  = $1
-      and ptime  :: timestamp >= (now() - interval '${hours}' hour)
-      order by ptime asc`,
+      `select
+      *
+    from
+      public.jwdb_rphp_beac_actv
+    where
+      mc_code in ('V2-47-11',
+          'V2-47-12',
+          'V2-47-13',
+          'R2-47-22',
+          'R2-47-23',
+          'R2-47-25',
+          'R2-47-18',
+          'R2-47-17')
+      and mc_code = 'R2-47-18'
+      and ptime :: timestamp >= (now() - interval '24' hour)
+      and l_arm_measurement_x_value_pv < 200
+      and l_arm_measurement_y_value_pv < 200
+      and r_arm_measurement_x_value_pv < 200
+      and r_arm_measurement_y_value_pv < 200
+    order by
+      ptime asc`,
       [mc_code]
     );
 
