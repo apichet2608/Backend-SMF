@@ -59,6 +59,60 @@ router.get("/plot-all", async (req, res) => {
   }
 });
 
+router.get("/info-fix", async (req, res) => {
+  try {
+    const { startdate, stopdate, product } = req.query;
+
+    const result = await query(
+      `select
+      sendresultdetails_station_type,
+      timestamp_group,
+      total_count
+    from
+      public.foxsystem_post_by_day
+    where
+      timestamp_group::date >= current_date -1
+      and timestamp_group::date <= current_date -1
+      and sendresultdetails_product = $1
+      and sendresultdetails_station_type = $2
+    order by
+      timestamp_group asc`,
+      [product, station]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+router.get("/info-all", async (req, res) => {
+  try {
+    const { product } = req.query;
+
+    const result = await query(
+      `select
+      sendresultdetails_station_type,
+      timestamp_group,
+      total_count
+    from
+      public.foxsystem_post_by_day
+    where
+      timestamp_group::date = current_date
+      and sendresultdetails_product = $1
+    order by
+      timestamp_group asc;`,
+      [product]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/distinct-station", async (req, res) => {
   try {
     const { product } = req.query;
