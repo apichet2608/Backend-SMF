@@ -52,4 +52,51 @@ router.get("/dataplot", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
+
+router.get("/dataplot/Reflow-Tamura", async (req, res) => {
+  try {
+    const { machine_code } = req.query;
+    const hours = parseInt(req.query.hours); // ชั่วโมงที่ผู้ใช้กำหนด
+
+    if (isNaN(hours)) {
+      return res.status(400).send("Hours are required");
+    }
+    const result = await query(
+      `select
+      id,
+      create_at,
+      status_mc,
+      inside_mc,
+      case
+        when status_mc = 2
+        and inside_mc = 0 then 1.5
+        when status_mc = 2
+        and inside_mc != 0 then 2
+        when status_mc = 3
+        and inside_mc = 0 then 3
+        when status_mc = 3
+        and inside_mc != 0 then 4
+        when status_mc = 0 then 0
+        when status_mc = 1 then 1
+        when status_mc = 6 then 6
+        else -1
+      end as result
+    from
+      public.smt_reflow_tamura_temp_log
+    where
+      machine_code = $1
+      and zone7_o2_con_pv_chat > '0'
+      and create_at >= NOW() - interval '${hours}' hour
+      and o2_con_p_chat < 1000
+    order by
+      create_at asc`,
+      [machine_code]
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
