@@ -36,14 +36,51 @@ router.get("/dataplot", async (req, res) => {
       return res.status(400).send("Hours are required");
     }
     const result = await query(
-      `select
-      *
-    from
-      public.smt_reflow_tamura_temp_log
-    where 
-      machine_code = $1
-    and create_at  :: timestamp >= (now() - interval '${hours}' hour)
-    order by  create_at asc`,
+      `
+      select
+        id,
+        machine_code,
+        log_level,
+        create_at,
+        "source",
+        "1t_pv_oc"  as t1_pv,
+        "1b_pv_oc"  as b1_pv ,
+        "2t_pv_oc"  as t2_pv,	
+        "2b_pv_oc"  as b2_pv,
+        "3t_pv_oc"  as t3_pv,
+        "3b_pv_oc"  as b3_pv,
+        "4t_pv_oc"  as t4_pv,
+        "4b_pv_oc"  as b4_pv,
+        "5t_pv_oc"  as t5_pv,
+        "5b_pv_oc"  as b5_pv,
+        "6t_pv_oc"  as t6_pv,
+        "6b_pv_oc"  as b6_pv,
+        "7t_pv_oc"  as t7_pv,
+        "7b_pv_oc"  as b7_pv,
+        "8t_pv_oc"  as t8_pv,
+        "8b_pv_oc"  as b8_pv,
+        zone7_o2_con_pv,
+        zone7_o2_con_pv_chat,
+        o2_con_pv,
+        o2_con_p_chat,
+        "zone",
+        zone_conveyor_speed_pv,
+        status_mc,
+        inside_mc,
+        total_input,
+        count_alarm
+      from
+        public.smt_reflow_tamura_temp_log
+      where
+        status_mc = 2
+        and inside_mc != 0
+        and zone7_o2_con_pv_chat > '0'
+        and machine_code = $1
+        and o2_con_p_chat < 1000
+      and create_at >= NOW() - interval '${hours}' hour
+      order by
+        create_at asc
+      `,
       [machine_code]
     );
     res.status(200).json(result.rows);
