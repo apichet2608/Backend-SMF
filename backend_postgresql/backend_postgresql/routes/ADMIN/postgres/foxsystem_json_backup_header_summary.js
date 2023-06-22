@@ -75,7 +75,7 @@ GROUP BY
 
 router.get("/data-fix", async (req, res) => {
   try {
-    const { process, startdate, stopdate,product } = req.query;
+    const { process, startdate, stopdate, product } = req.query;
 
     const result = await query(
       `SELECT
@@ -95,7 +95,7 @@ router.get("/data-fix", async (req, res) => {
       GROUP BY
         production_date,
         sendresultdetails_product`,
-      [process, startdate, stopdate,product]
+      [process, startdate, stopdate, product]
     );
 
     res.status(200).json(result.rows);
@@ -105,10 +105,9 @@ router.get("/data-fix", async (req, res) => {
   }
 });
 
-
 router.get("/data-all", async (req, res) => {
   try {
-    const { process, startdate, stopdate } = req.query;
+    const { startdate, stopdate, product } = req.query;
 
     const result = await query(
       `select
@@ -164,7 +163,7 @@ FROM
       GROUP BY
         production_date,
         sendresultdetails_product`,
-      [process, startdate, stopdate]
+      [startdate, stopdate, product]
     );
 
     res.status(200).json(result.rows);
@@ -173,7 +172,6 @@ FROM
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
-
 
 router.get("/distinct-station_process", async (req, res) => {
   try {
