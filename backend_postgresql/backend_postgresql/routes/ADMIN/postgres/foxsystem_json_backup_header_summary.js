@@ -73,31 +73,40 @@ GROUP BY
   }
 });
 
-// router.get("/product-fail", async (req, res) => {
-//   try {
-//     const { startdate, stopdate, product } = req.query;
+router.get("/data-fix", async (req, res) => {
+  try {
+    const { product, startdate, stopdate } = req.query;
 
-//     const result = await query(
-//       `SELECT
-//         *
-//       FROM
-//         public.foxsystem_json_backup_header_summary
-//       WHERE
-//         test_attributes_uut_stop >= $1
-//         AND DATE_TRUNC('day', test_attributes_uut_stop) <= DATE_TRUNC('day', $2::TIMESTAMP)
-//         AND sendresultdetails_product = $3
-//         and test_attributes_test_result = 'FAIL'
-//       ORDER BY
-//         test_attributes_uut_stop`,
-//       [startdate, stopdate, product]
-//     );
+    const result = await query(
+      `select
+      row_number() over (
+    order by
+      production_date) as id,
+      production_date,
+      sendresultdetails_product,
+      MAX(case when station_process = $1 and sendresultdetails_product = $1 then percent_yield end) as percent_yield,
+      MAX(case when station_process = $1 and sendresultdetails_product = $1 then total_count end) as total_count,
+      MAX(case when station_process = $1 and sendresultdetails_product = $1 then result_pass end) as result_pass,
+      MAX(case when station_process = $1 and sendresultdetails_product = $1 then result_fail end) as result_fail
+    from
+      foxsystem_json_backup_header_summary
+    where
+      production_date >= $2
+      and DATE_TRUNC('day',
+      production_date) <= DATE_TRUNC('day',
+      $3::TIMESTAMP)
+    group by
+      production_date,
+      sendresultdetails_product`,
+      [product, startdate, stopdate]
+    );
 
-//     res.status(200).json(result.rows);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "An error occurred while fetching data" });
-//   }
-// });
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 
 router.get("/distinct-station_process", async (req, res) => {
   try {
