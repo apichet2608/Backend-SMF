@@ -83,9 +83,9 @@ router.get("/data-fix", async (req, res) => {
         production_date,
         sendresultdetails_product,
         MAX(CASE WHEN station_process = $1 THEN percent_yield END) AS percent_yield,
-        MAX(CASE WHEN station_process = $2 THEN total_count END) AS total_count,
-        MAX(CASE WHEN station_process = $3 THEN result_pass END) AS result_pass,
-        MAX(CASE WHEN station_process = $4 THEN result_fail END) AS result_fail
+        MAX(CASE WHEN station_process = $1 THEN total_count END) AS total_count,
+        MAX(CASE WHEN station_process = $1 THEN result_pass END) AS result_pass,
+        MAX(CASE WHEN station_process = $1 THEN result_fail END) AS result_fail
       FROM
         foxsystem_json_backup_header_summary
       WHERE
