@@ -75,7 +75,7 @@ GROUP BY
 
 router.get("/data-fix", async (req, res) => {
   try {
-    const { product, startdate, stopdate } = req.query;
+    const { process, startdate, stopdate,product } = req.query;
 
     const result = await query(
       `SELECT
@@ -89,13 +89,13 @@ router.get("/data-fix", async (req, res) => {
       FROM
         foxsystem_json_backup_header_summary
       WHERE
-        production_date >= $5
+        production_date >= $2
         AND DATE_TRUNC('day', production_date) <= DATE_TRUNC('day', $3::TIMESTAMP)
-        AND sendresultdetails_product = $6
+        AND sendresultdetails_product = $4
       GROUP BY
         production_date,
         sendresultdetails_product`,
-      [product, startdate, stopdate]
+      [process, startdate, stopdate,product]
     );
 
     res.status(200).json(result.rows);
