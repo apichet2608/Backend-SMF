@@ -83,19 +83,19 @@ router.get("/data-fix", async (req, res) => {
         production_date,
         sendresultdetails_product,
         MAX(CASE WHEN station_process = $1 THEN percent_yield END) AS percent_yield,
-        MAX(CASE WHEN station_process = $1 THEN total_count END) AS total_count,
-        MAX(CASE WHEN station_process = $1 THEN result_pass END) AS result_pass,
-        MAX(CASE WHEN station_process = $1 THEN result_fail END) AS result_fail
+        MAX(CASE WHEN station_process = $2 THEN total_count END) AS total_count,
+        MAX(CASE WHEN station_process = $3 THEN result_pass END) AS result_pass,
+        MAX(CASE WHEN station_process = $4 THEN result_fail END) AS result_fail
       FROM
         foxsystem_json_backup_header_summary
       WHERE
-        production_date >= $2
+        production_date >= $5
         AND DATE_TRUNC('day', production_date) <= DATE_TRUNC('day', $3::TIMESTAMP)
-        AND sendresultdetails_product = $1
+        AND sendresultdetails_product = $6
       GROUP BY
         production_date,
         sendresultdetails_product`,
-      [product, startdate, stopdate]
+      [product, product, product, product, startdate, stopdate]
     );
 
     res.status(200).json(result.rows);
