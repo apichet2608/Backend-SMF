@@ -54,7 +54,7 @@ router.get("/data-plot", async (req, res) => {
           'R2-47-18',
           'R2-47-17')
       and mc_code = $1
-      and ptime :: timestamp >= (now() - interval '24' hour)
+      and ptime :: timestamp >= (now() - interval '${hours}' hour)
       and l_arm_measurement_x_value_pv < 200
       and l_arm_measurement_y_value_pv < 200
       and r_arm_measurement_x_value_pv < 200
