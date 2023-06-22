@@ -99,21 +99,27 @@ GROUP BY
 //   }
 // });
 
-// router.get("/distinct-sendresultdetails_product", async (req, res) => {
-//   try {
-//     const result = await query(`
-// select
-// 	distinct  sendresultdetails_product
-// from
-// 	public.foxsystem_json_backup_header_summary
-// order by sendresultdetails_product
-//     `);
-//     res.status(200).json(result.rows);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "An error occurred while fetching data" });
-//   }
-// });
+router.get("/distinct-station_process", async (req, res) => {
+  try {
+    const { product } = req.query;
+    const result = await query(
+      `
+    select
+    distinct station_process
+  from
+    public.foxsystem_json_backup_header_summary
+  where sendresultdetails_product = $1
+  order by
+  station_process asc
+    `,
+      [product]
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 
 router.get("/distinct-product", async (req, res) => {
   try {
