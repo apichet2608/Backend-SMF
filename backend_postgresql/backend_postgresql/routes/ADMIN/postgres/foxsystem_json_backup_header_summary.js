@@ -75,7 +75,8 @@ GROUP BY
 
 router.get("/data-fix", async (req, res) => {
   try {
-    const { product, startdate, stopdate } = req.query;
+    const { product1, product2, product3, product4, startdate, stopdate } =
+      req.query;
 
     const result = await query(
       `SELECT
@@ -95,7 +96,7 @@ router.get("/data-fix", async (req, res) => {
       GROUP BY
         production_date,
         sendresultdetails_product`,
-      [product, product, product, product, startdate, stopdate]
+      [product1, product2, product3, product4, startdate, stopdate]
     );
 
     res.status(200).json(result.rows);
