@@ -78,6 +78,39 @@ router.get("/data-fix", async (req, res) => {
     const { process, startdate, stopdate,product } = req.query;
 
     const result = await query(
+      `SELECT
+        row_number() OVER (ORDER BY production_date) AS id,
+        production_date,
+        sendresultdetails_product,
+        MAX(CASE WHEN station_process = $1 THEN percent_yield END) AS percent_yield,
+        MAX(CASE WHEN station_process = $1 THEN total_count END) AS total_count,
+        MAX(CASE WHEN station_process = $1 THEN result_pass END) AS result_pass,
+        MAX(CASE WHEN station_process = $1 THEN result_fail END) AS result_fail
+      FROM
+        foxsystem_json_backup_header_summary
+      WHERE
+        production_date >= $2
+        AND DATE_TRUNC('day', production_date) <= DATE_TRUNC('day', $3::TIMESTAMP)
+        AND sendresultdetails_product = $4
+      GROUP BY
+        production_date,
+        sendresultdetails_product`,
+      [process, startdate, stopdate,product]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+
+router.get("/data-all", async (req, res) => {
+  try {
+    const { process, startdate, stopdate } = req.query;
+
+    const result = await query(
       `select
  	ROW_NUMBER() OVER (ORDER BY production_date) AS id,
     production_date,
@@ -125,41 +158,9 @@ router.get("/data-fix", async (req, res) => {
 FROM
         foxsystem_json_backup_header_summary
       WHERE
-        production_date >= $2
-        AND DATE_TRUNC('day', production_date) <= DATE_TRUNC('day', $3::TIMESTAMP)
-        AND sendresultdetails_product = $4
-      GROUP BY
-        production_date,
-        sendresultdetails_product`,
-      [process, startdate, stopdate,product]
-    );
-
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "An error occurred while fetching data" });
-  }
-});
-
-
-router.get("/data-all", async (req, res) => {
-  try {
-    const { process, startdate, stopdate } = req.query;
-
-    const result = await query(
-      `SELECT
-        row_number() OVER (ORDER BY production_date) AS id,
-        production_date,
-        sendresultdetails_product,
-        MAX(CASE WHEN station_process = $1 THEN percent_yield END) AS percent_yield,
-        MAX(CASE WHEN station_process = $1 THEN total_count END) AS total_count,
-        MAX(CASE WHEN station_process = $1 THEN result_pass END) AS result_pass,
-        MAX(CASE WHEN station_process = $1 THEN result_fail END) AS result_fail
-      FROM
-        foxsystem_json_backup_header_summary
-      WHERE
-        production_date >= $2
-        AND DATE_TRUNC('day', production_date) <= DATE_TRUNC('day', $3::TIMESTAMP)
+        production_date >= $1
+        AND DATE_TRUNC('day', production_date) <= DATE_TRUNC('day', $2::TIMESTAMP)
+        and sendresultdetails_product = $3
       GROUP BY
         production_date,
         sendresultdetails_product`,
