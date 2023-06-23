@@ -7,8 +7,9 @@ const pool = new Pool({
   port: 5432,
   user: "postgres",
   password: "fujikura",
-  database: "smartfactory", // แทนที่ด้วยชื่อฐานข้อมูลของคุณ
+  database: "smart_factory", // แทนที่ด้วยชื่อฐานข้อมูลของคุณ
 });
+
 
 const query = (text, params) => pool.query(text, params);
 
