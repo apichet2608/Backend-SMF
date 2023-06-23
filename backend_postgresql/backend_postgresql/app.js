@@ -42,7 +42,7 @@ const smt_reflow_tamura_temp_log = require("./routes/10.17.71.21/10.17.71.21-dat
 const jwdb_rphp_beac_actv = require("./routes/10.17.71.21/10.17.71.21-postgres/jwdb_rphp_beac_actv");
 const foxsystem_post_by_hr = require("./routes/ADMIN/postgres/foxsystem_post_by_hr");
 const foxsystem_post_by_day = require("./routes/ADMIN/postgres/foxsystem_post_by_day");
-
+const smart_machine_connect_list = require("./routes/ADMIN/postgres/smart_machine_connect_list");
 const app = express();
 
 // app.use(compression()); // ใช้งาน compression middleware
@@ -93,6 +93,7 @@ app.use("/api/smt_reflow_tamura_temp_log", smt_reflow_tamura_temp_log);
 app.use("/api/jwdb_rphp_beac_actv", jwdb_rphp_beac_actv);
 app.use("/api/foxsystem_post_by_hr", foxsystem_post_by_hr);
 app.use("/api/foxsystem_post_by_day", foxsystem_post_by_day);
+app.use("/api/smart_machine_connect_list", smart_machine_connect_list);
 
 app.use(function (req, res, next) {
   next(createError(404));
