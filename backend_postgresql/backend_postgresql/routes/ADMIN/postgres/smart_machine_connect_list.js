@@ -39,18 +39,27 @@ router.get("/table", async (req, res) => {
   try {
     const { status } = req.query;
 
-    const result = await query(
-      `select 
-      ROW_NUMBER() OVER (ORDER BY finish_date) AS id,
-      *
-    from 
-      public.smart_machine_connect_list smcl 
-    where status = $1
-    order by
-      finish_date  asc 
-    `,
-      [status]
-    );
+    let queryStr = "";
+    let queryParams = [];
+
+    if (status === "total") {
+      queryStr = `
+        SELECT *
+        FROM public.smart_machine_connect_list smcl
+        WHERE status IN ('Finished', 'planed', 'Wait for plan', '')
+        ORDER BY finish_date ASC
+      `;
+    } else {
+      queryStr = `
+        SELECT *
+        FROM public.smart_machine_connect_list smcl
+        WHERE status = $1
+        ORDER BY finish_date ASC
+      `;
+      queryParams = [status];
+    }
+
+    const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
