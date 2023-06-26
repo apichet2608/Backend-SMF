@@ -15,14 +15,18 @@ const query = (text, params) => pool.query(text, params);
 router.get("/count-status", async (req, res) => {
   try {
     const result = await query(`
-    select
-    status, COUNT(*) as count
-  from
-    public.smart_machine_connect_list
-  group by
-    status
-  order by
-    count asc
+    SELECT status, COUNT(*) AS count
+FROM public.smart_machine_connect_list
+WHERE status IN ('Finished', 'planed', 'Wait for plan','')
+GROUP BY status
+
+UNION ALL
+
+SELECT 'total' AS status, COUNT(*) AS count
+FROM public.smart_machine_connect_list
+WHERE status IN ('Finished', 'planed', 'Wait for plan','')
+
+order by Count desc
     `);
     res.status(200).json(result.rows);
   } catch (error) {
