@@ -213,7 +213,7 @@ router.put("/:id", async (req, res) => {
        SET
          item_factory = $1,
          item_code = $2,
-         item_desc1 = $3
+         item_desc1 = $3,
          item_desc2 = $4,
          item_desc3 = $5,
          item_status = $6,
