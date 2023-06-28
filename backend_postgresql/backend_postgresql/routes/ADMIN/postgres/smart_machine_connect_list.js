@@ -17,14 +17,14 @@ router.get("/count-status", async (req, res) => {
     const result = await query(`
     SELECT status, COUNT(*) AS count
 FROM public.smart_machine_connect_list
-WHERE status IN ('Finished', 'planed', 'Wait for plan','')
+WHERE status IN ('Finished', 'Planed', 'Wait for plan','')
 GROUP BY status
 
 UNION ALL
 
 SELECT 'total' AS status, COUNT(*) AS count
 FROM public.smart_machine_connect_list
-WHERE status IN ('Finished', 'planed', 'Wait for plan','')
+WHERE status IN ('Finished', 'Planed', 'Wait for plan','')
 
 order by Count desc
     `);
@@ -46,7 +46,7 @@ router.get("/table", async (req, res) => {
       queryStr = `
         SELECT *
         FROM public.smart_machine_connect_list smcl
-        WHERE status IN ('Finished', 'planed', 'Wait for plan', '')
+        WHERE status IN ('Finished', 'Planed', 'Wait for plan', '')
         ORDER BY finish_date ASC
       `;
     } else {
