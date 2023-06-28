@@ -15,18 +15,130 @@ const query = (text, params) => pool.query(text, params);
 router.get("/count-status", async (req, res) => {
   try {
     const result = await query(`
-    SELECT status, COUNT(*) AS count
-FROM public.smart_machine_connect_list
-WHERE status IN ('Finished', 'Planed', 'Wait for plan','')
-GROUP BY status
-
-UNION ALL
-
-SELECT 'total' AS status, COUNT(*) AS count
-FROM public.smart_machine_connect_list
-WHERE status IN ('Finished', 'Planed', 'Wait for plan','')
-
-order by Count desc
+    select
+    status,
+    count,
+    case
+      when status = 'Finished' then
+        (
+      select
+        json_agg(json_build_object(
+            'plan_date_formatted',
+        plan_date_formatted,
+        'finished_count',
+        finished_count
+          ))
+      from
+        (
+        select
+          TO_CHAR(plan_date,
+          'Mon-YYYY') as plan_date_formatted,
+          COUNT(*) as finished_count
+        from
+          public.smart_machine_connect_list
+        where
+          status = 'Finished'
+        group by
+          TO_CHAR(plan_date,
+          'Mon-YYYY')
+          ) subquery 
+        ) 
+      when status = 'Planed' then
+        (
+      select
+        json_agg(json_build_object(
+            'plan_date_formatted',
+        plan_date_formatted,
+        'planed_count',
+        planed_count
+          ))
+      from
+        (
+        select
+          TO_CHAR(plan_date,
+          'Mon-YYYY') as plan_date_formatted,
+          COUNT(*) as planed_count
+        from
+          public.smart_machine_connect_list
+        where
+          status = 'Planed'
+        group by
+          TO_CHAR(plan_date,
+          'Mon-YYYY')
+          ) subquery
+        )
+      when status = 'Wait for plan' then
+        (
+      select
+        json_agg(json_build_object(
+            'plan_date_formatted',
+        plan_date_formatted,
+        'wait_for_plan_count',
+        wait_for_plan_count
+          ))
+      from
+        (
+        select
+          TO_CHAR(plan_date,
+          'Mon-YYYY') as plan_date_formatted,
+          COUNT(*) as wait_for_plan_count
+        from
+          public.smart_machine_connect_list
+        where
+          status = 'Wait for plan'
+        group by
+          TO_CHAR(plan_date,
+          'Mon-YYYY')
+          ) subquery
+        )
+      when status = '' then
+        (
+      select
+        json_agg(json_build_object(
+            'plan_date_formatted',
+        plan_date_formatted,
+        'empty_status_count',
+        empty_status_count
+          ))
+      from
+        (
+        select
+          TO_CHAR(plan_date,
+          'Mon-YYYY') as plan_date_formatted,
+          COUNT(*) as empty_status_count
+        from
+          public.smart_machine_connect_list
+        where
+          status = ''
+        group by
+          TO_CHAR(plan_date,
+          'Mon-YYYY')
+          ) subquery
+        )
+      else null
+    end as sum_month
+  from
+    (
+    select
+      status,
+      COUNT(*) as count
+    from
+      public.smart_machine_connect_list
+    where
+      status in ('Finished', 'Planed', 'Wait for plan', '')
+    group by
+      status
+  union all
+    select
+      'total' as status,
+      COUNT(*) as count
+    from
+      public.smart_machine_connect_list
+    where
+      status in ('Finished', 'Planed', 'Wait for plan', '')
+  ) subquery
+  order by
+    count desc
     `);
     res.status(200).json(result.rows);
   } catch (error) {
