@@ -115,7 +115,7 @@ router.get("/count-status", async (req, res) => {
           'Mon-YYYY')
           ) subquery
         )
-      else ""
+      else null
     end as sum_month
   from
     (
@@ -287,119 +287,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// // POST route to add new data
-// router.post("/", async (req, res) => {
-//   try {
-//     const {
-//       item_factory,
-//       item_code,
-//       item_desc2,
-//       item_desc3,
-//       item_status,
-//       item_building,
-//       item_group,
-//       item_sub_group,
-//       item_owner_cc,
-//       item_sub_process,
-//       item_mac_maker,
-//       item_iot_mc_type,
-//       item_iot_group1,
-//       item_iot_cont1,
-//       item_iot_group2,
-//       item_iot_cont2,
-//       status,
-//       npi_year,
-//       plan_date,
-//       finish_date,
-//       remark,
-//       feeder_no,
-//       item_desc1,
-//     } = req.body;
-
-//     const result = await query(
-//       `insert
-//       into
-//       smart_machine_connect_list
-//     (item_factory,
-//       item_code,
-//       item_desc2,
-//       item_desc3,
-//       item_status,
-//       item_building,
-//       item_group,
-//       item_sub_group,
-//       item_owner_cc,
-//       item_sub_process,
-//       item_mac_maker,
-//       item_iot_mc_type,
-//       item_iot_group1,
-//       item_iot_cont1,
-//       item_iot_group2,
-//       item_iot_cont2,
-//       status,
-//       npi_year,
-//       plan_date,
-//       finish_date,
-//       remark,
-//       feeder_no,
-//       item_desc1)
-//     values($1,
-//     $2,
-//     $3,
-//     $4,
-//     $5,
-//     $6,
-//     $7,
-//     $8,
-//     $9,
-//     $10,
-//     $11,
-//     $12,
-//     $13,
-//     $14,
-//     $15,
-//     $16,
-//     $17,
-//     $18,
-//     $19,
-//     $20,
-//     $21,
-//     $22,
-//     $23);`,
-//       [
-//         item_factory,
-//         item_code,
-//         item_desc2,
-//         item_desc3,
-//         item_status,
-//         item_building,
-//         item_group,
-//         item_sub_group,
-//         item_owner_cc,
-//         item_sub_process,
-//         item_mac_maker,
-//         item_iot_mc_type,
-//         item_iot_group1,
-//         item_iot_cont1,
-//         item_iot_group2,
-//         item_iot_cont2,
-//         status,
-//         npi_year,
-//         plan_date,
-//         finish_date,
-//         remark,
-//         feeder_no,
-//         item_desc1,
-//       ]
-//     );
-
-//     res.status(201).json({ message: "Data added successfully" });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "An error occurred while adding data" });
-//   }
-// });
-
+// POST route to add new data
 router.post("/", async (req, res) => {
   try {
     const {
@@ -428,139 +316,82 @@ router.post("/", async (req, res) => {
       item_desc1,
     } = req.body;
 
-    let insertQuery = `
-      INSERT INTO smart_machine_connect_list (`;
-    let values = [];
-    let index = 1;
-
-    if (item_factory !== "") {
-      insertQuery += `item_factory, `;
-      values.push(item_factory);
-    }
-
-    if (item_code !== "") {
-      insertQuery += `item_code, `;
-      values.push(item_code);
-    }
-
-    if (item_desc2 !== "") {
-      insertQuery += `item_desc2, `;
-      values.push(item_desc2);
-    }
-
-    if (item_desc3 !== "") {
-      insertQuery += `item_desc3, `;
-      values.push(item_desc3);
-    }
-
-    if (item_status !== "") {
-      insertQuery += `item_status, `;
-      values.push(item_status);
-    }
-
-    // เพิ่มเงื่อนไขสำหรับฟิลด์อื่น ๆ ที่คุณต้องการตรวจสอบ
-    if (item_building !== "") {
-      insertQuery += `item_building, `;
-      values.push(item_building);
-    }
-
-    if (item_group !== "") {
-      insertQuery += `item_group, `;
-      values.push(item_group);
-    }
-
-    if (item_sub_group !== "") {
-      insertQuery += `item_sub_group, `;
-      values.push(item_sub_group);
-    }
-
-    if (item_owner_cc !== "") {
-      insertQuery += `item_owner_cc, `;
-      values.push(item_owner_cc);
-    }
-
-    if (item_sub_process !== "") {
-      insertQuery += `item_sub_process, `;
-      values.push(item_sub_process);
-    }
-
-    if (item_mac_maker !== "") {
-      insertQuery += `item_mac_maker, `;
-      values.push(item_mac_maker);
-    }
-
-    if (item_iot_mc_type !== "") {
-      insertQuery += `item_iot_mc_type, `;
-      values.push(item_iot_mc_type);
-    }
-
-    if (item_iot_group1 !== "") {
-      insertQuery += `item_iot_group1, `;
-      values.push(item_iot_group1);
-    }
-
-    if (item_iot_cont1 !== "") {
-      insertQuery += `item_iot_cont1, `;
-      values.push(item_iot_cont1);
-    }
-
-    if (item_iot_group2 !== "") {
-      insertQuery += `item_iot_group2, `;
-      values.push(item_iot_group2);
-    }
-
-    if (item_iot_cont2 !== "") {
-      insertQuery += `item_iot_cont2, `;
-      values.push(item_iot_cont2);
-    }
-
-    if (status !== "") {
-      insertQuery += `status, `;
-      values.push(status);
-    }
-
-    if (npi_year !== "") {
-      insertQuery += `npi_year, `;
-      values.push(npi_year);
-    }
-
-    if (plan_date !== "") {
-      insertQuery += `plan_date, `;
-      values.push(plan_date);
-    }
-
-    if (finish_date !== "") {
-      insertQuery += `finish_date, `;
-      values.push(finish_date);
-    }
-
-    if (remark !== "") {
-      insertQuery += `remark, `;
-      values.push(remark);
-    }
-
-    if (feeder_no !== "") {
-      insertQuery += `feeder_no, `;
-      values.push(feeder_no);
-    }
-
-    if (item_desc1 !== "") {
-      insertQuery += `item_desc1, `;
-      values.push(item_desc1);
-    }
-
-    insertQuery = insertQuery.slice(0, -2); // ลบเครื่องหมายลูกน้ำสุดท้าย ", "
-    insertQuery += `) VALUES (`;
-
-    for (let i = 0; i < values.length; i++) {
-      insertQuery += `$${index}, `;
-      index++;
-    }
-
-    insertQuery = insertQuery.slice(0, -2); // ลบเครื่องหมายลูกน้ำสุดท้าย ", "
-    insertQuery += `)`;
-
-    const result = await query(insertQuery, values);
+    const result = await query(
+      `insert
+      into
+      smart_machine_connect_list
+    (item_factory,
+      item_code,
+      item_desc2,
+      item_desc3,
+      item_status,
+      item_building,
+      item_group,
+      item_sub_group,
+      item_owner_cc,
+      item_sub_process,
+      item_mac_maker,
+      item_iot_mc_type,
+      item_iot_group1,
+      item_iot_cont1,
+      item_iot_group2,
+      item_iot_cont2,
+      status,
+      npi_year,
+      plan_date,
+      finish_date,
+      remark,
+      feeder_no,
+      item_desc1)
+    values($1,
+    $2,
+    $3,
+    $4,
+    $5,
+    $6,
+    $7,
+    $8,
+    $9,
+    $10,
+    $11,
+    $12,
+    $13,
+    $14,
+    $15,
+    $16,
+    $17,
+    $18,
+    $19,
+    $20,
+    $21,
+    $22,
+    $23);`,
+      [
+        item_factory,
+        item_code,
+        item_desc2,
+        item_desc3,
+        item_status,
+        item_building,
+        item_group,
+        item_sub_group,
+        item_owner_cc,
+        item_sub_process,
+        item_mac_maker,
+        item_iot_mc_type,
+        item_iot_group1,
+        item_iot_cont1,
+        item_iot_group2,
+        item_iot_cont2,
+        status,
+        npi_year,
+        plan_date,
+        finish_date,
+        remark,
+        feeder_no,
+        item_desc1,
+      ]
+    );
 
     res.status(201).json({ message: "Data added successfully" });
   } catch (error) {
@@ -568,5 +399,4 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: "An error occurred while adding data" });
   }
 });
-
 module.exports = router;
