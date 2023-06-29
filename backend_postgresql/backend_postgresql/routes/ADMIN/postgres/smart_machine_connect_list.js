@@ -428,139 +428,139 @@ router.post("/", async (req, res) => {
       item_desc1,
     } = req.body;
 
-    let query = `
+    let insertQuery = `
       INSERT INTO smart_machine_connect_list (`;
     let values = [];
     let index = 1;
 
     if (item_factory !== null) {
-      query += `item_factory, `;
+      insertQuery += `item_factory, `;
       values.push(item_factory);
     }
 
     if (item_code !== null) {
-      query += `item_code, `;
+      insertQuery += `item_code, `;
       values.push(item_code);
     }
 
     if (item_desc2 !== null) {
-      query += `item_desc2, `;
+      insertQuery += `item_desc2, `;
       values.push(item_desc2);
     }
 
     if (item_desc3 !== null) {
-      query += `item_desc3, `;
+      insertQuery += `item_desc3, `;
       values.push(item_desc3);
     }
 
     if (item_status !== null) {
-      query += `item_status, `;
+      insertQuery += `item_status, `;
       values.push(item_status);
     }
 
     // เพิ่มเงื่อนไขสำหรับฟิลด์อื่น ๆ ที่คุณต้องการตรวจสอบ
     if (item_building !== null) {
-      query += `item_building, `;
+      insertQuery += `item_building, `;
       values.push(item_building);
     }
 
     if (item_group !== null) {
-      query += `item_group, `;
+      insertQuery += `item_group, `;
       values.push(item_group);
     }
 
     if (item_sub_group !== null) {
-      query += `item_sub_group, `;
+      insertQuery += `item_sub_group, `;
       values.push(item_sub_group);
     }
 
     if (item_owner_cc !== null) {
-      query += `item_owner_cc, `;
+      insertQuery += `item_owner_cc, `;
       values.push(item_owner_cc);
     }
 
     if (item_sub_process !== null) {
-      query += `item_sub_process, `;
+      insertQuery += `item_sub_process, `;
       values.push(item_sub_process);
     }
 
     if (item_mac_maker !== null) {
-      query += `item_mac_maker, `;
+      insertQuery += `item_mac_maker, `;
       values.push(item_mac_maker);
     }
 
     if (item_iot_mc_type !== null) {
-      query += `item_iot_mc_type, `;
+      insertQuery += `item_iot_mc_type, `;
       values.push(item_iot_mc_type);
     }
 
     if (item_iot_group1 !== null) {
-      query += `item_iot_group1, `;
+      insertQuery += `item_iot_group1, `;
       values.push(item_iot_group1);
     }
 
     if (item_iot_cont1 !== null) {
-      query += `item_iot_cont1, `;
+      insertQuery += `item_iot_cont1, `;
       values.push(item_iot_cont1);
     }
 
     if (item_iot_group2 !== null) {
-      query += `item_iot_group2, `;
+      insertQuery += `item_iot_group2, `;
       values.push(item_iot_group2);
     }
 
     if (item_iot_cont2 !== null) {
-      query += `item_iot_cont2, `;
+      insertQuery += `item_iot_cont2, `;
       values.push(item_iot_cont2);
     }
 
     if (status !== null) {
-      query += `status, `;
+      insertQuery += `status, `;
       values.push(status);
     }
 
     if (npi_year !== null) {
-      query += `npi_year, `;
+      insertQuery += `npi_year, `;
       values.push(npi_year);
     }
 
     if (plan_date !== null) {
-      query += `plan_date, `;
+      insertQuery += `plan_date, `;
       values.push(plan_date);
     }
 
     if (finish_date !== null) {
-      query += `finish_date, `;
+      insertQuery += `finish_date, `;
       values.push(finish_date);
     }
 
     if (remark !== null) {
-      query += `remark, `;
+      insertQuery += `remark, `;
       values.push(remark);
     }
 
     if (feeder_no !== null) {
-      query += `feeder_no, `;
+      insertQuery += `feeder_no, `;
       values.push(feeder_no);
     }
 
     if (item_desc1 !== null) {
-      query += `item_desc1, `;
+      insertQuery += `item_desc1, `;
       values.push(item_desc1);
     }
 
-    query = query.slice(0, -2); // ลบเครื่องหมายลูกน้ำสุดท้าย ", "
-    query += `) VALUES (`;
+    insertQuery = insertQuery.slice(0, -2); // ลบเครื่องหมายลูกน้ำสุดท้าย ", "
+    insertQuery += `) VALUES (`;
 
     for (let i = 0; i < values.length; i++) {
-      query += `$${index}, `;
+      insertQuery += `$${index}, `;
       index++;
     }
 
-    query = query.slice(0, -2); // ลบเครื่องหมายลูกน้ำสุดท้าย ", "
-    query += `)`;
+    insertQuery = insertQuery.slice(0, -2); // ลบเครื่องหมายลูกน้ำสุดท้าย ", "
+    insertQuery += `)`;
 
-    const result = await query(query, values);
+    const result = await query(insertQuery, values);
 
     res.status(201).json({ message: "Data added successfully" });
   } catch (error) {
