@@ -85,4 +85,52 @@ router.get("/count-status", async (req, res) => {
   }
 });
 
+router.get("/plot", async (req, res) => {
+  try {
+    const { build } = req.query;
+
+    let queryStr = "";
+    let queryParams = [];
+
+    if (build === "ALL") {
+      queryStr = `
+      select
+      month_code,
+      building,
+      SUM(diff_energy_usage) as total_diff_energy_usage
+  from
+      public.smart_energy_by_month
+  group by
+      month_code,
+      building
+  order by
+      month_code asc
+        `;
+    } else {
+      queryStr = `
+      select
+      month_code,
+      building,
+      SUM(diff_energy_usage) as total_diff_energy_usage
+  from
+      public.smart_energy_by_month
+  where
+      building = $1
+  group by
+      month_code,
+      building
+  order by
+      month_code asc
+        `;
+      queryParams = [build];
+    }
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
