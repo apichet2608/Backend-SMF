@@ -126,7 +126,8 @@ router.get("/plot", async (req, res) => {
       select
       month_code,
       building,
-      SUM(diff_energy_usage) as total_diff_energy_usage
+      SUM(diff_energy_usage) as total_diff_energy_usage,
+      SUM(energy_cost_baht) as total_energy_cost_baht
   from
       public.smart_energy_by_month
   group by
@@ -140,7 +141,8 @@ router.get("/plot", async (req, res) => {
       select
       month_code,
       building,
-      SUM(diff_energy_usage) as total_diff_energy_usage
+      SUM(diff_energy_usage) as total_diff_energy_usage,
+      SUM(energy_cost_baht) as total_energy_cost_baht
   from
       public.smart_energy_by_month
   where
