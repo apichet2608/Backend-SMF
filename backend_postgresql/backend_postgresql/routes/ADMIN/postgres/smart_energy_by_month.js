@@ -15,52 +15,51 @@ const query = (text, params) => pool.query(text, params);
 router.get("/count-status", async (req, res) => {
   try {
     const result = await query(`
-    WITH aggregated_data AS (
-        SELECT
+    with aggregated_data as (
+        select
             month_code,
             building,
-            SUM(unit_price_bth_per_kwh) AS total_unit_price_bth_per_kwh,
-             SUM(energy_cost_baht) AS total_energy_cost_baht
-        FROM
+            SUM(diff_energy_usage) as total_diff_energy_usage,
+            SUM(energy_cost_baht) as total_energy_cost_baht
+        from
             public.smart_energy_by_month
-        WHERE
-            NOT EXISTS (
-                SELECT
-                    1
-                FROM
-                    public.smart_energy_by_month AS t2
-                WHERE
-                    t2.building = public.smart_energy_by_month.building
-                    AND t2.month_code > public.smart_energy_by_month.month_code
-            )
-        GROUP BY
+        where
+            not exists (
+            select
+                1
+            from
+                public.smart_energy_by_month as t2
+            where
+                t2.building = public.smart_energy_by_month.building
+                and t2.month_code > public.smart_energy_by_month.month_code
+                  )
+        group by
             month_code,
             building
-    )
-    SELECT
-        month_code,
-        building,
-        SUM(total_unit_price_bth_per_kwh) AS total_unit_price_bth_per_kwh,
-         SUM(total_energy_cost_baht) AS total_energy_cost_baht
-    FROM
-        aggregated_data
-    GROUP BY
-        month_code, building
-    
-    UNION ALL
-    
-    SELECT
-        month_code,
-        'total' AS building,
-        SUM(total_unit_price_bth_per_kwh) AS total_unit_price_bth_per_kwh,
-         SUM(total_energy_cost_baht) AS total_energy_cost_baht
-    FROM
-        aggregated_data
-    GROUP BY
-        month_code
-    
-    ORDER BY
-        month_code, building;       
+          )
+        select
+            month_code,
+            building,
+            SUM(total_diff_energy_usage) as total_diff_energy_usage,
+            SUM(total_energy_cost_baht) as total_energy_cost_baht
+        from
+            aggregated_data
+        group by
+            month_code,
+            building
+        union all
+        select
+            month_code,
+            'total' as building,
+            SUM(total_diff_energy_usage) as total_diff_energy_usage,
+            SUM(total_energy_cost_baht) as total_energy_cost_baht
+        from
+            aggregated_data
+        group by
+            month_code
+        order by
+            month_code,
+            building;    
     `);
     res.status(200).json(result.rows);
   } catch (error) {
