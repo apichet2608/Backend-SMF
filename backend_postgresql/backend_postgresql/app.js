@@ -44,6 +44,7 @@ const foxsystem_post_by_hr = require("./routes/ADMIN/postgres/foxsystem_post_by_
 const foxsystem_post_by_day = require("./routes/ADMIN/postgres/foxsystem_post_by_day");
 const smart_machine_connect_list = require("./routes/ADMIN/postgres/smart_machine_connect_list");
 const smart_collaboration_task = require("./routes/ADMIN/postgres/smart_collaboration_task");
+const smart_energy_by_month = require("./routes/ADMIN/postgres/smart_energy_by_month");
 
 const app = express();
 
@@ -97,6 +98,7 @@ app.use("/api/foxsystem_post_by_hr", foxsystem_post_by_hr);
 app.use("/api/foxsystem_post_by_day", foxsystem_post_by_day);
 app.use("/api/smart_machine_connect_list", smart_machine_connect_list);
 app.use("/api/smart_collaboration_task", smart_collaboration_task);
+app.use("/api/smart_energy_by_month", smart_energy_by_month);
 
 app.use(function (req, res, next) {
   next(createError(404));
