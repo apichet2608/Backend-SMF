@@ -142,7 +142,7 @@ router.delete("/:id", async (req, res) => {
     const { id } = req.params;
 
     const result = await query(
-      "DELETE FROM public.smart_machine_connect_list WHERE id = $1;",
+      "DELETE FROM public.smart_project_task WHERE id = $1;",
       [id]
     );
 
