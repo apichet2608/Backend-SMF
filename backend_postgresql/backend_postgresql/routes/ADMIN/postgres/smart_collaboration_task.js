@@ -15,52 +15,118 @@ const query = (text, params) => pool.query(text, params);
 router.get("/count-status", async (req, res) => {
   try {
     const result = await query(`
-    WITH aggregated_data AS (
-      SELECT
-          month_code,
-          building,
-          SUM(unit_price_bth_per_kwh) AS total_unit_price_bth_per_kwh,
-           SUM(energy_cost_baht) AS total_energy_cost_baht
-      FROM
-          public.smart_energy_by_month
-      WHERE
-          NOT EXISTS (
-              SELECT
-                  1
-              FROM
-                  public.smart_energy_by_month AS t2
-              WHERE
-                  t2.building = public.smart_energy_by_month.building
-                  AND t2.month_code > public.smart_energy_by_month.month_code
-          )
-      GROUP BY
-          month_code,
-          building
-  )
-  SELECT
-      month_code,
-      building,
-      SUM(total_unit_price_bth_per_kwh) AS total_unit_price_bth_per_kwh,
-       SUM(total_energy_cost_baht) AS total_energy_cost_baht
-  FROM
-      aggregated_data
-  GROUP BY
-      month_code, building
-  
-  UNION ALL
-  
-  SELECT
-      month_code,
-      'total' AS building,
-      SUM(total_unit_price_bth_per_kwh) AS total_unit_price_bth_per_kwh,
-       SUM(total_energy_cost_baht) AS total_energy_cost_baht
-  FROM
-      aggregated_data
-  GROUP BY
-      month_code
-  
-  ORDER BY
-      month_code, building;  
+    select
+	status,
+	count,
+	case
+		when status = 'Done' then
+        (
+		select
+			json_agg(json_build_object(
+            'dri',
+			dri,
+			'status',
+			status
+          ))
+		from
+			(
+			select
+				dri,
+				COUNT(*) as status
+			from
+				public.smart_project_task
+			where
+				status = 'Done'
+			group by
+				dri
+          ) subquery
+        )
+		when status = 'Ongoing' then
+        (
+		select
+			json_agg(json_build_object(
+            'dri',
+			dri,
+			'status',
+			status
+          ))
+		from
+			(
+			select
+				dri,
+				COUNT(*) as status
+			from
+				public.smart_project_task
+			where
+				status = 'Ongoing'
+			group by
+				dri
+          ) subquery
+        )
+		when status = 'Open' then
+        (
+		select
+			json_agg(json_build_object(
+            'dri',
+			dri,
+			'status',
+			status
+          ))
+		from
+			(
+			select
+				dri,
+				COUNT(*) as status
+			from
+				public.smart_project_task
+			where
+				status = 'Open'
+			group by
+				dri
+          ) subquery
+        )
+		when status = '' then
+        (
+		select
+			json_agg(json_build_object(
+            'dri',
+			dri,
+			'status',
+			status
+          ))
+		from
+			(
+			select
+				dri,
+				COUNT(*) as status
+			from
+				public.smart_project_task
+			where
+				status = ''
+			group by
+				dri
+          ) subquery
+        )
+		else null
+	end as sum_month
+from
+	(
+select
+	status,
+	COUNT(*) as count
+from
+	public.smart_project_task
+group by
+	status
+union all
+    select
+	'total' as status,
+	COUNT(*) as count
+from
+	public.smart_project_task
+  ) subquery
+order by
+	count desc
     `);
     res.status(200).json(result.rows);
   } catch (error) {
