@@ -317,7 +317,7 @@ router.get("/page2/table2", async (req, res) => {
     order by
          "month" asc
         `;
-      queryParams = [build, loadtype2, area];
+      queryParams = [build, loadtype, area];
     }
 
     const result = await query(queryStr, queryParams);
