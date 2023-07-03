@@ -250,4 +250,39 @@ order by
   }
 });
 
+router.get("/page2/distinctarea", async (req, res) => {
+  try {
+    const { build, loadtype } = req.query;
+
+    let queryStr = "";
+    let queryParams = [];
+
+    if (build === "ALL") {
+      queryStr = `
+      select
+	distinct area 
+from
+	public.smart_energy_by_month
+        `;
+    } else {
+      queryStr = `
+      select
+      distinct area 
+    from
+      public.smart_energy_by_month
+    where 
+      building = $1
+      and
+      load_type = $2
+        `;
+      queryParams = [build, loadtype];
+    }
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 module.exports = router;
