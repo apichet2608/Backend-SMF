@@ -210,7 +210,7 @@ group by
 		building,
 		month_code
 order by
-		 energy_usage_count desc,
+diff_energy_usage_count desc,
 		 load_type desc
         `;
     } else {
@@ -236,7 +236,7 @@ group by
 		building,
 		month_code
 order by
-		 energy_usage_count desc,
+diff_energy_usage_count desc,
 		 load_type desc
         `;
       queryParams = [build];
