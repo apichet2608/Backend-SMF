@@ -128,24 +128,6 @@ router.get("/plot2", async (req, res) => {
     if (build === "ALL") {
       queryStr = `
       select
-      area,
-      month_code,
-      building,
-      SUM(diff_energy_usage) as total_diff_energy_usage
-    from
-      public.smart_energy_by_month
-    group by
-      area,
-      month_code,
-      building
-    order by
-      month_code desc,
-      total_diff_energy_usage desc
-    limit 10
-        `;
-    } else {
-      queryStr = `
-      select
 	area,
 	month_code,
 	building,
@@ -153,7 +135,7 @@ router.get("/plot2", async (req, res) => {
 from
 	public.smart_energy_by_month
 where
-	building = $1
+	month_code = (SELECT MAX(month_code) FROM public.smart_energy_by_month)
 group by
 	area,
 	month_code,
@@ -162,6 +144,27 @@ order by
 	month_code desc,
 	total_diff_energy_usage desc
 limit 10
+        `;
+    } else {
+      queryStr = `
+      select
+      area,
+      month_code,
+      building,
+      SUM(diff_energy_usage) as total_diff_energy_usage
+    from
+      public.smart_energy_by_month
+    where
+      month_code = (SELECT MAX(month_code) FROM public.smart_energy_by_month)
+      and building = $1
+    group by
+      area,
+      month_code,
+      building
+    order by
+      month_code desc,
+      total_diff_energy_usage desc
+    limit 10
         `;
       queryParams = [build];
     }
