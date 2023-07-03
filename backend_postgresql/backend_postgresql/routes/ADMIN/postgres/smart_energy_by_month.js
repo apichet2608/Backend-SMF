@@ -196,7 +196,7 @@ router.get("/page2/table", async (req, res) => {
 		load_type,
 		building,
 		month_code,
-		sum(energy_usage) as energy_usage_count
+		sum(diff_energy_usage) as diff_energy_usage_count
 from
 	public.smart_energy_by_month
 where
@@ -221,7 +221,7 @@ order by
 		load_type,
 		building,
 		month_code,
-		sum(energy_usage) as energy_usage_count
+		sum(diff_energy_usage) as diff_energy_usage_count
 from
 	public.smart_energy_by_month
 where
