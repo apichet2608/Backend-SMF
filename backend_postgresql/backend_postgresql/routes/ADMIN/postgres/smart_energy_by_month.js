@@ -78,6 +78,7 @@ router.get("/plot", async (req, res) => {
     if (build === "ALL") {
       queryStr = `
       select
+      ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
       month_code,
       building,
       SUM(diff_energy_usage) as total_diff_energy_usage,
@@ -93,6 +94,7 @@ router.get("/plot", async (req, res) => {
     } else {
       queryStr = `
       select
+      ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
       month_code,
       building,
       SUM(diff_energy_usage) as total_diff_energy_usage,
@@ -128,6 +130,7 @@ router.get("/plot2", async (req, res) => {
     if (build === "ALL") {
       queryStr = `
       select
+      ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
 	area,
 	month_code,
 	building,
@@ -148,6 +151,7 @@ limit 10
     } else {
       queryStr = `
       select
+      ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
       area,
       month_code,
       building,
