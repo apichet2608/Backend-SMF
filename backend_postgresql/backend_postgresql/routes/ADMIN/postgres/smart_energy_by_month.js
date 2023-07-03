@@ -131,7 +131,7 @@ router.get("/plot2", async (req, res) => {
       queryStr = `
       select
       ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
-	area,
+      CONCAT(area, '-', building) AS area,
 	month_code,
 	building,
 	SUM(diff_energy_usage) as total_diff_energy_usage
@@ -152,7 +152,7 @@ limit 10
       queryStr = `
       select
       ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
-      area,
+      CONCAT(area, '-', building) AS area,
       month_code,
       building,
       SUM(diff_energy_usage) as total_diff_energy_usage
