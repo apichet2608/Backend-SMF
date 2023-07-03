@@ -285,4 +285,47 @@ from
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
+
+router.get("/page2/table2", async (req, res) => {
+  try {
+    const { build, loadtype, area } = req.query;
+
+    let queryStr = "";
+    let queryParams = [];
+
+    if (build === "ALL") {
+      queryStr = `
+      select
+      *
+    from
+      public.smart_energy_by_month
+    order by
+         "month" asc
+        `;
+    } else {
+      queryStr = `
+      select
+      *
+    from
+      public.smart_energy_by_month
+    where 
+      building = $1
+      and
+      load_type = $2
+      and 
+      area = $3
+    order by
+         "month" asc
+        `;
+      queryParams = [build, loadtype2, area];
+    }
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
