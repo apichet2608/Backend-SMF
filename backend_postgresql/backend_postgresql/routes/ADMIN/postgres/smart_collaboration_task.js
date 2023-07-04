@@ -178,40 +178,67 @@ router.put("/:id", async (req, res) => {
       action,
       dri,
       plan_date,
-      finished_date,
       status,
       email,
       link,
     } = req.body;
 
-    const result = await query(
-      `UPDATE public.smart_project_task
-       SET
-         dept = $1,
-         project = $2,
-         description = $3,
-         action = $4,
-         dri = $5,
-         plan_date = $6,
-         finished_date = $7,
-         status = $8,
-         email = $9,
-         link = $10
-       WHERE id = $11`,
-      [
-        dept,
-        project,
-        description,
-        action,
-        dri,
-        plan_date,
-        finished_date,
-        status,
-        email,
-        link,
-        id,
-      ]
-    );
+    if (status === "Finished") {
+      const result = await query(
+        `UPDATE public.smart_project_task
+         SET
+           dept = $1,
+           project = $2,
+           description = $3,
+           action = $4,
+           dri = $5,
+           plan_date = $6,
+           status = $7,
+           email = $8,
+           link = $9,
+           finished_date = now()
+         WHERE id = $10`,
+        [
+          dept,
+          project,
+          description,
+          action,
+          dri,
+          plan_date,
+          status,
+          email,
+          link,
+          id,
+        ]
+      );
+    } else {
+      const result = await query(
+        `UPDATE public.smart_project_task
+         SET
+           dept = $1,
+           project = $2,
+           description = $3,
+           action = $4,
+           dri = $5,
+           plan_date = $6,
+           status = $7,
+           email = $8,
+           link = $9
+         WHERE id = $10`,
+        [
+          dept,
+          project,
+          description,
+          action,
+          dri,
+          plan_date,
+          status,
+          email,
+          link,
+          id,
+        ]
+      );
+    }
 
     res.status(200).json({ message: "Data updated successfully" });
   } catch (error) {
