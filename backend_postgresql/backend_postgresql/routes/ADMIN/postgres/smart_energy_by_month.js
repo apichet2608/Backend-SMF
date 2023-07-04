@@ -380,6 +380,20 @@ router.get("/page2/plot2", async (req, res) => {
   }
 });
 
+router.get("/page3/distinctDept", async (req, res) => {
+  try {
+    const result = await query(`
+    SELECT distinct dept_2 
+FROM public.smart_energy_by_month
+order by dept_2 asc
+    `);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/page3/table", async (req, res) => {
   try {
     const result = await query(`
@@ -412,4 +426,5 @@ router.get("/page3/table", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
+
 module.exports = router;
