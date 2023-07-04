@@ -461,35 +461,6 @@ order by
   }
 });
 
-router.get("/page3/table2", async (req, res) => {
-  try {
-    const { dept, loadtype } = req.query;
-
-    let queryStr = "";
-    let queryParams = [];
-
-    queryStr = `
-      select
-      *
-    from
-      public.smart_energy_by_month
-    where 
-      dept_2 = $1
-      and
-      load_type = $2
-    order by
-         "month" asc
-        `;
-    queryParams = [dept, loadtype];
-
-    const result = await query(queryStr, queryParams);
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "An error occurred while fetching data" });
-  }
-});
-
 router.get("/page3/distinctbuild", async (req, res) => {
   try {
     const { dept, loadtype } = req.query;
@@ -520,6 +491,37 @@ where
         `;
       queryParams = [dept, loadtype];
     }
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+router.get("/page3/table2", async (req, res) => {
+  try {
+    const { build, loadtype, dept } = req.query;
+
+    let queryStr = "";
+    let queryParams = [];
+
+    queryStr = `
+      select
+      *
+    from
+      public.smart_energy_by_month
+    where 
+      dept_2 = $1
+      and
+      load_type = $2
+      and
+      building = $3
+    order by
+         "month" asc
+        `;
+    queryParams = [build, loadtype, dept];
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
