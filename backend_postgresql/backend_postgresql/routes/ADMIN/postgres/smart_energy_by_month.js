@@ -502,7 +502,7 @@ where
 
 router.get("/page3/table2", async (req, res) => {
   try {
-    const { build, loadtype, dept } = req.query;
+    const { dept, loadtype, build } = req.query;
 
     let queryStr = "";
     let queryParams = [];
@@ -521,7 +521,7 @@ router.get("/page3/table2", async (req, res) => {
     order by
          "month" asc
         `;
-    queryParams = [build, loadtype, dept];
+    queryParams = [dept, loadtype, build];
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
