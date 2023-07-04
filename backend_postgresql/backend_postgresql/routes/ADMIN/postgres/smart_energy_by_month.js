@@ -396,30 +396,64 @@ order by dept_2 asc
 
 router.get("/page3/table", async (req, res) => {
   try {
-    const result = await query(`
-    select
-    row_number() over (
-      order by month_code asc) as id,
-    month_code,
-    load_type,
-    dept_2,
-    sum(energy_cost_baht) as energy_cost_baht,
-    sum(unit_price_bth_per_kwh) as unit_price_bth_per_kwh
-  from
-    public.smart_energy_by_month
-  where
-    month_code = (
-    select
-      MAX(month_code)
+    const { dept } = req.query;
+
+    let queryStr = "";
+    let queryParams = [];
+
+    if (dept === "ALL") {
+      queryStr = `
+      select
+	ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
+	month_code,
+	load_type,
+	dept_2,
+	sum(diff_energy_usage) as diff_energy_usage,
+	sum(unit_price_bth_per_kwh) as unit_price_bth_per_kwh
+from
+	public.smart_energy_by_month
+where
+	month_code = (
+	select
+		MAX(month_code)
+	from
+		public.smart_energy_by_month)
+group by
+	month_code,
+	dept_2,
+	load_type
+order by
+	month_code asc
+        `;
+    } else {
+      queryStr = `
+      select
+      ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
+      month_code,
+      load_type,
+      dept_2,
+      sum(diff_energy_usage) as diff_energy_usage,
+      sum(unit_price_bth_per_kwh) as unit_price_bth_per_kwh
     from
-      public.smart_energy_by_month)
-  group by
-    month_code,
-    dept_2,
-    load_type
-  order by
-    month_code asc
-    `);
+      public.smart_energy_by_month
+    where
+      month_code = (
+      select
+        MAX(month_code)
+      from
+        public.smart_energy_by_month)
+      and dept_2 = $1
+    group by
+      month_code,
+      dept_2,
+      load_type
+    order by
+      month_code asc
+        `;
+      queryParams = [dept];
+    }
+
+    const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
