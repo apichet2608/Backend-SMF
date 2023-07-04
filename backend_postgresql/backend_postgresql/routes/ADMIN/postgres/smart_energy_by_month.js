@@ -409,7 +409,7 @@ router.get("/page3/table", async (req, res) => {
 	load_type,
 	dept_2,
 	sum(diff_energy_usage) as diff_energy_usage,
-	sum(unit_price_bth_per_kwh) as unit_price_bth_per_kwh
+	sum(energy_cost_baht) as energy_cost_baht
 from
 	public.smart_energy_by_month
 where
@@ -433,7 +433,7 @@ order by
       load_type,
       dept_2,
       sum(diff_energy_usage) as diff_energy_usage,
-      sum(unit_price_bth_per_kwh) as unit_price_bth_per_kwh
+      sum(energy_cost_baht) as energy_cost_baht
     from
       public.smart_energy_by_month
     where
