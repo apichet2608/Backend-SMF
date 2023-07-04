@@ -384,6 +384,8 @@ router.get("/page3/table", async (req, res) => {
   try {
     const result = await query(`
     select
+    row_number() over (
+      order by month_code asc) as id,
     month_code,
     load_type,
     dept_2,
