@@ -80,14 +80,12 @@ router.get("/plot", async (req, res) => {
       select
       ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
       month_code,
-      building,
       SUM(diff_energy_usage) as total_diff_energy_usage,
       SUM(energy_cost_baht) as total_energy_cost_baht
   from
       public.smart_energy_by_month
   group by
-      month_code,
-      building
+      month_code
   order by
       month_code asc
         `;
