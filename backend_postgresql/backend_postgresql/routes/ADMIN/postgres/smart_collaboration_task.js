@@ -246,7 +246,6 @@ router.post("/", async (req, res) => {
       action,
       dri,
       plan_date,
-      finished_date,
       status,
       email,
       link,
@@ -260,23 +259,11 @@ router.post("/", async (req, res) => {
          action,
          dri,
          plan_date,
-         finished_date,
          status,
          email,
          link
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-      [
-        dept,
-        project,
-        description,
-        action,
-        dri,
-        plan_date,
-        finished_date,
-        status,
-        email,
-        link,
-      ]
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      [dept, project, description, action, dri, plan_date, status, email, link]
     );
 
     res.status(201).json({ message: "Data added successfully" });
