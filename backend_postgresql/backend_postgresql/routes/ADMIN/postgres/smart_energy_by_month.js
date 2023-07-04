@@ -380,4 +380,34 @@ router.get("/page2/plot2", async (req, res) => {
   }
 });
 
+router.get("/page3/table", async (req, res) => {
+  try {
+    const result = await query(`
+    select
+    month_code,
+    load_type,
+    dept_2,
+    sum(energy_cost_baht) as energy_cost_baht,
+    sum(unit_price_bth_per_kwh) as unit_price_bth_per_kwh
+  from
+    public.smart_energy_by_month
+  where
+    month_code = (
+    select
+      MAX(month_code)
+    from
+      public.smart_energy_by_month)
+  group by
+    month_code,
+    dept_2,
+    load_type
+  order by
+    month_code asc
+    `);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 module.exports = router;
