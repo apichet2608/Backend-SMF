@@ -19,7 +19,7 @@ router.get("/count-status", async (req, res) => {
 	status,
 	count,
 	case
-		when status = 'Done' then
+		when status = 'Finished' then
         (
 		select
 			json_agg(json_build_object(
@@ -36,7 +36,7 @@ router.get("/count-status", async (req, res) => {
 			from
 				public.smart_project_task
 			where
-				status = 'Done'
+				status = 'Finished'
 			group by
 				dri
           ) subquery
