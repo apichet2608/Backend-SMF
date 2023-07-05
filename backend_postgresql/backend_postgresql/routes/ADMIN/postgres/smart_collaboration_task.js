@@ -135,6 +135,140 @@ order by
   }
 });
 
+router.get("/count-status-fixed", async (req, res) => {
+  try {
+    const { dept } = req.body;
+    const result = await query(
+      `
+    select
+    status,
+    count,
+    case
+      when status = 'Finished' then
+          (
+      select
+        json_agg(json_build_object(
+              'dri',
+        dri,
+        'status',
+        status
+            ))
+      from
+        (
+        select
+          dri,
+          COUNT(*) as status
+        from
+          public.smart_project_task
+        where
+          status = 'Finished' and
+          dri = $1
+        group by
+          dri
+            ) subquery
+          )
+      when status = 'Ongoing' then
+          (
+      select
+        json_agg(json_build_object(
+              'dri',
+        dri,
+        'status',
+        status
+            ))
+      from
+        (
+        select
+          dri,
+          COUNT(*) as status
+        from
+          public.smart_project_task
+        where
+          status = 'Ongoing'
+          and
+          dri = $1
+        group by
+          dri
+            ) subquery
+          )
+      when status = 'Open' then
+          (
+      select
+        json_agg(json_build_object(
+              'dri',
+        dri,
+        'status',
+        status
+            ))
+      from
+        (
+        select
+          dri,
+          COUNT(*) as status
+        from
+          public.smart_project_task
+        where
+          status = 'Open'
+          and
+          dri = $1
+        group by
+          dri
+            ) subquery
+          )
+      when status = '' then
+          (
+      select
+        json_agg(json_build_object(
+              'dri',
+        dri,
+        'status',
+        status
+            ))
+      from
+        (
+        select
+          dri,
+          COUNT(*) as status
+        from
+          public.smart_project_task
+        where
+          status = ''
+        group by
+          dri
+            ) subquery
+          )
+      else null
+    end as sum_month
+  from
+    (
+  select
+    status,
+    COUNT(*) as count
+  from
+    public.smart_project_task
+  where dri = $1
+  group by
+    status
+  union all
+      select
+    'total' as status,
+    COUNT(*) as count
+  from
+    public.smart_project_task
+  where dri = $1
+    ) subquery
+  order by
+    count desc
+    `,
+      [dept]
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/table", async (req, res) => {
   try {
     const { dept } = req.query;
