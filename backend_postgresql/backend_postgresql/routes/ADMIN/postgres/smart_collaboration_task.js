@@ -142,70 +142,76 @@ router.get("/count-status-fixed", async (req, res) => {
     const result = await query(
       `
       SELECT
-        status,
-        count,
-        CASE
-          WHEN status = 'Finished' THEN (
-            SELECT json_agg(json_build_object(
-              'dri', dri,
-              'status', status
-            ))
-            FROM (
-              SELECT dri, COUNT(*) AS status
-              FROM public.smart_project_task
-              WHERE status = 'Finished' AND dri = $1
-              GROUP BY dri
-            ) subquery
-          )
-          WHEN status = 'Ongoing' THEN (
-            SELECT json_agg(json_build_object(
-              'dri', dri,
-              'status', status
-            ))
-            FROM (
-              SELECT dri, COUNT(*) AS status
-              FROM public.smart_project_task
-              WHERE status = 'Ongoing' AND dri = $1
-              GROUP BY dri
-            ) subquery
-          )
-          WHEN status = 'Open' THEN (
-            SELECT json_agg(json_build_object(
-              'dri', dri,
-              'status', status
-            ))
-            FROM (
-              SELECT dri, COUNT(*) AS status
-              FROM public.smart_project_task
-              WHERE status = 'Open' AND dri = $1
-              GROUP BY dri
-            ) subquery
-          )
-          WHEN status = '' THEN (
-            SELECT json_agg(json_build_object(
-              'dri', dri,
-              'status', status
-            ))
-            FROM (
-              SELECT dri, COUNT(*) AS status
-              FROM public.smart_project_task
-              WHERE status = ''
-              GROUP BY dri
-            ) subquery
-          )
-          ELSE NULL
-        END AS sum_month
-      FROM (
-        SELECT status, COUNT(*) AS count
-        FROM public.smart_project_task
-        WHERE dri = $1
-        GROUP BY status
-        UNION ALL
-        SELECT 'total' AS status, COUNT(*) AS count
-        FROM public.smart_project_task
-        WHERE dri = $1
-      ) subquery
-      ORDER BY count DESC
+      status,
+      count,
+      CASE
+        WHEN status = 'Finished' THEN (
+          SELECT json_agg(json_build_object(
+            'dri', dri,
+            'status', status,
+            'project',project
+          ))
+          FROM (
+            SELECT dri, COUNT(*) AS status,
+            project
+            FROM public.smart_project_task
+            WHERE status = 'Open' AND dri = $1
+            GROUP BY dri,project
+          ) subquery
+        )
+        WHEN status = 'Ongoing' THEN (
+          SELECT json_agg(json_build_object(
+            'dri', dri,
+            'status', status,
+            'project',project
+          ))
+          FROM (
+            SELECT dri, COUNT(*) AS status,
+            project
+            FROM public.smart_project_task
+            WHERE status = 'Open' AND dri = $1
+            GROUP BY dri,project
+          ) subquery
+        )
+        WHEN status = 'Open' THEN (
+          SELECT json_agg(json_build_object(
+            'dri', dri,
+            'status', status,
+            'project',project
+          ))
+          FROM (
+            SELECT dri, COUNT(*) AS status,
+            project
+            FROM public.smart_project_task
+            WHERE status = 'Open' AND dri = $1
+            GROUP BY dri,project
+          ) subquery
+        )
+        WHEN status = '' THEN (
+          SELECT json_agg(json_build_object(
+            'dri', dri,
+            'status', status
+          ))
+          FROM (
+            SELECT dri, COUNT(*) AS status
+            FROM public.smart_project_task
+            WHERE status = ''
+            GROUP BY dri
+          ) subquery
+        )
+        ELSE NULL
+      END AS sum_month
+    FROM (
+      SELECT status, COUNT(*) AS count
+      FROM public.smart_project_task
+      WHERE dri = $1
+      GROUP BY status
+      UNION ALL
+      SELECT 'total' AS status, COUNT(*) AS count
+      FROM public.smart_project_task
+      WHERE dri = $1
+    ) subquery
+    ORDER BY count DESC
       `,
       [dri]
     );
