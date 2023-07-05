@@ -155,7 +155,7 @@ router.get("/count-status-fixed", async (req, res) => {
             SELECT dri, COUNT(*) AS status,
             project
             FROM public.smart_project_task
-            WHERE status = 'Open' AND dri = $1
+            WHERE status = 'Finished' AND dri = $1
             GROUP BY dri,project
           ) subquery
         )
@@ -169,7 +169,7 @@ router.get("/count-status-fixed", async (req, res) => {
             SELECT dri, COUNT(*) AS status,
             project
             FROM public.smart_project_task
-            WHERE status = 'Open' AND dri = $1
+            WHERE status = 'Ongoing' AND dri = $1
             GROUP BY dri,project
           ) subquery
         )
