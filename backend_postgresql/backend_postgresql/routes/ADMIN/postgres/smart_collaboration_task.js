@@ -384,8 +384,8 @@ router.post("/", async (req, res) => {
          plan_date,
          status,
          email,
-         link
-         no
+         link,
+         "no"
        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)`,
       [dept, project, description, action, dri, plan_date, status, email, link]
     );
