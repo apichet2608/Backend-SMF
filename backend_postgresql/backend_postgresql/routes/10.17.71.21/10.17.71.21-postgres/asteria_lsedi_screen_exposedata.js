@@ -132,7 +132,7 @@ router.get("/page5/plot", async (req, res) => {
         mc_code = $1
         and data_file = $2
         and re_error_module = '"AF OVER  "'
-        and processing_end_time::timestamp >= (NOW() - interval ${hours} hour)
+        and processing_end_time::timestamp >= (NOW() - interval '${hours}' hour)
     ) subquery
     order by
       processing_end_time asc;
@@ -231,7 +231,7 @@ from
 	where
 		mc_code = $1
 		and re_error_module = '"AF OVER  "'
-		and processing_end_time::timestamp >= (NOW() - interval ${hours} hour)
+		and processing_end_time::timestamp >= (NOW() - interval '${hours}' hour)
 ) subquery
 order by
 	processing_end_time asc;
