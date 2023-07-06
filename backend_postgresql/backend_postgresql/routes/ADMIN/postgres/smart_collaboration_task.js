@@ -236,6 +236,7 @@ router.get("/table", async (req, res) => {
       *
     from
       public.smart_project_task
+    order by "no" asc
       `;
     } else {
       queryStr = `
@@ -244,6 +245,7 @@ router.get("/table", async (req, res) => {
 from
 	public.smart_project_task
 where dept = $1
+order by "no" asc
       `;
       queryParams = [dept];
     }
@@ -269,6 +271,7 @@ router.put("/:id", async (req, res) => {
       status,
       email,
       link,
+      no,
     } = req.body;
 
     if (status === "Finished") {
@@ -284,8 +287,9 @@ router.put("/:id", async (req, res) => {
            status = $7,
            email = $8,
            link = $9,
+           "no" = $10,
            finished_date = now()
-         WHERE id = $10`,
+         WHERE id = $11`,
         [
           dept,
           project,
@@ -296,6 +300,7 @@ router.put("/:id", async (req, res) => {
           status,
           email,
           link,
+          no,
           id,
         ]
       );
@@ -311,8 +316,9 @@ router.put("/:id", async (req, res) => {
            plan_date = $6,
            status = $7,
            email = $8,
-           link = $9
-         WHERE id = $10`,
+           link = $9,
+           "no" = $10
+         WHERE id = $11`,
         [
           dept,
           project,
@@ -323,6 +329,7 @@ router.put("/:id", async (req, res) => {
           status,
           email,
           link,
+          no,
           id,
         ]
       );
@@ -364,6 +371,7 @@ router.post("/", async (req, res) => {
       status,
       email,
       link,
+      no,
     } = req.body;
 
     const result = await query(
@@ -377,7 +385,8 @@ router.post("/", async (req, res) => {
          status,
          email,
          link
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+         no
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)`,
       [dept, project, description, action, dri, plan_date, status, email, link]
     );
 
