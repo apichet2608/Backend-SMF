@@ -55,4 +55,38 @@ router.get("/sum-last-status", async (req, res) => {
   }
 });
 
+router.get("/distinctdivision", async (req, res) => {
+  try {
+    const result = await query(
+      `select
+      distinct division
+    from
+      public.smart_cost_kpi`
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+router.get("/distinctdepartment", async (req, res) => {
+  try {
+    const { division } = req.query;
+    const result = await query(
+      `select
+      distinct department
+    from
+      public.smart_cost_kpi
+    where division = $1 and 
+    factory = 'A1'`,
+      [division]
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
