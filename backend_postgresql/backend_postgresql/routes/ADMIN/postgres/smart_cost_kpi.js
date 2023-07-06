@@ -30,7 +30,11 @@ router.get("/sum-last-status", async (req, res) => {
       case
         when cost_type = 'OUTPUT' then 1
         when cost_type = 'LABOR' then 2
-        else 3
+        when cost_type = 'CONSUMABLES' then 3
+        when cost_type = 'CHEMICAL' then 4
+        when cost_type = 'TOOL' then 5
+        when cost_type = 'REPAIRING' then 6
+        else 7
       end as order_by
     from
       public.smart_cost_kpi
