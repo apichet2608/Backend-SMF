@@ -46,6 +46,8 @@ const smart_machine_connect_list = require("./routes/ADMIN/postgres/smart_machin
 const smart_collaboration_task = require("./routes/ADMIN/postgres/smart_collaboration_task");
 const smart_energy_by_month = require("./routes/ADMIN/postgres/smart_energy_by_month");
 const asteria_lsedi_screen_exposedata = require("./routes/10.17.71.21/10.17.71.21-postgres/asteria_lsedi_screen_exposedata");
+const smart_cost_kpi = require("./routes/ADMIN/postgres/smart_cost_kpi");
+
 const app = express();
 
 // app.use(compression()); // ใช้งาน compression middleware
@@ -103,6 +105,7 @@ app.use(
   "/api/asteria_lsedi_screen_exposedata",
   asteria_lsedi_screen_exposedata
 );
+app.use("/api/smart_cost_kpi", smart_cost_kpi);
 
 app.use(function (req, res, next) {
   next(createError(404));
