@@ -446,6 +446,55 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// router.post("/", async (req, res) => {
+//   try {
+//     const {
+//       dept,
+//       project,
+//       description,
+//       action,
+//       dri,
+//       plan_date,
+//       status,
+//       email,
+//       link,
+//       no,
+//     } = req.body;
+
+//     const result = await query(
+//       `INSERT INTO smart_project_task (
+//          dept,
+//          project,
+//          description,
+//          action,
+//          dri,
+//          plan_date,
+//          status,
+//          email,
+//          link,
+//          "no"
+//        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)`,
+//       [
+//         dept,
+//         project,
+//         description,
+//         action,
+//         dri,
+//         plan_date,
+//         status,
+//         email,
+//         link,
+//         no,
+//       ]
+//     );
+
+//     res.status(201).json({ message: "Data added successfully" });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "An error occurred while adding data" });
+//   }
+// });
+
 router.post("/", async (req, res) => {
   try {
     const {
@@ -461,8 +510,34 @@ router.post("/", async (req, res) => {
       no,
     } = req.body;
 
-    const result = await query(
-      `INSERT INTO smart_project_task (
+    let query;
+    let values;
+
+    if (plan_date === null || plan_date === "") {
+      query = `INSERT INTO smart_project_task (
+         dept,
+         project,
+         description,
+         action,
+         dri,
+         status,
+         email,
+         link,
+         "no"
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
+      values = [
+        dept,
+        project,
+        description,
+        action,
+        dri,
+        status,
+        email,
+        link,
+        no,
+      ];
+    } else {
+      query = `INSERT INTO smart_project_task (
          dept,
          project,
          description,
@@ -473,8 +548,8 @@ router.post("/", async (req, res) => {
          email,
          link,
          "no"
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)`,
-      [
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`;
+      values = [
         dept,
         project,
         description,
@@ -485,8 +560,10 @@ router.post("/", async (req, res) => {
         email,
         link,
         no,
-      ]
-    );
+      ];
+    }
+
+    const result = await query(query, values);
 
     res.status(201).json({ message: "Data added successfully" });
   } catch (error) {
