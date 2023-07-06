@@ -19,6 +19,13 @@ router.get("/count-status", async (req, res) => {
 	status,
 	count,
 	case
+		when status = 'total' then 1
+		when status = 'Finished' then 2
+		when status = 'Ongoing' then 3
+		when status = 'Open' then 4
+		else 5
+	end as order_by,
+	case
 		when status = 'Finished' then
         (
 		select
@@ -126,7 +133,7 @@ from
 	public.smart_project_task
   ) subquery
 order by
-	count desc
+	order_by asc
     `);
     res.status(200).json(result.rows);
   } catch (error) {
@@ -141,77 +148,140 @@ router.get("/count-status-fixed", async (req, res) => {
 
     const result = await query(
       `
-      SELECT
+      select
       status,
       count,
-      CASE
-        WHEN status = 'Finished' THEN (
-          SELECT json_agg(json_build_object(
-            'dri', dri,
-            'status', status,
-            'project',project
-          ))
-          FROM (
-            SELECT dri, COUNT(*) AS status,
+      case
+        when status = 'total' then 1
+        when status = 'Finished' then 2
+        when status = 'Ongoing' then 3
+        when status = 'Open' then 4
+        else 5
+      end as order_by,
+      case
+        when status = 'Finished' then (
+        select
+          json_agg(json_build_object(
+                'dri',
+          dri,
+          'status',
+          status,
+          'project',
+          project
+              ))
+        from
+          (
+          select
+            dri,
+            COUNT(*) as status,
             project
-            FROM public.smart_project_task
-            WHERE status = 'Finished' AND dri = $1
-            GROUP BY dri,project
-          ) subquery
-        )
-        WHEN status = 'Ongoing' THEN (
-          SELECT json_agg(json_build_object(
-            'dri', dri,
-            'status', status,
-            'project',project
-          ))
-          FROM (
-            SELECT dri, COUNT(*) AS status,
+          from
+            public.smart_project_task
+          where
+            status = 'Finished'
+            and dri = $1
+          group by
+            dri,
             project
-            FROM public.smart_project_task
-            WHERE status = 'Ongoing' AND dri = $1
-            GROUP BY dri,project
-          ) subquery
-        )
-        WHEN status = 'Open' THEN (
-          SELECT json_agg(json_build_object(
-            'dri', dri,
-            'status', status,
-            'project',project
-          ))
-          FROM (
-            SELECT dri, COUNT(*) AS status,
+              ) subquery
+            )
+        when status = 'Ongoing' then (
+        select
+          json_agg(json_build_object(
+                'dri',
+          dri,
+          'status',
+          status,
+          'project',
+          project
+              ))
+        from
+          (
+          select
+            dri,
+            COUNT(*) as status,
             project
-            FROM public.smart_project_task
-            WHERE status = 'Open' AND dri = $1
-            GROUP BY dri,project
-          ) subquery
-        )
-        WHEN status = '' THEN (
-          SELECT json_agg(json_build_object(
-            'dri', dri,
-            'status', status
-          ))
-          FROM (
-            SELECT dri, COUNT(*) AS status
-            FROM public.smart_project_task
-            WHERE status = ''
-            GROUP BY dri
-          ) subquery
-        )
-        ELSE NULL
-      END AS sum_month
-    FROM (
-      SELECT status, COUNT(*) AS count
-      FROM public.smart_project_task
-      WHERE dri = $1
-      GROUP BY status
-      UNION ALL
-      SELECT 'total' AS status, COUNT(*) AS count
-      FROM public.smart_project_task
-      WHERE dri = $1
-    ) subquery
-    ORDER BY count DESC
+          from
+            public.smart_project_task
+          where
+            status = 'Ongoing'
+            and dri = $1
+          group by
+            dri,
+            project
+              ) subquery
+            )
+        when status = 'Open' then (
+        select
+          json_agg(json_build_object(
+                'dri',
+          dri,
+          'status',
+          status,
+          'project',
+          project
+              ))
+        from
+          (
+          select
+            dri,
+            COUNT(*) as status,
+            project
+          from
+            public.smart_project_task
+          where
+            status = 'Open'
+            and dri = $1
+          group by
+            dri,
+            project
+              ) subquery
+            )
+        when status = '' then (
+        select
+          json_agg(json_build_object(
+                'dri',
+          dri,
+          'status',
+          status
+              ))
+        from
+          (
+          select
+            dri,
+            COUNT(*) as status
+          from
+            public.smart_project_task
+          where
+            status = ''
+          group by
+            dri
+              ) subquery
+            )
+        else null
+      end as sum_month
+    from
+      (
+      select
+        status,
+        COUNT(*) as count
+      from
+        public.smart_project_task
+      where
+        dri = $1
+      group by
+        status
+    union all
+      select
+        'total' as status,
+        COUNT(*) as count
+      from
+        public.smart_project_task
+      where
+        dri = $1
+        ) subquery
+    order by
+      order_by asc
       `,
       [dri]
     );
