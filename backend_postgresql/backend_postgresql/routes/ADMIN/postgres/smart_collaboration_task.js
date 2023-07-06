@@ -14,7 +14,9 @@ const query = (text, params) => pool.query(text, params);
 
 router.get("/count-status", async (req, res) => {
   try {
-    const result = await query(`
+    const { dept } = req.query;
+    const result = await query(
+      `
     select
 	status,
 	count,
@@ -44,6 +46,7 @@ router.get("/count-status", async (req, res) => {
 				public.smart_project_task
 			where
 				status = 'Finished'
+				and dept = $1
 			group by
 				dri
           ) subquery
@@ -66,6 +69,7 @@ router.get("/count-status", async (req, res) => {
 				public.smart_project_task
 			where
 				status = 'Ongoing'
+				and dept = $1
 			group by
 				dri
           ) subquery
@@ -88,6 +92,7 @@ router.get("/count-status", async (req, res) => {
 				public.smart_project_task
 			where
 				status = 'Open'
+				and dept = $1
 			group by
 				dri
           ) subquery
@@ -110,6 +115,7 @@ router.get("/count-status", async (req, res) => {
 				public.smart_project_task
 			where
 				status = ''
+				and dept = $1
 			group by
 				dri
           ) subquery
@@ -123,6 +129,7 @@ select
 	COUNT(*) as count
 from
 	public.smart_project_task
+where dept = $1
 group by
 	status
 union all
@@ -131,10 +138,13 @@ union all
 	COUNT(*) as count
 from
 	public.smart_project_task
+where dept = $1
   ) subquery
 order by
 	order_by asc
-    `);
+    `,
+      [dept]
+    );
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
@@ -144,7 +154,7 @@ order by
 
 router.get("/count-status-fixed", async (req, res) => {
   try {
-    const { dri } = req.query;
+    const { dri, dept } = req.query;
 
     const result = await query(
       `
@@ -180,6 +190,7 @@ router.get("/count-status-fixed", async (req, res) => {
           where
             status = 'Finished'
             and dri = $1
+            and dept = $2
           group by
             dri,
             project
@@ -206,6 +217,7 @@ router.get("/count-status-fixed", async (req, res) => {
           where
             status = 'Ongoing'
             and dri = $1
+            and dept = $2
           group by
             dri,
             project
@@ -232,6 +244,7 @@ router.get("/count-status-fixed", async (req, res) => {
           where
             status = 'Open'
             and dri = $1
+            and dept = $2
           group by
             dri,
             project
@@ -254,6 +267,8 @@ router.get("/count-status-fixed", async (req, res) => {
             public.smart_project_task
           where
             status = ''
+            and dri = $1
+            and dept = $2
           group by
             dri
               ) subquery
@@ -269,6 +284,7 @@ router.get("/count-status-fixed", async (req, res) => {
         public.smart_project_task
       where
         dri = $1
+        and dept = $2
       group by
         status
     union all
@@ -279,11 +295,12 @@ router.get("/count-status-fixed", async (req, res) => {
         public.smart_project_task
       where
         dri = $1
+        and dept = $2
         ) subquery
     order by
       order_by asc
       `,
-      [dri]
+      [dri, dept]
     );
 
     res.status(200).json(result.rows);
