@@ -24,8 +24,68 @@ router.get("/page5/plot", async (req, res) => {
     let queryParams = [];
 
     if (data_file !== "ALL") {
+      //   queryStr = `
+      //   SELECT
+      //   processing_start_time,
+      //   processing_end_time,
+      //   data_file,
+      //   mc_code,
+      //   re_head1_focus,
+      //   re_head2_focus,
+      //   re_head3_focus,
+      //   re_head4_focus,
+      //   re_head5_focus,
+      //   re_head6_focus,
+      //   (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6 AS avg_row,
+      //   SQRT(
+      //     POW(re_head1_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head2_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head3_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head4_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head5_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head6_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2)
+      //   ) / SQRT(6) AS stdev_row,
+      //   ((re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6) - (SQRT(
+      //     POW(re_head1_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head2_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head3_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head4_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head5_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head6_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2)
+      //   ) / SQRT(6)) AS min_control,
+      //   ((re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6) + (SQRT(
+      //     POW(re_head1_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head2_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head3_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head4_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head5_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head6_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2)
+      //   ) / SQRT(6)) AS max_control
+      // FROM (
+      //   SELECT
+      //     processing_start_time,
+      //     processing_end_time,
+      //     data_file,
+      //     mc_code,
+      //     re_head1_focus::numeric,
+      //     re_head2_focus::numeric,
+      //     re_head3_focus::numeric,
+      //     re_head4_focus::numeric,
+      //     re_head5_focus::numeric,
+      //     re_head6_focus::numeric
+      //   FROM
+      //     asteria.asteria_lsedi_screen_exposedata
+      //   WHERE
+      //     mc_code = $1
+      //     AND data_file = $2
+      //     AND re_error_module = '"AF OVER  "'
+      //     AND processing_end_time::timestamp >= (NOW() - INTERVAL '${hours}' HOUR)
+      // ) subquery
+      // ORDER BY
+      //   processing_end_time ASC;
+      //   `;
       queryStr = `
-      SELECT
+      select
       processing_start_time,
       processing_end_time,
       data_file,
@@ -36,33 +96,26 @@ router.get("/page5/plot", async (req, res) => {
       re_head4_focus,
       re_head5_focus,
       re_head6_focus,
-      (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6 AS avg_row,
+      (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6 as avg_row,
       SQRT(
-        POW(re_head1_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head2_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head3_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head4_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head5_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head6_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2)
-      ) / SQRT(6) AS stdev_row,
-      ((re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6) - (SQRT(
-        POW(re_head1_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head2_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head3_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head4_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head5_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head6_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2)
-      ) / SQRT(6)) AS min_control,
-      ((re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6) + (SQRT(
-        POW(re_head1_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head2_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head3_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head4_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head5_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head6_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2)
-      ) / SQRT(6)) AS max_control
-    FROM (
-      SELECT
+        POW(re_head1_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6,
+      2) +
+        POW(re_head2_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6,
+      2) +
+        POW(re_head3_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6,
+      2) +
+        POW(re_head4_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6,
+      2) +
+        POW(re_head5_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6,
+      2) +
+        POW(re_head6_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6,
+      2)
+      ) / SQRT(6) as stdev_row,
+      ((re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6) - 200 as min_control,
+      ((re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6) + 200 as max_control
+    from
+      (
+      select
         processing_start_time,
         processing_end_time,
         data_file,
@@ -73,77 +126,115 @@ router.get("/page5/plot", async (req, res) => {
         re_head4_focus::numeric,
         re_head5_focus::numeric,
         re_head6_focus::numeric
-      FROM
+      from
         asteria.asteria_lsedi_screen_exposedata
-      WHERE
+      where
         mc_code = $1
-        AND data_file = $2
-        AND re_error_module = '"AF OVER  "'
-        AND processing_end_time::timestamp >= (NOW() - INTERVAL '${hours}' HOUR)
+        and data_file = $2
+        and re_error_module = '"AF OVER  "'
+        and processing_end_time::timestamp >= (NOW() - interval ${hours} hour)
     ) subquery
-    ORDER BY
-      processing_end_time ASC;
-      `;
+    order by
+      processing_end_time asc;
+    `;
       queryParams = [mc_code, data_file];
     } else {
+      //   queryStr = `
+      //   SELECT
+      //   processing_start_time,
+      //   processing_end_time,
+      //   data_file,
+      //   mc_code,
+      //   re_head1_focus,
+      //   re_head2_focus,
+      //   re_head3_focus,
+      //   re_head4_focus,
+      //   re_head5_focus,
+      //   re_head6_focus,
+      //   (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6 AS avg_row,
+      //   SQRT(
+      //     POW(re_head1_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head2_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head3_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head4_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head5_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head6_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2)
+      //   ) / SQRT(6) AS stdev_row,
+      //   ((re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6) - (SQRT(
+      //     POW(re_head1_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head2_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head3_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head4_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head5_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head6_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2)
+      //   ) / SQRT(6)) AS min_control,
+      //   ((re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6) + (SQRT(
+      //     POW(re_head1_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head2_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head3_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head4_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head5_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
+      //     POW(re_head6_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2)
+      //   ) / SQRT(6)) AS max_control
+      // FROM (
+      //   SELECT
+      //     processing_start_time,
+      //     processing_end_time,
+      //     data_file,
+      //     mc_code,
+      //     re_head1_focus::numeric,
+      //     re_head2_focus::numeric,
+      //     re_head3_focus::numeric,
+      //     re_head4_focus::numeric,
+      //     re_head5_focus::numeric,
+      //     re_head6_focus::numeric
+      //   FROM
+      //     asteria.asteria_lsedi_screen_exposedata
+      //   WHERE
+      //     mc_code = $1
+      //     AND re_error_module = '"AF OVER  "'
+      //     AND processing_end_time::timestamp >= (NOW() - INTERVAL '${hours}' HOUR)
+      // ) subquery
+      // ORDER BY
+      //   processing_end_time ASC;
+      //   `;
       queryStr = `
-      SELECT
-      processing_start_time,
-      processing_end_time,
-      data_file,
-      mc_code,
-      re_head1_focus,
-      re_head2_focus,
-      re_head3_focus,
-      re_head4_focus,
-      re_head5_focus,
-      re_head6_focus,
-      (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6 AS avg_row,
-      SQRT(
-        POW(re_head1_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head2_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head3_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head4_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head5_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head6_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2)
-      ) / SQRT(6) AS stdev_row,
-      ((re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6) - (SQRT(
-        POW(re_head1_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head2_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head3_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head4_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head5_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head6_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2)
-      ) / SQRT(6)) AS min_control,
-      ((re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6) + (SQRT(
-        POW(re_head1_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head2_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head3_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head4_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head5_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2) +
-        POW(re_head6_focus - (re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6, 2)
-      ) / SQRT(6)) AS max_control
-    FROM (
-      SELECT
-        processing_start_time,
-        processing_end_time,
-        data_file,
-        mc_code,
-        re_head1_focus::numeric,
-        re_head2_focus::numeric,
-        re_head3_focus::numeric,
-        re_head4_focus::numeric,
-        re_head5_focus::numeric,
-        re_head6_focus::numeric
-      FROM
-        asteria.asteria_lsedi_screen_exposedata
-      WHERE
-        mc_code = $1
-        AND re_error_module = '"AF OVER  "'
-        AND processing_end_time::timestamp >= (NOW() - INTERVAL '${hours}' HOUR)
-    ) subquery
-    ORDER BY
-      processing_end_time ASC;
+      select
+	processing_start_time,
+	processing_end_time,
+	data_file,
+	mc_code,
+	re_head1_focus,
+	re_head2_focus,
+	re_head3_focus,
+	re_head4_focus,
+	re_head5_focus,
+	re_head6_focus,
+	(re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6 as avg_row,
+	((re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6) - 200 as min_control,
+	((re_head1_focus + re_head2_focus + re_head3_focus + re_head4_focus + re_head5_focus + re_head6_focus) / 6) + 200 as max_control
+from
+	(
+	select
+		processing_start_time,
+		processing_end_time,
+		data_file,
+		mc_code,
+		re_head1_focus::numeric,
+		re_head2_focus::numeric,
+		re_head3_focus::numeric,
+		re_head4_focus::numeric,
+		re_head5_focus::numeric,
+		re_head6_focus::numeric
+	from
+		asteria.asteria_lsedi_screen_exposedata
+	where
+		mc_code = $1
+		and re_error_module = '"AF OVER  "'
+		and processing_end_time::timestamp >= (NOW() - interval ${hours} hour)
+) subquery
+order by
+	processing_end_time asc;
       `;
       queryParams = [mc_code];
     }
