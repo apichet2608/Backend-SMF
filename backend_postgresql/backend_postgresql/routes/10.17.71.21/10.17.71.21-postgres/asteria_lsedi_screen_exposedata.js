@@ -162,7 +162,7 @@ router.get("/distinctMachine", async (req, res) => {
       `select
       distinct mc_code
     from
-      asteria.asteria_lsedi_screen_exposedataSELECT distinct mc_code FROM public.jwdb_rdflv_mck_actv`
+      asteria.asteria_lsedi_screen_exposedata`
     );
     res.status(200).json(result.rows);
   } catch (error) {
