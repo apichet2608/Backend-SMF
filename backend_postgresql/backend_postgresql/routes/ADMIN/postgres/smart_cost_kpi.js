@@ -26,7 +26,12 @@ router.get("/sum-last-status", async (req, res) => {
       'baht_per_m',
       baht_per_m,
       'baht_per_m2',
-      baht_per_m2)) as baht_data
+      baht_per_m2)) as baht_data,
+      case
+        when cost_type = 'OUTPUT' then 1
+        when cost_type = 'LABOR' then 2
+        else 3
+      end as order_by
     from
       public.smart_cost_kpi
     where
@@ -44,7 +49,8 @@ router.get("/sum-last-status", async (req, res) => {
       and department = $2
     group by
       year_month,
-      cost_type;
+      cost_type
+    order by  order_by asc
     `,
       [division, department]
     );
