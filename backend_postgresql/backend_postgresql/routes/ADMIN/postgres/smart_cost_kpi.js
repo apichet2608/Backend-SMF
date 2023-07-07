@@ -16,45 +16,50 @@ router.get("/sum-last-status", async (req, res) => {
   try {
     const { division, department } = req.query;
     const result = await query(
-      `select
+      `SELECT
       year_month,
       cost_type,
-      SUM(expense_plan) as total_expense_plan,
-      SUM(expense_result) as expense_result,
-      json_agg(json_build_object('baht_per_sheet',
-      baht_per_sheet,
-      'baht_per_m',
-      baht_per_m,
-      'baht_per_m2',
-      baht_per_m2)) as baht_data,
-      case
-        when cost_type = 'OUTPUT' then 1
-        when cost_type = 'LABOR' then 2
-        when cost_type = 'CONSUMABLES' then 3
-        when cost_type = 'CHEMICAL' then 4
-        when cost_type = 'TOOL' then 5
-        when cost_type = 'REPAIRING' then 6
-        else 7
-      end as order_by
-    from
+      SUM(expense_plan) AS total_expense_plan,
+      SUM(expense_result) AS expense_result,
+      json_agg(
+        CASE WHEN cost_type = 'OUTPUT' THEN
+          json_build_object(
+            'actual_sht_qty', actual_sht_qty
+          )
+        ELSE
+          json_build_object(
+            'baht_per_sheet', baht_per_sheet,
+            'baht_per_m', baht_per_m,
+            'baht_per_m2', baht_per_m2
+          )
+        END
+      ) AS baht_data,
+      CASE
+        WHEN cost_type = 'OUTPUT' THEN 1
+        WHEN cost_type = 'LABOR' THEN 2
+        WHEN cost_type = 'CONSUMABLES' THEN 3
+        WHEN cost_type = 'CHEMICAL' THEN 4
+        WHEN cost_type = 'TOOL' THEN 5
+        WHEN cost_type = 'REPAIRING' THEN 6
+        ELSE 7
+      END AS order_by
+    FROM
       public.smart_cost_kpi
-    where
-      not exists (
-      select
-        1
-      from
-        public.smart_cost_kpi as t2
-      where
-        t2.cost_type = public.smart_cost_kpi.cost_type
-        and t2.year_month > public.smart_cost_kpi.year_month
+    WHERE
+      NOT EXISTS (
+        SELECT 1
+        FROM public.smart_cost_kpi AS t2
+        WHERE t2.cost_type = public.smart_cost_kpi.cost_type
+          AND t2.year_month > public.smart_cost_kpi.year_month
       )
-      and factory = 'A1'
-      and division = $1
-      and department = $2
-    group by
+      AND factory = 'A1'
+      AND division = $1
+      AND department = $2
+    GROUP BY
       year_month,
       cost_type
-    order by  order_by asc
+    ORDER BY
+      order_by ASC;    
     `,
       [division, department]
     );
