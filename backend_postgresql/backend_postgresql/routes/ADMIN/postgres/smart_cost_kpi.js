@@ -88,7 +88,7 @@ router.get("/page1/plot", async (req, res) => {
       and cost_type = $2
       and factory = 'A1'
     order by
-      year_month::date desc
+      year_month::date asc
         `;
       queryParams = [division, cost_type];
     } else {
@@ -103,7 +103,7 @@ where
 	and cost_type = $3
 	and factory = 'A1'
 order by
-	year_month::date desc
+	year_month::date asc
         `;
       queryParams = [division, department, cost_type];
     }
