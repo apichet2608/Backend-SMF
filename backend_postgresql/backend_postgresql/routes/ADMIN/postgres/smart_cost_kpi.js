@@ -70,6 +70,52 @@ router.get("/sum-last-status", async (req, res) => {
   }
 });
 
+router.get("/page1/plot", async (req, res) => {
+  try {
+    const { division, department, cost_type } = req.query;
+
+    let queryStr = "";
+    let queryParams = [];
+
+    if (department === "ALL") {
+      queryStr = `
+      select
+      *
+    from
+      public.smart_cost_kpi
+    where
+      division = $1
+      and cost_type = $2
+      and factory = 'A1'
+    order by
+      year_month::date desc
+        `;
+      queryParams = [division, cost_type];
+    } else {
+      queryStr = `
+      select
+	*
+from
+	public.smart_cost_kpi
+where
+	division = $1
+	and department = $2
+	and cost_type = $3
+	and factory = 'A1'
+order by
+	year_month::date desc
+        `;
+      queryParams = [division, department, cost_type];
+    }
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/distinctdivision", async (req, res) => {
   try {
     const result = await query(
