@@ -510,11 +510,11 @@ router.post("/", async (req, res) => {
       no,
     } = req.body;
 
-    let query;
+    let querrydata;
     let values;
-
+    console.log(plan_date);
     if (plan_date === null || plan_date === "") {
-      query = `INSERT INTO smart_project_task (
+      querrydata = `INSERT INTO smart_project_task (
          dept,
          project,
          description,
@@ -537,7 +537,7 @@ router.post("/", async (req, res) => {
         no,
       ];
     } else {
-      query = `INSERT INTO smart_project_task (
+      querrydata = `INSERT INTO smart_project_task (
          dept,
          project,
          description,
@@ -563,7 +563,7 @@ router.post("/", async (req, res) => {
       ];
     }
 
-    const result = await query(query, values);
+    const result = await query(querrydata, values);
 
     res.status(201).json({ message: "Data added successfully" });
   } catch (error) {
