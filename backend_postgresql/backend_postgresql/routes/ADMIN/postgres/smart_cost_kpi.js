@@ -17,21 +17,22 @@ router.get("/sum-last-status", async (req, res) => {
     const { division, department } = req.query;
     const result = await query(
       `SELECT
-      year_month,
+      TO_CHAR(MAX(TO_DATE(year_month, 'DD/MM/YYYY')), 'DD/MM/YYYY') AS year_month,
       cost_type,
       SUM(expense_plan) AS total_expense_plan,
       SUM(expense_result) AS expense_result,
       json_agg(
-        CASE WHEN cost_type = 'OUTPUT' THEN
-          json_build_object(
-            'actual_sht_qty', actual_sht_qty
-          )
-        ELSE
-          json_build_object(
-            'baht_per_sheet', baht_per_sheet,
-            'baht_per_m', baht_per_m,
-            'baht_per_m2', baht_per_m2
-          )
+        CASE
+          WHEN cost_type = 'OUTPUT' THEN
+            json_build_object(
+              'actual_sht_qty', actual_sht_qty
+            )
+          ELSE
+            json_build_object(
+              'baht_per_sheet', baht_per_sheet,
+              'baht_per_m', baht_per_m,
+              'baht_per_m2', baht_per_m2
+            )
         END
       ) AS baht_data,
       CASE
@@ -50,13 +51,12 @@ router.get("/sum-last-status", async (req, res) => {
         SELECT 1
         FROM public.smart_cost_kpi AS t2
         WHERE t2.cost_type = public.smart_cost_kpi.cost_type
-          AND t2.year_month > public.smart_cost_kpi.year_month
+          AND TO_DATE(t2.year_month, 'DD/MM/YYYY') > TO_DATE(public.smart_cost_kpi.year_month, 'DD/MM/YYYY')
       )
       AND factory = 'A1'
       AND division = $1
       AND department = $2
     GROUP BY
-      year_month,
       cost_type
     ORDER BY
       order_by ASC;    
