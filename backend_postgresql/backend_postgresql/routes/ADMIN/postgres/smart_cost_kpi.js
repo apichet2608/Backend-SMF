@@ -188,6 +188,91 @@ ORDER BY
   }
 });
 
+router.get("/page1/table2", async (req, res) => {
+  try {
+    const { division, department, cost_type } = req.query;
+
+    let queryStr = "";
+    let queryParams = [];
+
+    if (department === "ALL") {
+      queryStr = `
+      select
+	factory,
+	division,
+	department,
+	sub_department,
+	cost_center,
+	cost_center_name,
+	item_code,
+	cost_type,
+	year_month,
+	expense_plan,
+	expense_result,
+	id,
+	create_at,
+	update_date
+from
+	public.smart_cost_item_month_kpi
+WHERE
+  factory = 'A1'
+  AND division = $1
+  AND department = $2
+  AND cost_type = $3
+  AND year_month = (
+    SELECT
+      MAX(year_month) AS year_month
+    FROM
+      public.smart_cost_item_month_kpi
+    ORDER BY
+      year_month DESC
+  )
+        `;
+      queryParams = [division, cost_type];
+    } else {
+      queryStr = `
+      select
+	factory,
+	division,
+	department,
+	sub_department,
+	cost_center,
+	cost_center_name,
+	item_code,
+	cost_type,
+	year_month,
+	expense_plan,
+	expense_result,
+	id,
+	create_at,
+	update_date
+from
+	public.smart_cost_item_month_kpi
+WHERE
+  factory = 'A1'
+  AND division = $1
+  AND department = $2
+  AND cost_type = $3
+  AND year_month = (
+    SELECT
+      MAX(year_month) AS year_month
+    FROM
+      public.smart_cost_item_month_kpi
+    ORDER BY
+      year_month DESC
+  )
+        `;
+      queryParams = [division, department, cost_type];
+    }
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/distinctdivision", async (req, res) => {
   try {
     const result = await query(
