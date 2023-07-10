@@ -146,7 +146,8 @@ router.get("/page1/plot2", async (req, res) => {
       item_code,
       year_month
     order by
-      total_expense_result desc;
+      total_expense_result desc
+      limit 20;
         `;
       queryParams = [division, cost_type];
     } else {
@@ -174,8 +175,8 @@ GROUP BY
   item_code,
   year_month
 ORDER BY
-  total_expense_result DESC;
-
+  total_expense_result DESC
+  limit 20;
         `;
       queryParams = [division, department, cost_type];
     }
