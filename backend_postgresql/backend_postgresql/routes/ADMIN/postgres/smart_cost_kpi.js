@@ -17,7 +17,7 @@ router.get("/sum-last-status", async (req, res) => {
     const { division, department } = req.query;
     const result = await query(
       `SELECT
-      TO_CHAR(MAX(TO_DATE(year_month, 'DD/MM/YYYY')), 'DD/MM/YYYY') AS year_month,
+      TO_CHAR(MAX(TO_DATE(year_month, 'YYYY-MM-DD')), 'YYYY-MM-DD') AS year_month,
       cost_type,
       SUM(expense_plan) AS total_expense_plan,
       SUM(expense_result) AS expense_result,
@@ -51,7 +51,7 @@ router.get("/sum-last-status", async (req, res) => {
         SELECT 1
         FROM public.smart_cost_kpi AS t2
         WHERE t2.cost_type = public.smart_cost_kpi.cost_type
-          AND TO_DATE(t2.year_month, 'DD/MM/YYYY') > TO_DATE(public.smart_cost_kpi.year_month, 'DD/MM/YYYY')
+          AND TO_DATE(t2.year_month, 'YYYY-MM-DD') > TO_DATE(public.smart_cost_kpi.year_month, 'YYYY-MM-DD')
       )
       AND factory = 'A1'
       AND division = $1
@@ -59,7 +59,7 @@ router.get("/sum-last-status", async (req, res) => {
     GROUP BY
       cost_type
     ORDER BY
-      order_by ASC;    
+      order_by ASC;        
     `,
       [division, department]
     );
