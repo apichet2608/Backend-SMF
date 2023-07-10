@@ -289,46 +289,51 @@ router.get("/page1/plot3", async (req, res) => {
     if (department === "ALL") {
       queryStr = `
       SELECT
-  CONCAT('ITEM - ', item_code) AS item_code,
-  year_month,
-  SUM(expense_plan) AS total_expense_plan,
-  SUM(expense_result) AS total_expense_result
-FROM
-  public.smart_cost_item_month_kpi
-WHERE
-  factory = 'A1'
-  AND division = $1
-  AND department = $2
-  AND cost_type = $3
-  and item_code = $4
-GROUP BY
-  item_code,
-  year_month
-ORDER BY
-  year_month asc;
+      CONCAT('ITEM - ', item_code) AS item_code,
+      year_month,
+      cost_center ,
+      SUM(expense_plan) AS total_expense_plan,
+      SUM(expense_result) AS total_expense_result
+    FROM
+      public.smart_cost_item_month_kpi
+    WHERE
+      factory = 'A1'
+      AND division = $1
+      AND department = $2
+      AND cost_type = $3
+      and item_code = $4
+      and cost_center = $5
+    GROUP BY
+      item_code,
+      year_month,
+      cost_center
+    ORDER BY
+      year_month asc;
         `;
       queryParams = [division, cost_type];
     } else {
       queryStr = `
       SELECT
-  CONCAT('ITEM - ', item_code) AS item_code,
-  year_month,
-  SUM(expense_plan) AS total_expense_plan,
-  SUM(expense_result) AS total_expense_result
-FROM
-  public.smart_cost_item_month_kpi
-WHERE
-  factory = 'A1'
-  AND division = $1
-  AND department = $2
-  AND cost_type = $3
-  and item_code = $4
-  and cost_center = $5
-GROUP BY
-  item_code,
-  year_month
-ORDER BY
-  year_month asc;
+      CONCAT('ITEM - ', item_code) AS item_code,
+      year_month,
+      cost_center ,
+      SUM(expense_plan) AS total_expense_plan,
+      SUM(expense_result) AS total_expense_result
+    FROM
+      public.smart_cost_item_month_kpi
+    WHERE
+      factory = 'A1'
+      AND division = $1
+      AND department = $2
+      AND cost_type = $3
+      and item_code = $4
+      and cost_center = $5
+    GROUP BY
+      item_code,
+      year_month,
+      cost_center
+    ORDER BY
+      year_month asc;
         `;
       queryParams = [division, department, cost_type, item_code, cost_center];
     }
