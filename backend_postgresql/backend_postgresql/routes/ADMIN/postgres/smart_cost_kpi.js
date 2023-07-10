@@ -277,6 +277,67 @@ WHERE
   }
 });
 
+router.get("/page1/plot3", async (req, res) => {
+  try {
+    const { division, department, cost_type } = req.query;
+
+    let queryStr = "";
+    let queryParams = [];
+
+    if (department === "ALL") {
+      queryStr = `
+      SELECT
+  CONCAT('ITEM - ', item_code) AS item_code,
+  year_month,
+  SUM(expense_plan) AS total_expense_plan,
+  SUM(expense_result) AS total_expense_result
+FROM
+  public.smart_cost_item_month_kpi
+WHERE
+  factory = 'A1'
+  AND division = $1
+  AND department = $2
+  AND cost_type = $3
+  and item_code = '240090019'
+GROUP BY
+  item_code,
+  year_month
+ORDER BY
+  year_month asc;
+        `;
+      queryParams = [division, cost_type];
+    } else {
+      queryStr = `
+      SELECT
+  CONCAT('ITEM - ', item_code) AS item_code,
+  year_month,
+  SUM(expense_plan) AS total_expense_plan,
+  SUM(expense_result) AS total_expense_result
+FROM
+  public.smart_cost_item_month_kpi
+WHERE
+  factory = 'A1'
+  AND division = $1
+  AND department = $2
+  AND cost_type = $3
+  and item_code = '240090019'
+GROUP BY
+  item_code,
+  year_month
+ORDER BY
+  year_month asc;
+        `;
+      queryParams = [division, department, cost_type];
+    }
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/distinctdivision", async (req, res) => {
   try {
     const result = await query(
