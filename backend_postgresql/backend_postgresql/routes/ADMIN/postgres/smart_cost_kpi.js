@@ -280,7 +280,8 @@ WHERE
 
 router.get("/page1/plot3", async (req, res) => {
   try {
-    const { division, department, cost_type, item_code } = req.query;
+    const { division, department, cost_type, item_code, cost_center } =
+      req.query;
 
     let queryStr = "";
     let queryParams = [];
@@ -322,13 +323,14 @@ WHERE
   AND department = $2
   AND cost_type = $3
   and item_code = $4
+  and cost_center = $5
 GROUP BY
   item_code,
   year_month
 ORDER BY
   year_month asc;
         `;
-      queryParams = [division, department, cost_type, item_code];
+      queryParams = [division, department, cost_type, item_code, cost_center];
     }
 
     const result = await query(queryStr, queryParams);
