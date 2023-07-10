@@ -151,29 +151,31 @@ router.get("/page1/plot2", async (req, res) => {
       queryParams = [division, cost_type];
     } else {
       queryStr = `
-      select
-	item_code,
-	year_month,
-	SUM(expense_result) as total_expense_result
-from
-	public.smart_cost_item_month_kpi
-where
-	factory = 'A1'
-	and division = $1
-	and department = $2
-	and cost_type = $3
-	and year_month = (
-	select
-		MAX(year_month) as year_month
-	from
-		public.smart_cost_item_month_kpi
-	order by
-		year_month desc)
-group by
-	item_code,
-	year_month
-order by
-	total_expense_result desc;
+      SELECT
+  CONCAT('ITEM - ', item_code) AS item_code,
+  year_month,
+  SUM(expense_result) AS total_expense_result
+FROM
+  public.smart_cost_item_month_kpi
+WHERE
+  factory = 'A1'
+  AND division = $1
+  AND department = $2
+  AND cost_type = $3
+  AND year_month = (
+    SELECT
+      MAX(year_month) AS year_month
+    FROM
+      public.smart_cost_item_month_kpi
+    ORDER BY
+      year_month DESC
+  )
+GROUP BY
+  item_code,
+  year_month
+ORDER BY
+  total_expense_result DESC;
+
         `;
       queryParams = [division, department, cost_type];
     }
