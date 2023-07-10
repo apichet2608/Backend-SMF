@@ -227,6 +227,8 @@ WHERE
     ORDER BY
       year_month DESC
   )
+  ORDER BY
+  expense_result  DESC;
         `;
       queryParams = [division, cost_type];
     } else {
@@ -261,6 +263,8 @@ WHERE
     ORDER BY
       year_month DESC
   )
+  ORDER BY
+  expense_result  DESC;
         `;
       queryParams = [division, department, cost_type];
     }
