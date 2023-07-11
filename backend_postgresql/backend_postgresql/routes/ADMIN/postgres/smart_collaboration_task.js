@@ -12,6 +12,24 @@ const pool = new Pool({
 
 const query = (text, params) => pool.query(text, params);
 
+router.get("/checkdept", async (req, res) => {
+  try {
+    const { email } = req.query;
+    const result = await query(
+      `SELECT distinct  dept
+    FROM public.users_dept
+    where email = $1
+    order by dept asc
+    `,
+      [email]
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/count-status", async (req, res) => {
   try {
     const { dept } = req.query;
