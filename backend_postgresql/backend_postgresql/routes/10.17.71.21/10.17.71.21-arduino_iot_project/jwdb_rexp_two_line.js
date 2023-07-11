@@ -38,7 +38,7 @@ router.get("/distinctMccode", async (req, res) => {
   }
 });
 
-router.get("/dataplot", async (req, res) => {
+router.get("/distinctfirst_lot", async (req, res) => {
   try {
     const { factory, mc_code } = req.query;
     const hours = parseInt(req.query.hours); // ชั่วโมงที่ผู้ใช้กำหนด
@@ -48,14 +48,15 @@ router.get("/dataplot", async (req, res) => {
     }
     const result = await query(
       `select
-      *
+      distinct first_lot
     from
       public.jwdb_rexp_two_line
       
     where factory = $1
     and mc_code = $2
     and ptime :: timestamp >= (now() - interval '${hours}' hour)
-    order by ptime asc`,
+    order by first_lot asc
+    `,
       [factory, mc_code]
     );
     res.status(200).json(result.rows);
@@ -64,4 +65,45 @@ router.get("/dataplot", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
+
+router.get("/dataplot", async (req, res) => {
+  try {
+    const { factory, mc_code, first_lot } = req.query;
+    const hours = parseInt(req.query.hours); // ชั่วโมงที่ผู้ใช้กำหนด
+
+    if (isNaN(hours)) {
+      return res.status(400).send("Hours are required");
+    }
+
+    let result;
+    if (first_lot === "ALL") {
+      result = await query(
+        `SELECT *
+        FROM public.jwdb_rexp_two_line
+        WHERE factory = $1
+        AND mc_code = $2
+        AND ptime::timestamp >= (now() - interval '${hours}' hour)
+        ORDER BY first_lot ASC`,
+        [factory, mc_code]
+      );
+    } else {
+      result = await query(
+        `SELECT *
+        FROM public.jwdb_rexp_two_line
+        WHERE factory = $1
+        AND mc_code = $2
+        AND first_lot = $3
+        AND ptime::timestamp >= (now() - interval '${hours}' hour)
+        ORDER BY first_lot ASC`,
+        [factory, mc_code, first_lot]
+      );
+    }
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
