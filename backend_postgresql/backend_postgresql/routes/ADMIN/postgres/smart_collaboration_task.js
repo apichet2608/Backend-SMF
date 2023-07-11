@@ -33,6 +33,10 @@ router.get("/checkdept", async (req, res) => {
 router.get("/count-status", async (req, res) => {
   try {
     const { dept } = req.query;
+    const deptValues = dept.split(",").map((value) => value.trim());
+    const placeholders = deptValues
+      .map((_, index) => `$${index + 1}`)
+      .join(",");
     const result = await query(
       `
       select
@@ -64,7 +68,7 @@ router.get("/count-status", async (req, res) => {
             public.smart_project_task
           where
             status = 'Finished'
-            and dept IN ($1)
+            and dept IN (${placeholders})
           group by
             dri
               ) subquery
@@ -87,7 +91,7 @@ router.get("/count-status", async (req, res) => {
             public.smart_project_task
           where
             status = 'Ongoing'
-            and dept IN ($1)
+            and dept IN (${placeholders})
           group by
             dri
               ) subquery
@@ -110,7 +114,7 @@ router.get("/count-status", async (req, res) => {
             public.smart_project_task
           where
             status = 'Open'
-            and dept IN ($1)
+            and dept IN (${placeholders})
           group by
             dri
               ) subquery
@@ -133,7 +137,7 @@ router.get("/count-status", async (req, res) => {
             public.smart_project_task
           where
             status = ''
-            and dept IN ($1)
+            and dept IN (${placeholders})
           group by
             dri
               ) subquery
@@ -147,7 +151,7 @@ router.get("/count-status", async (req, res) => {
       COUNT(*) as count
     from
       public.smart_project_task
-    where dept IN ($1)
+    where dept IN (${placeholders})
     group by
       status
     union all
@@ -156,12 +160,12 @@ router.get("/count-status", async (req, res) => {
       COUNT(*) as count
     from
       public.smart_project_task
-    where dept IN ($1)
+    where dept IN (${placeholders})
       ) subquery
     order by
       order_by asc
     `,
-      [dept]
+      [deptValues]
     );
     res.status(200).json(result.rows);
   } catch (error) {
