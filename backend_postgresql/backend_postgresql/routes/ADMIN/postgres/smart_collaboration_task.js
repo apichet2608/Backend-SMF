@@ -328,6 +328,40 @@ router.get("/count-status-fixed", async (req, res) => {
   }
 });
 
+// router.get("/table", async (req, res) => {
+//   try {
+//     const { dept } = req.query;
+
+//     let queryStr = "";
+//     let queryParams = [];
+
+//     if (dept === "ALL") {
+//       queryStr = `
+//       select
+//       *
+//     from
+//       public.smart_project_task
+//     order by "no" asc
+//       `;
+//     } else {
+//       queryStr = `
+//       select
+// 	*
+// from
+// 	public.smart_project_task
+// where dept = $1
+// order by "no" asc
+//       `;
+//       queryParams = [dept];
+//     }
+
+//     const result = await query(queryStr, queryParams);
+//     res.status(200).json(result.rows);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "An error occurred while fetching data" });
+//   }
+// });
 router.get("/table", async (req, res) => {
   try {
     const { dept } = req.query;
@@ -349,7 +383,7 @@ router.get("/table", async (req, res) => {
 	*
 from
 	public.smart_project_task
-where dept = $1
+where dept in ($1)
 order by "no" asc
       `;
       queryParams = [dept];
