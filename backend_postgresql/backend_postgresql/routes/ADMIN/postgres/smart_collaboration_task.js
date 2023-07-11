@@ -378,15 +378,21 @@ router.get("/table", async (req, res) => {
     order by "no" asc
       `;
     } else {
+      const deptValues = dept.split(",").map((value) => value.trim());
+      const placeholders = deptValues
+        .map((_, index) => `$${index + 1}`)
+        .join(",");
+
       queryStr = `
       select
-	*
-from
-	public.smart_project_task
-where dept in ($1)
-order by "no" asc
+        *
+      from
+        public.smart_project_task
+      where dept in (${placeholders})
+      order by "no" asc
       `;
-      queryParams = [dept];
+
+      queryParams = deptValues;
     }
 
     const result = await query(queryStr, queryParams);
