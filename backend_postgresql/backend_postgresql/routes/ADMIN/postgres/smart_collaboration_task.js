@@ -35,131 +35,131 @@ router.get("/count-status", async (req, res) => {
     const { dept } = req.query;
     const result = await query(
       `
+      select
+      status,
+      count,
+      case
+        when status = 'total' then 1
+        when status = 'Finished' then 2
+        when status = 'Ongoing' then 3
+        when status = 'Open' then 4
+        else 5
+      end as order_by,
+      case
+        when status = 'Finished' then
+            (
+        select
+          json_agg(json_build_object(
+                'dri',
+          dri,
+          'status',
+          status
+              ))
+        from
+          (
+          select
+            dri,
+            COUNT(*) as status
+          from
+            public.smart_project_task
+          where
+            status = 'Finished'
+            and dept IN ($1)
+          group by
+            dri
+              ) subquery
+            )
+        when status = 'Ongoing' then
+            (
+        select
+          json_agg(json_build_object(
+                'dri',
+          dri,
+          'status',
+          status
+              ))
+        from
+          (
+          select
+            dri,
+            COUNT(*) as status
+          from
+            public.smart_project_task
+          where
+            status = 'Ongoing'
+            and dept IN ($1)
+          group by
+            dri
+              ) subquery
+            )
+        when status = 'Open' then
+            (
+        select
+          json_agg(json_build_object(
+                'dri',
+          dri,
+          'status',
+          status
+              ))
+        from
+          (
+          select
+            dri,
+            COUNT(*) as status
+          from
+            public.smart_project_task
+          where
+            status = 'Open'
+            and dept IN ($1)
+          group by
+            dri
+              ) subquery
+            )
+        when status = '' then
+            (
+        select
+          json_agg(json_build_object(
+                'dri',
+          dri,
+          'status',
+          status
+              ))
+        from
+          (
+          select
+            dri,
+            COUNT(*) as status
+          from
+            public.smart_project_task
+          where
+            status = ''
+            and dept IN ($1)
+          group by
+            dri
+              ) subquery
+            )
+        else null
+      end as sum_month
+    from
+      (
     select
-	status,
-	count,
-	case
-		when status = 'total' then 1
-		when status = 'Finished' then 2
-		when status = 'Ongoing' then 3
-		when status = 'Open' then 4
-		else 5
-	end as order_by,
-	case
-		when status = 'Finished' then
-        (
-		select
-			json_agg(json_build_object(
-            'dri',
-			dri,
-			'status',
-			status
-          ))
-		from
-			(
-			select
-				dri,
-				COUNT(*) as status
-			from
-				public.smart_project_task
-			where
-				status = 'Finished'
-				and dept = $1
-			group by
-				dri
-          ) subquery
-        )
-		when status = 'Ongoing' then
-        (
-		select
-			json_agg(json_build_object(
-            'dri',
-			dri,
-			'status',
-			status
-          ))
-		from
-			(
-			select
-				dri,
-				COUNT(*) as status
-			from
-				public.smart_project_task
-			where
-				status = 'Ongoing'
-				and dept = $1
-			group by
-				dri
-          ) subquery
-        )
-		when status = 'Open' then
-        (
-		select
-			json_agg(json_build_object(
-            'dri',
-			dri,
-			'status',
-			status
-          ))
-		from
-			(
-			select
-				dri,
-				COUNT(*) as status
-			from
-				public.smart_project_task
-			where
-				status = 'Open'
-				and dept = $1
-			group by
-				dri
-          ) subquery
-        )
-		when status = '' then
-        (
-		select
-			json_agg(json_build_object(
-            'dri',
-			dri,
-			'status',
-			status
-          ))
-		from
-			(
-			select
-				dri,
-				COUNT(*) as status
-			from
-				public.smart_project_task
-			where
-				status = ''
-				and dept = $1
-			group by
-				dri
-          ) subquery
-        )
-		else null
-	end as sum_month
-from
-	(
-select
-	status,
-	COUNT(*) as count
-from
-	public.smart_project_task
-where dept = $1
-group by
-	status
-union all
-    select
-	'total' as status,
-	COUNT(*) as count
-from
-	public.smart_project_task
-where dept = $1
-  ) subquery
-order by
-	order_by asc
+      status,
+      COUNT(*) as count
+    from
+      public.smart_project_task
+    where dept IN ($1)
+    group by
+      status
+    union all
+        select
+      'total' as status,
+      COUNT(*) as count
+    from
+      public.smart_project_task
+    where dept IN ($1)
+      ) subquery
+    order by
+      order_by asc
     `,
       [dept]
     );
