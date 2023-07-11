@@ -106,4 +106,30 @@ router.get("/dataplot", async (req, res) => {
   }
 });
 
+router.get("/dataplot2", async (req, res) => {
+  try {
+    const { factory, mc_code } = req.query;
+    const hours = parseInt(req.query.hours); // ชั่วโมงที่ผู้ใช้กำหนด
+
+    if (isNaN(hours)) {
+      return res.status(400).send("Hours are required");
+    }
+
+    const result = await query(
+      `SELECT *
+      FROM public.jwdb_rexp_two_line
+      WHERE factory = $1
+      AND mc_code = $2
+      AND ptime::timestamp >= (now() - interval '${hours}' hour)
+      ORDER BY ptime ASC`,
+      [factory, mc_code]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
