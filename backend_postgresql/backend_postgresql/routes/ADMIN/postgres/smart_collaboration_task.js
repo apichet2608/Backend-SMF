@@ -27,6 +27,24 @@ router.get("/distinctemailforadddept", async (req, res) => {
   }
 });
 
+router.get("/distinctdeptforadddept", async (req, res) => {
+  try {
+    const result = await query(
+      `select
+      distinct dept
+    from
+      public.smart_collaboration_master_add_dept
+    order by
+      dept desc
+    `
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/checkdept", async (req, res) => {
   try {
     const { email } = req.query;
