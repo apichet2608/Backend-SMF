@@ -27,72 +27,49 @@ from
   }
 });
 
-// router.get("/page3/table", async (req, res) => {
-//   try {
-//     const { dept } = req.query;
+router.get("/page4/plot", async (req, res) => {
+  try {
+    const { dept } = req.query;
 
-//     let queryStr = "";
-//     let queryParams = [];
+    let queryStr = "";
+    let queryParams = [];
 
-//     if (dept === "ALL") {
-//       queryStr = `
-//       select
-// 	ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
-// 	month_code,
-// 	load_type,
-// 	dept_2,
-// 	sum(diff_energy_usage) as diff_energy_usage,
-// 	sum(energy_cost_baht) as energy_cost_baht
-// from
-// 	public.smart_energy_by_month
-// where
-// 	month_code = (
-// 	select
-// 		MAX(month_code)
-// 	from
-// 		public.smart_energy_by_month)
-// group by
-// 	month_code,
-// 	dept_2,
-// 	load_type
-// order by
-// 	month_code asc
-//         `;
-//     } else {
-//       queryStr = `
-//       select
-//       ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
-//       month_code,
-//       load_type,
-//       dept_2,
-//       sum(diff_energy_usage) as diff_energy_usage,
-//       sum(energy_cost_baht) as energy_cost_baht
-//     from
-//       public.smart_energy_by_month
-//     where
-//       month_code = (
-//       select
-//         MAX(month_code)
-//       from
-//         public.smart_energy_by_month)
-//       and dept_2 = $1
-//     group by
-//       month_code,
-//       dept_2,
-//       load_type
-//     order by
-//       month_code asc
-//         `;
-//       queryParams = [dept];
-//     }
+    if (dept === "ALL") {
+      queryStr = `
+      select
+      year_month,
+      sum_energy,
+      sum_energy_cost,
+      bue_sht,
+      bue_meter,
+      bue_m2
+    from
+      public.smart_energy_month_bue_dept
+        `;
+    } else {
+      queryStr = `
+      select
+	year_month,
+	sum_energy,
+	sum_energy_cost,
+	bue_sht,
+	bue_meter,
+	bue_m2
+from
+	public.smart_energy_month_bue_dept
+where 
+	dept_2  = $1
+        `;
+      queryParams = [dept];
+    }
 
-//     const result = await query(queryStr, queryParams);
-//     res.status(200).json(result.rows);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "An error occurred while fetching data" });
-//   }
-// });
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 
 // router.get("/page3/distinctbuild", async (req, res) => {
 //   try {
