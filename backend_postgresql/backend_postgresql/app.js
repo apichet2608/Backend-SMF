@@ -47,6 +47,7 @@ const smart_collaboration_task = require("./routes/ADMIN/postgres/smart_collabor
 const smart_energy_by_month = require("./routes/ADMIN/postgres/smart_energy_by_month");
 const asteria_lsedi_screen_exposedata = require("./routes/10.17.71.21/10.17.71.21-postgres/asteria_lsedi_screen_exposedata");
 const smart_cost_kpi = require("./routes/ADMIN/postgres/smart_cost_kpi");
+const smart_energy_month_bue_dept = require("./routes/ADMIN/postgres/smart_energy_month_bue_dept");
 
 const app = express();
 
@@ -106,6 +107,7 @@ app.use(
   asteria_lsedi_screen_exposedata
 );
 app.use("/api/smart_cost_kpi", smart_cost_kpi);
+app.use("/api/smart_energy_month_bue_dept", smart_energy_month_bue_dept);
 
 app.use(function (req, res, next) {
   next(createError(404));
