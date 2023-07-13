@@ -597,6 +597,7 @@ router.get("/page5/plot", async (req, res) => {
       month_code,
       load_type,
       dept_2,
+      building,
       sum(diff_energy_usage) as diff_energy_usage
     from
       public.smart_energy_by_month
@@ -611,7 +612,8 @@ router.get("/page5/plot", async (req, res) => {
     group by
       month_code,
       dept_2,
-      load_type
+      load_type,
+      building
     order by
       month_code asc
     `;
