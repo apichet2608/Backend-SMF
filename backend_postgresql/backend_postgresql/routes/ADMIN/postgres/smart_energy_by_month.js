@@ -690,15 +690,20 @@ router.get("/page5/plotbyarea", async (req, res) => {
     let queryParams = [];
 
     queryStr = `
-    select
-	*
-from
-	public.smart_energy_by_month
-where
-	dept_2 = $1
-	and building = $2
-	and load_type = $3
-	and area = $4
+    SELECT
+  month_code,
+  SUM(diff_energy_usage) AS diff_energy_usage
+FROM
+  public.smart_energy_by_month
+WHERE
+  dept_2 = $1
+  AND building = $2
+  AND load_type = $3
+  AND area = $4
+GROUP BY
+  month_code
+ORDER BY
+  month_code ASC;
     `;
     queryParams =
       build !== "ALL"
