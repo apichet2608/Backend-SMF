@@ -27,27 +27,6 @@ from
   }
 });
 
-router.get("/page4/distinctBuild", async (req, res) => {
-  try {
-    const { dept } = req.query;
-    const result = await query(
-      `
-    select
-	distinct building 
-from
-	public.smart_energy_month_bue_deptbuild
-where dept_2 = $1
-order by building  asc 
-    `,
-      [dept]
-    );
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "An error occurred while fetching data" });
-  }
-});
-
 router.get("/page4/plot", async (req, res) => {
   try {
     const { dept } = req.query;
@@ -92,127 +71,63 @@ where
   }
 });
 
-// router.get("/page3/distinctbuild", async (req, res) => {
-//   try {
-//     const { dept, loadtype } = req.query;
+router.get("/page5/distinctDept", async (req, res) => {
+  try {
+    const result = await query(`
+    select
+	distinct dept_2
+from
+	public.smart_energy_month_bue_dept
+    `);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 
-//     let queryStr = "";
-//     let queryParams = [];
+router.get("/page5/plot", async (req, res) => {
+  try {
+    const { dept } = req.query;
 
-//     if (dept === "ALL") {
-//       queryStr = `
-//       select
-// 	distinct building
-// from
-// 	public.smart_energy_by_month
-// where
-//       load_type = $1
-//         `;
-//       queryParams = [loadtype];
-//     } else {
-//       queryStr = `
-//       select
-//       distinct building
-//     from
-//       public.smart_energy_by_month
-//     where
-//       dept_2 = $1
-//       and
-//       load_type = $2
-//         `;
-//       queryParams = [dept, loadtype];
-//     }
+    let queryStr = "";
+    let queryParams = [];
 
-//     const result = await query(queryStr, queryParams);
-//     res.status(200).json(result.rows);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "An error occurred while fetching data" });
-//   }
-// });
+    if (dept === "ALL") {
+      queryStr = `
+      select
+      year_month,
+      sum_energy,
+      sum_energy_cost,
+      bue_sht,
+      bue_meter,
+      bue_m2
+    from
+      public.smart_energy_month_bue_dept
+        `;
+    } else {
+      queryStr = `
+      select
+	year_month,
+	sum_energy,
+	sum_energy_cost,
+	bue_sht,
+	bue_meter,
+	bue_m2
+from
+	public.smart_energy_month_bue_dept
+where 
+	dept_2  = $1
+        `;
+      queryParams = [dept];
+    }
 
-// router.get("/page3/table2", async (req, res) => {
-//   try {
-//     const { dept, loadtype, build } = req.query;
-
-//     let queryStr = "";
-//     let queryParams = [];
-
-//     queryStr = `
-//       select
-//       *
-//     from
-//       public.smart_energy_by_month
-//     where
-//       dept_2 = $1
-//       and
-//       load_type = $2
-//       and
-//       building = $3
-//     order by
-//          "month" asc
-//         `;
-//     queryParams = [dept, loadtype, build];
-
-//     const result = await query(queryStr, queryParams);
-//     res.status(200).json(result.rows);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "An error occurred while fetching data" });
-//   }
-// });
-
-// router.get("/page3/plot2", async (req, res) => {
-//   try {
-//     const { build, loadtype, dept } = req.query;
-
-//     let queryStr = "";
-//     let queryParams = [];
-
-//     if (dept === "ALL") {
-//       queryStr = `
-//       select
-//       month_code,
-//       sum(diff_energy_usage) as diff_energy_usage
-//     from
-//       public.smart_energy_by_month
-//     where
-//       building = $1
-//       and
-//       load_type = $2
-//     group by
-//       month_code
-//     order by
-//          month_code asc
-//         `;
-//       queryParams = [build, loadtype];
-//     } else {
-//       queryStr = `
-//       select
-//       month_code,
-//       sum(diff_energy_usage) as diff_energy_usage
-//     from
-//       public.smart_energy_by_month
-//     where
-//       building = $1
-//       and
-//       load_type = $2
-//       and
-//       dept_2 = $3
-//     group by
-//       month_code
-//     order by
-//          month_code asc
-//         `;
-//       queryParams = [build, loadtype, dept];
-//     }
-
-//     const result = await query(queryStr, queryParams);
-//     res.status(200).json(result.rows);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "An error occurred while fetching data" });
-//   }
-// });
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 
 module.exports = router;
