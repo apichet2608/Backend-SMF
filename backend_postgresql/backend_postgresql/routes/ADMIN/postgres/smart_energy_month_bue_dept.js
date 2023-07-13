@@ -29,13 +29,18 @@ from
 
 router.get("/page4/distinctBuild", async (req, res) => {
   try {
-    const result = await query(`
+    const { dept } = req.query;
+    const result = await query(
+      `
     select
 	distinct building 
 from
 	public.smart_energy_month_bue_deptbuild
+where dept_2 = $1
 order by building  asc 
-    `);
+    `,
+      [dept]
+    );
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
