@@ -654,4 +654,31 @@ router.get("/page5/distinctloadtype", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
+
+router.get("/page5/distinctarea", async (req, res) => {
+  try {
+    const { dept, build, load_type } = req.query;
+
+    let queryStr = "";
+    let queryParams = [];
+
+    queryStr = `
+    select
+    distinct area  
+  from
+    public.smart_energy_by_month
+  where
+    dept_2 = $1
+    and building = $2
+    and load_type = $3
+        `;
+    queryParams = [dept, build, load_type];
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 module.exports = router;
