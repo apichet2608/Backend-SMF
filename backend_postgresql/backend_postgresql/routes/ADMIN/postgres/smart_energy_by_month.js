@@ -629,4 +629,29 @@ router.get("/page5/plot", async (req, res) => {
   }
 });
 
+router.get("/page5/distinctloadtype", async (req, res) => {
+  try {
+    const { dept, build } = req.query;
+
+    let queryStr = "";
+    let queryParams = [];
+
+    queryStr = `
+    select
+    distinct load_type  
+  from
+    public.smart_energy_by_month
+  where
+    dept_2 = $1
+    and building = $2
+        `;
+    queryParams = [dept, build];
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 module.exports = router;
