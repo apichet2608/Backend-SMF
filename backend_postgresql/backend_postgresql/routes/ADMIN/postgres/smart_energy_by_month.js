@@ -596,6 +596,7 @@ router.get("/page5/plot", async (req, res) => {
       ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
       month_code,
       load_type,
+      area,
       dept_2,
       building,
       sum(diff_energy_usage) as diff_energy_usage
@@ -613,6 +614,7 @@ router.get("/page5/plot", async (req, res) => {
       month_code,
       dept_2,
       load_type,
+      area,
       building
     order by
       month_code asc
