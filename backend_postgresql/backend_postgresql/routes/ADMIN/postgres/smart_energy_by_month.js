@@ -664,7 +664,7 @@ router.get("/page5/distinctarea", async (req, res) => {
 
     queryStr = `
     select
-    distinct area  
+   *
   from
     public.smart_energy_by_month
   where
@@ -673,6 +673,37 @@ router.get("/page5/distinctarea", async (req, res) => {
     and load_type = $3
         `;
     queryParams = [dept, build, load_type];
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+router.get("/page5/plotbyarea", async (req, res) => {
+  try {
+    const { dept, build, load_type, area } = req.query;
+
+    let queryStr = "";
+    let queryParams = [];
+
+    queryStr = `
+    select
+	*
+from
+	public.smart_energy_by_month
+where
+	dept_2 = $1
+	and building = $2
+	and load_type = $3
+	and area = $4
+    `;
+    queryParams =
+      build !== "ALL"
+        ? [dept, build, load_type, area]
+        : [dept, load_type, area];
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
