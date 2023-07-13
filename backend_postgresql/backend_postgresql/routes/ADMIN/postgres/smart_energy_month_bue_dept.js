@@ -27,6 +27,22 @@ from
   }
 });
 
+router.get("/page4/distinctBuild", async (req, res) => {
+  try {
+    const result = await query(`
+    select
+	distinct building 
+from
+	public.smart_energy_month_bue_deptbuild
+order by building  asc 
+    `);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/page4/plot", async (req, res) => {
   try {
     const { dept } = req.query;
