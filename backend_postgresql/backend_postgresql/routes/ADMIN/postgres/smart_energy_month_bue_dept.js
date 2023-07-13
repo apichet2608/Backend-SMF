@@ -93,34 +93,15 @@ router.get("/page5/plot", async (req, res) => {
     let queryStr = "";
     let queryParams = [];
 
-    if (dept === "ALL") {
-      queryStr = `
+    queryStr = `
       select
-      year_month,
-      sum_energy,
-      sum_energy_cost,
-      bue_sht,
-      bue_meter,
-      bue_m2
-    from
-      public.smart_energy_month_bue_dept
-        `;
-    } else {
-      queryStr = `
-      select
-	year_month,
-	sum_energy,
-	sum_energy_cost,
-	bue_sht,
-	bue_meter,
-	bue_m2
+	*
 from
 	public.smart_energy_month_bue_dept
 where 
 	dept_2  = $1
         `;
-      queryParams = [dept];
-    }
+    queryParams = [dept];
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
