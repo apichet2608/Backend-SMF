@@ -87,4 +87,26 @@ router.get("/page1/table", async (req, res) => {
   }
 });
 
+// DELETE route to delete data
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await query(
+      `delete
+      from
+        smart_overall_require_08003809
+      where
+        id = $1;
+        `,
+      [id]
+    );
+
+    res.status(200).json({ message: "Data deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while deleting data" });
+  }
+});
+
 module.exports = router;
