@@ -51,26 +51,30 @@ router.get("/page1/table", async (req, res) => {
     const { aspects, aspect } = req.query;
 
     let queryStr = `
-      SELECT
-        id,
-        "no",
-        aspects,
-        sub_no,
-        aspect,
-        sub_sub_no,
-        request,
-        score,
-        description_proof,
-        done,
-        total,
-        update_by,
-        fjk_comment,
-        dept_concern,
-        email,
-        create_at,
-        update_date
-      FROM public.smart_overall_require_08003809
-      WHERE aspects = $1
+    select
+    id,
+    "no",
+    aspects,
+    sub_no,
+    aspect,
+    sub_sub_no,
+    request,
+    score,
+    description_proof,
+    done,
+    total,
+    update_by,
+    fjk_comment,
+    dept_concern,
+    email,
+    create_at,
+    update_date
+  from
+    public.smart_overall_require_08003809
+  where
+    aspects = $1
+  order by
+    sub_sub_no asc
     `;
     let queryParams = [aspects];
 
