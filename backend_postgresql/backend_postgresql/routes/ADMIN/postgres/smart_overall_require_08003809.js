@@ -12,24 +12,41 @@ const pool = new Pool({
 
 const query = (text, params) => pool.query(text, params);
 
-router.get("/page5/plot", async (req, res) => {
+router.get("/page1/distinctaspects", async (req, res) => {
   try {
-    const { dept, build } = req.query;
+    const result = await query(`
+    select
+    distinct aspects
+  from
+    public.smart_overall_require_08003809
+  order by
+    aspects asc
+    `);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+router.get("/page1/distinctaspect", async (req, res) => {
+  try {
+    const { aspects } = req.query;
 
     let queryStr = "";
     let queryParams = [];
 
     queryStr = `
     select
-    *
-  from
-    public.smart_energy_month_bue_deptbuild
-  where 
-    dept_2 = $1
-    and building = $2
-  order by year_month::date asc
+	distinct aspect
+from
+	public.smart_overall_require_08003809
+where 
+	aspects = $1
+order by
+	aspect asc
         `;
-    queryParams = [dept, build];
+    queryParams = [aspects];
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
@@ -39,24 +56,4 @@ router.get("/page5/plot", async (req, res) => {
   }
 });
 
-router.get("/page5/distinctBuild", async (req, res) => {
-  try {
-    const { dept } = req.query;
-    const result = await query(
-      `
-    select
-	distinct building 
-from
-	public.smart_energy_month_bue_deptbuild
-where dept_2 = $1
-order by building  asc 
-    `,
-      [dept]
-    );
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "An error occurred while fetching data" });
-  }
-});
 module.exports = router;
