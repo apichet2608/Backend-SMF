@@ -49,6 +49,7 @@ const asteria_lsedi_screen_exposedata = require("./routes/10.17.71.21/10.17.71.2
 const smart_cost_kpi = require("./routes/ADMIN/postgres/smart_cost_kpi");
 const smart_energy_month_bue_dept = require("./routes/ADMIN/postgres/smart_energy_month_bue_dept");
 const smart_energy_month_bue_deptbuild = require("./routes/ADMIN/postgres/smart_energy_month_bue_deptbuild");
+const smart_overall_require_08003809 = require("./routes/ADMIN/postgres/smart_overall_require_08003809");
 
 const app = express();
 
@@ -113,6 +114,7 @@ app.use(
   "/api/smart_energy_month_bue_deptbuild",
   smart_energy_month_bue_deptbuild
 );
+app.use("/api/smart_overall_require_08003809", smart_overall_require_08003809);
 
 app.use(function (req, res, next) {
   next(createError(404));
