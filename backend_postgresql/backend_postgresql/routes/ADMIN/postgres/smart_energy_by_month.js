@@ -664,7 +664,7 @@ router.get("/page5/distinctarea", async (req, res) => {
 
     queryStr = `
     select
-   *
+    distinct  area 
   from
     public.smart_energy_by_month
   where
