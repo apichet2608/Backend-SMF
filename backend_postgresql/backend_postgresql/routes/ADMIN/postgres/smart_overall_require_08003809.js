@@ -46,4 +46,45 @@ router.get("/page1/distinctaspect", async (req, res) => {
   }
 });
 
+router.get("/page1/table", async (req, res) => {
+  try {
+    const { aspects, aspect } = req.query;
+
+    let queryStr = `
+      SELECT
+        id,
+        "no",
+        aspects,
+        sub_no,
+        aspect,
+        sub_sub_no,
+        request,
+        score,
+        description_proof,
+        done,
+        total,
+        update_by,
+        fjk_comment,
+        dept_concern,
+        email,
+        create_at,
+        update_date
+      FROM public.smart_overall_require_08003809
+      WHERE aspects = $1
+    `;
+    let queryParams = [aspects];
+
+    if (aspect && aspect !== "ALL") {
+      queryStr += `AND aspect = $2`;
+      queryParams.push(aspect);
+    }
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
