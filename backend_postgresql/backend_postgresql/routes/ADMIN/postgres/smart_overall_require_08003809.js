@@ -175,4 +175,66 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+// POST route to insert data
+router.post("/", async (req, res) => {
+  try {
+    const {
+      no,
+      aspects,
+      sub_no,
+      aspect,
+      sub_sub_no,
+      request,
+      score,
+      description_proof,
+      done,
+      total,
+      update_by,
+      fjk_comment,
+      dept_concern,
+      email,
+    } = req.body;
+    const result = await query(
+      `INSERT INTO smart_overall_require_08003809 (
+       "no",
+       aspects,
+       sub_no,
+       aspect,
+       sub_sub_no,
+       request,
+       score,
+       description_proof,
+       done,
+       total,
+       update_by,
+       fjk_comment,
+       dept_concern,
+       email,
+       create_at
+     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, now())`,
+      [
+        no,
+        aspects,
+        sub_no,
+        aspect,
+        sub_sub_no,
+        request,
+        score,
+        description_proof,
+        done,
+        total,
+        update_by,
+        fjk_comment,
+        dept_concern,
+        email,
+      ]
+    );
+
+    res.status(201).json({ message: "Data added successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while adding data" });
+  }
+});
+
 module.exports = router;
