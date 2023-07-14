@@ -109,4 +109,70 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// UPDATE route to UPDATE data
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      no,
+      aspects,
+      sub_no,
+      aspect,
+      sub_sub_no,
+      request,
+      score,
+      description_proof,
+      done,
+      total,
+      update_by,
+      fjk_comment,
+      dept_concern,
+      email,
+    } = req.body;
+
+    const result = await query(
+      `UPDATE smart_overall_require_08003809
+       SET
+         "no" = $1,
+         aspects = $2,
+         sub_no = $3,
+         aspect = $4,
+         sub_sub_no = $5,
+         request = $6,
+         score = $7,
+         description_proof = $8,
+         done = $9,
+         total = $10,
+         update_by = $11,
+         fjk_comment = $12,
+         dept_concern = $13,
+         email = $14,
+         update_date = now()
+       WHERE id = $15`,
+      [
+        no,
+        aspects,
+        sub_no,
+        aspect,
+        sub_sub_no,
+        request,
+        score,
+        description_proof,
+        done,
+        total,
+        update_by,
+        fjk_comment,
+        dept_concern,
+        email,
+        id,
+      ]
+    );
+
+    res.status(200).json({ message: "Data updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while updating data" });
+  }
+});
+
 module.exports = router;
