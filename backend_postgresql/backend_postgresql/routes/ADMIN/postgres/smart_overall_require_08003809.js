@@ -15,12 +15,9 @@ const query = (text, params) => pool.query(text, params);
 router.get("/page1/distinctaspects", async (req, res) => {
   try {
     const result = await query(`
-    select
-    distinct aspects
-  from
-    public.smart_overall_require_08003809
-  order by
-    aspects asc
+      SELECT DISTINCT aspects
+      FROM public.smart_overall_require_08003809
+      ORDER BY aspects ASC
     `);
     res.status(200).json(result.rows);
   } catch (error) {
@@ -33,20 +30,13 @@ router.get("/page1/distinctaspect", async (req, res) => {
   try {
     const { aspects } = req.query;
 
-    let queryStr = "";
-    let queryParams = [];
-
-    queryStr = `
-    select
-	distinct aspect
-from
-	public.smart_overall_require_08003809
-where 
-	aspects = $1
-order by
-	aspect asc
-        `;
-    queryParams = [aspects];
+    const queryStr = `
+      SELECT DISTINCT aspect
+      FROM public.smart_overall_require_08003809
+      WHERE aspects = $1
+      ORDER BY aspect ASC
+    `;
+    const queryParams = [aspects];
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
