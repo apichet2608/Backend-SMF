@@ -12,7 +12,7 @@ const pool = new Pool({
 
 const query = (text, params) => pool.query(text, params);
 
-router.get("/distinctaspects", async (req, res) => {
+router.get("/page1/distinctaspects", async (req, res) => {
   try {
     const result = await query(`
       SELECT DISTINCT aspects
@@ -26,7 +26,7 @@ router.get("/distinctaspects", async (req, res) => {
   }
 });
 
-router.get("/distinctaspect", async (req, res) => {
+router.get("/page1/distinctaspect", async (req, res) => {
   try {
     const { aspects } = req.query;
 

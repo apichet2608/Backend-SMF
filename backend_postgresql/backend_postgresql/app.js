@@ -114,7 +114,7 @@ app.use(
   "/api/smart_energy_month_bue_deptbuild",
   smart_energy_month_bue_deptbuild
 );
-app.use("/api/smart_overall_require_08003809", smart_overall_require_08003809);
+app.use("/api/smart_overall_require", smart_overall_require_08003809);
 
 app.use(function (req, res, next) {
   next(createError(404));
