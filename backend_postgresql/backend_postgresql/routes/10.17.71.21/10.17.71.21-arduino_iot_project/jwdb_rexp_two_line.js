@@ -92,7 +92,7 @@ router.get("/dataplot", async (req, res) => {
         FROM public.jwdb_rexp_two_line
         WHERE factory = $1
         AND mc_code = $2
-        AND first_lot = $3
+        AND first_lot like $3
         AND ptime::timestamp >= (now() - interval '${hours}' hour)
         ORDER BY first_lot ASC`,
         [factory, mc_code, first_lot]
