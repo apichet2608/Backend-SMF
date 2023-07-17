@@ -193,7 +193,7 @@ router.put("/:id", async (req, res) => {
          cp_date = $11,
          status = $12,
          share_link_report = $13,
-         "email_list " = $14,
+         "email_list" = $14,
          no =  $15
        WHERE id = $16;`,
       [
@@ -246,7 +246,7 @@ router.post("/", async (req, res) => {
 
     const result = await query(
       `INSERT INTO public.smart_mil_common 
-       (agenda, apple_dri, mil_date, process, smart_topic, sub_topic, risk, findings, corrective_action, fjk_dri, cp_date, status, share_link_report, "email_list ","no")
+       (agenda, apple_dri, mil_date, process, smart_topic, sub_topic, risk, findings, corrective_action, fjk_dri, cp_date, status, share_link_report, "email_list","no")
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,$15);`,
       [
         agenda,
