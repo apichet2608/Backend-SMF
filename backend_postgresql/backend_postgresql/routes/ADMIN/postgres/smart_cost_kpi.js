@@ -199,20 +199,7 @@ router.get("/page1/table2", async (req, res) => {
     if (department === "ALL") {
       queryStr = `
       select
-	factory,
-	division,
-	department,
-	sub_department,
-	cost_center,
-	cost_center_name,
-	item_code,
-	cost_type,
-	year_month,
-	expense_plan,
-	expense_result,
-	id,
-	create_at,
-	update_date
+	*
 from
 	public.smart_cost_item_month_kpi
 WHERE
@@ -235,20 +222,7 @@ WHERE
     } else {
       queryStr = `
       select
-	factory,
-	division,
-	department,
-	sub_department,
-	cost_center,
-	cost_center_name,
-	item_code,
-	cost_type,
-	year_month,
-	expense_plan,
-	expense_result,
-	id,
-	create_at,
-	update_date
+	*
 from
 	public.smart_cost_item_month_kpi
 WHERE
