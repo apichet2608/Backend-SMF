@@ -177,6 +177,7 @@ GROUP BY
 ORDER BY
   total_expense_result DESC
 LIMIT 20;
+
         `;
       queryParams = [division, department, cost_type];
     }
@@ -199,8 +200,11 @@ router.get("/page1/table2", async (req, res) => {
     if (department === "ALL") {
       queryStr = `
       select
-	*
-from
+	item_code 
+	,cost_center ,
+	sum(expense_plan) as expense_plan,
+	sum(expense_result) as expense_result
+from 
 	public.smart_cost_item_month_kpi
 WHERE
   factory = 'A1'
@@ -215,15 +219,21 @@ WHERE
     ORDER BY
       year_month DESC
   )
-  ORDER BY
+ group by 
+ 	item_code 
+	,cost_center 
+ORDER BY
   expense_result  DESC;
         `;
       queryParams = [division, cost_type];
     } else {
       queryStr = `
       select
-	*
-from
+	item_code 
+	,cost_center ,
+	sum(expense_plan) as expense_plan,
+	sum(expense_result) as expense_result
+from 
 	public.smart_cost_item_month_kpi
 WHERE
   factory = 'A1'
@@ -238,7 +248,10 @@ WHERE
     ORDER BY
       year_month DESC
   )
-  ORDER BY
+ group by 
+ 	item_code 
+	,cost_center 
+ORDER BY
   expense_result  DESC;
         `;
       queryParams = [division, department, cost_type];
