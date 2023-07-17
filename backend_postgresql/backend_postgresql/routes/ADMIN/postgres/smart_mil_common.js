@@ -30,11 +30,22 @@ order by no
 
 router.get("/apple-dri", async (req, res) => {
   try {
-    const result = await query(`
-select
-	distinct  apple_dri 
-from
-	public.smart_mil_common;`);
+    // Extract the query parameters from the request
+    const { year, agenda, status } = req.query;
+
+    // Perform the database query using the query parameters
+    const result = await query(
+      `
+      SELECT DISTINCT apple_dri 
+      FROM public.smart_mil_common
+      WHERE EXTRACT(YEAR FROM mil_date) = $1
+      AND agenda = $2
+      AND status = $3
+    `,
+      [year, agenda, status]
+    );
+
+    // Respond with the query result as JSON
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
