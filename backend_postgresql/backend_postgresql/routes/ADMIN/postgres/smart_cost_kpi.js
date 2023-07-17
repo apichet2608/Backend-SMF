@@ -153,7 +153,7 @@ router.get("/page1/plot2", async (req, res) => {
     } else {
       queryStr = `
       SELECT
-  CONCAT('ITEM - ', item_code) AS item_code,
+  item_code,
   year_month,
   SUM(expense_result) AS total_expense_result
 FROM
