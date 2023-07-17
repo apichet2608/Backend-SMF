@@ -153,7 +153,7 @@ router.get("/page1/plot2", async (req, res) => {
     } else {
       queryStr = `
       SELECT
-  item_code,
+  item_code::text,
   year_month,
   SUM(expense_result) AS total_expense_result
 FROM
@@ -176,7 +176,7 @@ GROUP BY
   year_month
 ORDER BY
   total_expense_result DESC
-  limit 20;
+LIMIT 20;
         `;
       queryParams = [division, department, cost_type];
     }
