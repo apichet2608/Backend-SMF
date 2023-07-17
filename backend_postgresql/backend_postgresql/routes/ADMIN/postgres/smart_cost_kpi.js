@@ -199,13 +199,14 @@ router.get("/page1/table2", async (req, res) => {
 
     if (department === "ALL") {
       queryStr = `
-      select
-	item_code 
-	,cost_center ,
-	sum(expense_plan) as expense_plan,
-	sum(expense_result) as expense_result
-from 
-	public.smart_cost_item_month_kpi
+      SELECT
+  ROW_NUMBER() OVER () AS id,
+  item_code,
+  cost_center,
+  SUM(expense_plan) AS expense_plan,
+  SUM(expense_result) AS expense_result
+FROM
+  public.smart_cost_item_month_kpi
 WHERE
   factory = 'A1'
   AND division = $1
@@ -219,40 +220,41 @@ WHERE
     ORDER BY
       year_month DESC
   )
- group by 
- 	item_code 
-	,cost_center 
+GROUP BY
+  item_code,
+  cost_center
 ORDER BY
-  expense_result  DESC;
+  expense_result DESC;
         `;
       queryParams = [division, cost_type];
     } else {
       queryStr = `
-      select
-	item_code 
-	,cost_center ,
-	sum(expense_plan) as expense_plan,
-	sum(expense_result) as expense_result
-from 
-	public.smart_cost_item_month_kpi
-WHERE
-  factory = 'A1'
-  AND division = $1
-  AND department = $2
-  AND cost_type = $3
-  AND year_month = (
-    SELECT
-      MAX(year_month) AS year_month
+      SELECT
+      ROW_NUMBER() OVER () AS id,
+      item_code,
+      cost_center,
+      SUM(expense_plan) AS expense_plan,
+      SUM(expense_result) AS expense_result
     FROM
       public.smart_cost_item_month_kpi
+    WHERE
+      factory = 'A1'
+      AND division = $1
+      AND department = $2
+      AND cost_type = $3
+      AND year_month = (
+        SELECT
+          MAX(year_month) AS year_month
+        FROM
+          public.smart_cost_item_month_kpi
+        ORDER BY
+          year_month DESC
+      )
+    GROUP BY
+      item_code,
+      cost_center
     ORDER BY
-      year_month DESC
-  )
- group by 
- 	item_code 
-	,cost_center 
-ORDER BY
-  expense_result  DESC;
+      expense_result DESC;    
         `;
       queryParams = [division, department, cost_type];
     }
