@@ -125,36 +125,10 @@ router.get("/page1/plot2", async (req, res) => {
 
     if (department === "ALL") {
       queryStr = `
-      select
-      item_code,
-      year_month,
-      SUM(expense_result) as total_expense_result
-    from
-      public.smart_cost_item_month_kpi
-    where
-      factory = 'A1'
-      and division = $1
-      and cost_type = $2
-      and year_month = (
-      select
-        MAX(year_month) as year_month
-      from
-        public.smart_cost_item_month_kpi
-      order by
-        year_month desc)
-    group by
-      item_code,
-      year_month
-    order by
-      total_expense_result desc
-      limit 20;
-        `;
-      queryParams = [division, cost_type];
-    } else {
-      queryStr = `
       SELECT
   item_code::text,
   year_month,
+  item_desc ,
   SUM(expense_result) AS total_expense_result
 FROM
   public.smart_cost_item_month_kpi
@@ -173,11 +147,42 @@ WHERE
   )
 GROUP BY
   item_code,
-  year_month
+  year_month,
+  item_desc
 ORDER BY
   total_expense_result DESC
 LIMIT 20;
-
+        `;
+      queryParams = [division, cost_type];
+    } else {
+      queryStr = `
+      SELECT
+  item_code::text,
+  year_month,
+  item_desc ,
+  SUM(expense_result) AS total_expense_result
+FROM
+  public.smart_cost_item_month_kpi
+WHERE
+  factory = 'A1'
+  AND division = $1
+  AND department = $2
+  AND cost_type = $3
+  AND year_month = (
+    SELECT
+      MAX(year_month) AS year_month
+    FROM
+      public.smart_cost_item_month_kpi
+    ORDER BY
+      year_month DESC
+  )
+GROUP BY
+  item_code,
+  year_month,
+  item_desc
+ORDER BY
+  total_expense_result DESC
+LIMIT 20;
         `;
       queryParams = [division, department, cost_type];
     }
