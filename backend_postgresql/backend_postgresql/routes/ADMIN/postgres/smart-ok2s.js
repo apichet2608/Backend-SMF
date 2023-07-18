@@ -7,22 +7,25 @@ const pool = new Pool({
   port: 5432,
   user: "postgres",
   password: "postgres",
-  database: "postgres", 
+  database: "postgres",
 });
 
 const query = (text, params) => pool.query(text, params);
 
 router.get("/all", async (req, res) => {
   try {
-	const {startdate,stopdate} = req.query
-    const result = await query(`
+    const { startdate, stopdate } = req.query;
+    const result = await query(
+      `
 select
 	*
 from
 	public.ok2s
 where create_date >= $1 and create_date  <= $2 
 order by id 
-    `,  [startdate,stopdate+' 23:59:59']);
+    `,
+      [startdate, stopdate + " 23:59:59"]
+    );
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
@@ -32,7 +35,7 @@ order by id
 
 router.get("/product", async (req, res) => {
   try {
-    const {product,startdate,stopdate} = req.query;
+    const { product, startdate, stopdate } = req.query;
 
     const result = await query(
       `select
@@ -43,7 +46,7 @@ where
 	f_product  = $1 and
 	create_date >= $2 and create_date  <= $3
 	order by id `,
-      [product,startdate,stopdate+' 23:59:59']
+      [product, startdate, stopdate + " 23:59:59"]
     );
 
     res.status(200).json(result.rows);
@@ -55,7 +58,7 @@ where
 
 router.get("/all/final", async (req, res) => {
   try {
-    const {startdate,stopdate,status} = req.query;
+    const { startdate, stopdate, status } = req.query;
 
     const result = await query(
       `select
@@ -66,7 +69,7 @@ where
 	create_date >= $1 and create_date  <= $2 
 	and final_report = $3
 	order by id `,
-      [startdate,stopdate+' 23:59:59',status]
+      [startdate, stopdate + " 23:59:59", status]
     );
 
     res.status(200).json(result.rows);
@@ -78,7 +81,7 @@ where
 
 router.get("/product/final", async (req, res) => {
   try {
-    const {product,startdate,stopdate,status} = req.query;
+    const { product, startdate, stopdate, status } = req.query;
 
     const result = await query(
       `select
@@ -90,7 +93,7 @@ where
 	create_date >= $2 and create_date  <= $3 
 	and final_report = $4
 	order by id `,
-      [product,startdate,stopdate+' 23:59:59',status]
+      [product, startdate, stopdate + " 23:59:59", status]
     );
 
     res.status(200).json(result.rows);
@@ -102,7 +105,7 @@ where
 
 router.get("/all/first", async (req, res) => {
   try {
-    const {startdate,stopdate,status} = req.query;
+    const { startdate, stopdate, status } = req.query;
 
     const result = await query(
       `select
@@ -113,7 +116,7 @@ where
 	create_date >= $1 and create_date  <= $2 
 	and first_report = $3
 	order by id `,
-      [startdate,stopdate+' 23:59:59',status]
+      [startdate, stopdate + " 23:59:59", status]
     );
 
     res.status(200).json(result.rows);
@@ -125,7 +128,7 @@ where
 
 router.get("/product/first", async (req, res) => {
   try {
-    const {product,startdate,stopdate,status} = req.query;
+    const { product, startdate, stopdate, status } = req.query;
 
     const result = await query(
       `select
@@ -137,7 +140,7 @@ where
 	create_date >= $2 and create_date  <= $3 
 	and first_report = $4
 	order by id `,
-      [product,startdate,stopdate+' 23:59:59',status]
+      [product, startdate, stopdate + " 23:59:59", status]
     );
 
     res.status(200).json(result.rows);
@@ -149,7 +152,7 @@ where
 
 router.get("/all/sample", async (req, res) => {
   try {
-    const {startdate,stopdate,status} = req.query;
+    const { startdate, stopdate, status } = req.query;
 
     const result = await query(
       `select
@@ -160,7 +163,7 @@ where
 	create_date >= $1 and create_date  <= $2 
 	and final_report = $3
 	order by id `,
-      [startdate,stopdate+' 23:59:59',status]
+      [startdate, stopdate + " 23:59:59", status]
     );
 
     res.status(200).json(result.rows);
@@ -172,7 +175,7 @@ where
 
 router.get("/product/sample", async (req, res) => {
   try {
-    const {product,startdate,stopdate,status} = req.query;
+    const { product, startdate, stopdate, status } = req.query;
 
     const result = await query(
       `select
@@ -184,7 +187,7 @@ where
 	create_date >= $2 and create_date  <= $3 
 	and final_report = $4
 	order by id `,
-      [product,startdate,stopdate+' 23:59:59',status]
+      [product, startdate, stopdate + " 23:59:59", status]
     );
 
     res.status(200).json(result.rows);
@@ -210,21 +213,31 @@ order by f_product
   }
 });
 
-
 // PUT route to update data
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const {sample_anc} = req.body;
+    const { sample_anc } = req.body;
+
+    // Convert sample_anc to Date object
+    const sampleAncDate = new Date(sample_anc);
+
+    // Calculate first_report_date and final_report_date
+    const firstReportDate = new Date(
+      sampleAncDate.getTime() + 9 * 24 * 60 * 60 * 1000
+    );
+    const finalReportDate = new Date(
+      sampleAncDate.getTime() + 42 * 24 * 60 * 60 * 1000
+    );
 
     const result = await query(
-      `update
-	public.ok2s
-set
-	sample_anc = $1 
-where
-	id = $2;`,
-      [sample_anc,id]
+      `UPDATE ok2s
+       SET sample_anc = $1,
+           first_report_date = $2,
+           final_report_date = $3
+       WHERE id = $4
+      `,
+      [sample_anc, firstReportDate, finalReportDate, id]
     );
 
     res.status(200).json({ message: "Data updated successfully" });
