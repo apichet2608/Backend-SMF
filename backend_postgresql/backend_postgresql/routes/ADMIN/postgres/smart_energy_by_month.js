@@ -370,7 +370,11 @@ router.get("/page2/plot2", async (req, res) => {
           : [build, loadtype, area];
     }
     console.log(queryStr);
+    console.log(queryParams);
+
     const result = await query(queryStr, queryParams);
+    console.log(result);
+
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
