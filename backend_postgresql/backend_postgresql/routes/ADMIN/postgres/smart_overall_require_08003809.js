@@ -15,9 +15,16 @@ const query = (text, params) => pool.query(text, params);
 router.get("/page1/distinctaspects", async (req, res) => {
   try {
     const result = await query(`
-      SELECT DISTINCT aspects
-      FROM public.smart_overall_require_08003809
-      ORDER BY aspects ASC
+    select
+    aspects ,
+    no
+  from
+    public.smart_overall_require_08003809
+  group by
+    aspects ,
+    no
+  order by
+    no asc
     `);
     res.status(200).json(result.rows);
   } catch (error) {
