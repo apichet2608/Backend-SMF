@@ -592,33 +592,35 @@ router.get("/page5/plot", async (req, res) => {
     let queryParams = [];
 
     queryStr = `
-    select
-      ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
-      month_code,
-      load_type,
-      area,
-      dept_2,
-      building,
-      sum(diff_energy_usage) as diff_energy_usage,
-      concat(load_type, '-', dept_2) AS building_load_type
-    from
-      public.smart_energy_by_month
-    where
-      month_code = (
-      select
-        MAX(month_code)
-      from
-        public.smart_energy_by_month)
-      and dept_2 = $1
-      ${build !== "ALL" ? "and building = $2" : ""}
-    group by
-      month_code,
-      dept_2,
-      load_type,
-      area,
-      building
-    order by
-      month_code asc
+    SELECT
+    ROW_NUMBER() OVER (ORDER BY month_code ASC) AS id,
+    month_code,
+    load_type,
+    area,
+    dept_2,
+    building,
+    sum(diff_energy_usage) AS diff_energy_usage,
+    CASE
+        WHEN ${build} = 'ALL' THEN concat(load_type, '-', building)
+        ELSE concat(load_type, '-', area)
+    END AS area_load_type
+FROM
+    public.smart_energy_by_month
+WHERE
+    month_code = (
+        SELECT MAX(month_code)
+        FROM public.smart_energy_by_month
+    )
+    AND dept_2 = $1
+    ${build !== "ALL" ? "AND building = $2" : ""}
+GROUP BY
+    month_code,
+    dept_2,
+    load_type,
+    area,
+    building
+ORDER BY
+    month_code ASC;
     `;
     queryParams = build !== "ALL" ? [dept, build] : [dept];
 
