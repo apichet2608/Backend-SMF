@@ -86,15 +86,32 @@ router.get("/page1/table", async (req, res) => {
     email
   from
     public.smart_overall_require_08003809
-  where
-    aspects = $1
-    ${aspect !== "ALL" ? "AND aspect = $2" : ""}
-  order by
-    sub_sub_no asc
-    `;
-    let queryParams = [aspects];
+  `;
 
-    queryParams = aspect !== "ALL" ? [aspects, aspect] : [aspects];
+    let queryParams = [];
+
+    // Check if aspects is equal to '-'
+    if (aspects !== "-") {
+      queryStr += `
+        where
+          aspects = $1
+      `;
+      queryParams.push(aspects);
+    }
+
+    if (aspect !== "ALL") {
+      queryStr += `
+        ${queryParams.length > 0 ? "AND" : "where"} aspect = $${
+        queryParams.length + 1
+      }
+      `;
+      queryParams.push(aspect);
+    }
+
+    queryStr += `
+    order by
+      sub_sub_no asc
+    `;
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
