@@ -600,11 +600,12 @@ router.get("/page5/plot", async (req, res) => {
     dept_2,
     building,
     sum(diff_energy_usage) AS diff_energy_usage,
-    CASE
-        WHEN ${build} = 'ALL' THEN concat(load_type, '-', building)
-        ELSE concat(load_type, '-', area)
-    END AS area_load_type
-FROM
+    ${
+      build !== "ALL"
+        ? "concat(load_type, '-', area) AS area_load_type"
+        : "concat(load_type, '-', building) AS area_load_type"
+    }
+FROM 
     public.smart_energy_by_month
 WHERE
     month_code = (
