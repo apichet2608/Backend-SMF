@@ -358,14 +358,14 @@ router.get("/page2/plot2", async (req, res) => {
         load_type = $2
         AND
         area = $3
-        ${mdb_code !== null ? "AND mdb_code = $4" : ""}
+        ${mdb_code !== undefined ? "AND mdb_code = $4" : ""}
         GROUP BY
           month_code
         ORDER BY
           month_code ASC;
       `;
       queryParams =
-        mdb_code !== null
+        mdb_code !== undefined
           ? [build, loadtype, area, mdb_code]
           : [build, loadtype, area];
     }
