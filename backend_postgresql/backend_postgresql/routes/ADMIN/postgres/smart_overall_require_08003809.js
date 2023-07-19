@@ -73,15 +73,13 @@ router.get("/page1/table", async (req, res) => {
     public.smart_overall_require_08003809
   where
     aspects = $1
+    ${aspect !== "ALL" ? "AND aspect = $2" : ""}
   order by
     sub_sub_no asc
     `;
     let queryParams = [aspects];
 
-    if (aspect && aspect !== "ALL") {
-      queryStr += `AND aspect = $2`;
-      queryParams.push(aspect);
-    }
+    queryParams = aspect !== "ALL" ? [aspects, aspect] : [aspects];
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
