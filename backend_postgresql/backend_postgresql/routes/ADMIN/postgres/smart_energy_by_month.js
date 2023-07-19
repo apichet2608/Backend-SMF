@@ -298,7 +298,7 @@ router.get("/page2/table2", async (req, res) => {
     from
       public.smart_energy_by_month
     order by
-         "month" asc
+    energy_cost_baht desc
         `;
     } else {
       queryStr = `
@@ -319,7 +319,7 @@ router.get("/page2/table2", async (req, res) => {
       and 
       area = $3
     order by
-         "month" asc
+    energy_cost_baht desc
         `;
       queryParams = [build, loadtype, area];
     }
