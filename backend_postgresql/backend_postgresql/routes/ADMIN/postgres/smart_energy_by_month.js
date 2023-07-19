@@ -369,7 +369,7 @@ router.get("/page2/plot2", async (req, res) => {
           ? [build, loadtype, area, mdb_code]
           : [build, loadtype, area];
     }
-
+    console.log(queryStr);
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
   } catch (error) {
