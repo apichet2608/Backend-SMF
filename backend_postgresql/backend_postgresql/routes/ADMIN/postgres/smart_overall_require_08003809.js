@@ -51,7 +51,7 @@ router.get("/page1/distinctaspect", async (req, res) => {
     no,
     sub_no
   order by
-    no asc
+  sub_no asc
     `;
     const queryParams = [aspects];
 
