@@ -38,10 +38,20 @@ router.get("/page1/distinctaspect", async (req, res) => {
     const { aspects } = req.query;
 
     const queryStr = `
-      SELECT DISTINCT aspect
-      FROM public.smart_overall_require_08003809
-      WHERE aspects = $1
-      ORDER BY aspect ASC
+    select
+    aspect ,
+    no,
+    sub_no
+  from
+    public.smart_overall_require_08003809
+  where
+    aspects = $1
+  group by
+    aspect ,
+    no,
+    sub_no
+  order by
+    no asc
     `;
     const queryParams = [aspects];
 
