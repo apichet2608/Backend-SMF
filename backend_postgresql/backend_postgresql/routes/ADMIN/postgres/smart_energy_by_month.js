@@ -328,48 +328,46 @@ router.get("/page2/table2", async (req, res) => {
 
 router.get("/page2/plot2", async (req, res) => {
   try {
-    const { build, loadtype, area } = req.query;
+    const { build, loadtype, area, mdb_code } = req.query;
 
-    let queryStr = "";
+    let queryStr = `
+      SELECT
+        month_code,
+        sum(diff_energy_usage) AS diff_energy_usage
+      FROM
+        public.smart_energy_by_month
+      WHERE`;
+
     let queryParams = [];
 
     if (build === "ALL") {
-      queryStr = `
-      select
-      month_code,
-      sum(diff_energy_usage) as diff_energy_usage
-    from
-      public.smart_energy_by_month
-    where 
-      building = 'A'
-      and
-      load_type = 'Lighting'
-      and 
-      area = 'OFFICE-A'
-    group by 
-      month_code 
-    order by
-         month_code asc
-        `;
+      queryStr += `
+        load_type = $1
+        AND
+        area = $2
+        GROUP BY
+          month_code
+        ORDER BY
+          month_code ASC;
+      `;
+      queryParams = [loadtype, area];
     } else {
-      queryStr = `
-      select
-      month_code,
-      sum(diff_energy_usage) as diff_energy_usage
-    from
-      public.smart_energy_by_month
-    where 
-      building = $1
-      and
-      load_type = $2
-      and 
-      area = $3
-    group by 
-      month_code 
-    order by
-         month_code asc
-        `;
-      queryParams = [build, loadtype, area];
+      queryStr += `
+        building = $1
+        AND
+        load_type = $2
+        AND
+        area = $3
+        ${mdb_code !== null ? "AND mdb_code = $4" : ""}
+        GROUP BY
+          month_code
+        ORDER BY
+          month_code ASC;
+      `;
+      queryParams =
+        mdb_code !== null
+          ? [build, loadtype, area, mdb_code]
+          : [build, loadtype, area];
     }
 
     const result = await query(queryStr, queryParams);
