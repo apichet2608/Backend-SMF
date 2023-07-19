@@ -306,7 +306,13 @@ router.get("/page2/table2", async (req, res) => {
       *
     from
       public.smart_energy_by_month
-    where 
+    where
+      month_code = (
+      select
+        MAX(month_code)
+      from
+        public.smart_energy_by_month)
+      and
       building = $1
       and
       load_type = $2
