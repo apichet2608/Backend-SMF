@@ -591,7 +591,7 @@ router.get("/page3/plot2", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
-/page5/plot
+
 router.get("/page5/plot", async (req, res) => {
   try {
     const { dept, build } = req.query;
