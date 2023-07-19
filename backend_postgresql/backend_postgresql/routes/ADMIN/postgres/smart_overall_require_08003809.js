@@ -83,9 +83,7 @@ router.get("/page1/table", async (req, res) => {
     update_by,
     fjk_comment,
     dept_concern,
-    email,
-    create_at,
-    update_date
+    email
   from
     public.smart_overall_require_08003809
   where
