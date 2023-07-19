@@ -599,7 +599,8 @@ router.get("/page5/plot", async (req, res) => {
       area,
       dept_2,
       building,
-      sum(diff_energy_usage) as diff_energy_usage
+      sum(diff_energy_usage) as diff_energy_usage,
+      concat(load_type, '-', dept_2) AS building_load_type
     from
       public.smart_energy_by_month
     where
