@@ -20,9 +20,9 @@ router.get("/page1/raderchart", async (req, res) => {
     no,
     aspects,
     COUNT(*) as count,
-    SUM(CASE WHEN score = 1 THEN 1 ELSE 0 END) as score_1_count,
+    SUM(CASE WHEN score > 0 THEN score ELSE 0 END) as score_1_count,
     SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) as score_0_count,
-    (SUM(CASE WHEN score = 1 THEN 1 ELSE 0 END) * 100.0) / COUNT(*) as score_1_percentage,
+    (SUM(CASE WHEN score > 0 THEN score ELSE 0 END) * 100.0) / COUNT(*) as score_1_percentage,
     (SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) * 100.0) / COUNT(*) as score_0_percentage
 FROM
     public.smart_overall_require_08003809
