@@ -15,21 +15,22 @@ const query = (text, params) => pool.query(text, params);
 router.get("/page1/raderchart", async (req, res) => {
   try {
     const queryStr = `
-      SELECT
-        no,
-        aspects,
-        COUNT(*) as count,
-        SUM(CASE WHEN score = 1 THEN 1 ELSE 0 END) as score_1_count,
-        SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) as score_0_count,
-        (SUM(CASE WHEN score = 1 THEN 1 ELSE 0 END) * 100.0) / COUNT(*) as score_1_percentage,
-        (SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) * 100.0) / COUNT(*) as score_0_percentage
-      FROM
-        public.smart_overall_require_08003809
-      GROUP BY
-        no,
-        aspects
-      ORDER BY
-        no ASC;
+    SELECT
+    ROW_NUMBER() OVER () AS id,
+    no,
+    aspects,
+    COUNT(*) as count,
+    SUM(CASE WHEN score = 1 THEN 1 ELSE 0 END) as score_1_count,
+    SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) as score_0_count,
+    (SUM(CASE WHEN score = 1 THEN 1 ELSE 0 END) * 100.0) / COUNT(*) as score_1_percentage,
+    (SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) * 100.0) / COUNT(*) as score_0_percentage
+FROM
+    public.smart_overall_require_08003809
+GROUP BY
+    no,
+    aspects
+ORDER BY
+    no ASC;
     `;
 
     const result = await query(queryStr);
