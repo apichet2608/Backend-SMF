@@ -505,7 +505,8 @@ router.put("/:id", async (req, res) => {
            status = $7,
            email = $8,
            link = $9,
-           "no" = $10
+           "no" = $10,
+           finished_date = null
          WHERE id = $11`,
         [
           dept,
