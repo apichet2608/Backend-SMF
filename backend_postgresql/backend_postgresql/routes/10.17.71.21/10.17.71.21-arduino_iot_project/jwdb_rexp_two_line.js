@@ -83,7 +83,7 @@ router.get("/dataplot", async (req, res) => {
         WHERE factory = $1
         AND mc_code = $2
         AND ptime::timestamp >= (now() - interval '${hours}' hour)
-        ORDER BY first_lot ASC`,
+        ORDER BY ptime ASC`,
         [factory, mc_code]
       );
     } else {
@@ -94,7 +94,7 @@ router.get("/dataplot", async (req, res) => {
         AND mc_code = $2
         AND first_lot LIKE $3
         AND ptime::timestamp >= (now() - interval '${hours}' hour)
-        ORDER BY first_lot ASC`,
+        ORDER BY ptime ASC`,
         [factory, mc_code, `${first_lot}%`]
       );
     }
