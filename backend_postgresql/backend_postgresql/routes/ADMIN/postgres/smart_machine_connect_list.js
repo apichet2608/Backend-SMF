@@ -571,4 +571,173 @@ router.post("/barcodeid/", async (req, res) => {
   }
 });
 
+router.get("/tablestopper", async (req, res) => {
+  try {
+    const { status } = req.query;
+
+    let queryStr = "";
+    let queryParams = [];
+
+    if (status === "total") {
+      queryStr = `
+      select
+	item_code, 
+	item_building,
+	item_owner_cc,
+	item_sub_process,
+	item_iot_group1,
+	stopper,
+	stopper_plan_date,
+	stopper_finish_date,
+	stopper_status
+from
+	public.smart_machine_connect_list
+ WHERE status IN ('Finished', 'Planed', 'Wait for plan', '')
+ and stopper = 'Y'
+      `;
+    } else {
+      queryStr = `
+      select
+	item_code, 
+	item_building,
+	item_owner_cc,
+	item_sub_process,
+	item_iot_group1,
+	stopper,
+	stopper_plan_date,
+	stopper_finish_date,
+	stopper_status
+from
+	public.smart_machine_connect_list
+ WHERE status = $1
+ and stopper = 'Y'
+      `;
+      queryParams = [status];
+    }
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+// PUT route to update data
+router.put("/stopper/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      item_code,
+      item_building,
+      item_owner_cc,
+      item_sub_process,
+      item_iot_group1,
+      stopper,
+      stopper_plan_date,
+      stopper_finish_date,
+      stopper_status,
+    } = req.body;
+
+    // Rest of the code remains unchanged
+    const result = await query(
+      `UPDATE public.smart_machine_connect_list
+       SET
+         item_code = $1,
+         item_building = $2,
+         item_owner_cc = $3,
+         item_sub_process = $4,
+         item_iot_group1 = $5,
+         stopper = $6,
+         stopper_plan_date = $7,
+         stopper_finish_date = $8,
+         stopper_status = $9
+       WHERE id = $10;`,
+      [
+        item_code,
+        item_building,
+        item_owner_cc,
+        item_sub_process,
+        item_iot_group1,
+        stopper,
+        stopper_plan_date,
+        stopper_finish_date,
+        stopper_status,
+        id,
+      ]
+    );
+
+    res.status(200).json({ message: "Data updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while updating data" });
+  }
+});
+
+// DELETE route to delete data
+router.delete("/stopper/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Rest of the code remains unchanged
+    const result = await query(
+      "DELETE FROM public.smart_machine_connect_list WHERE id = $1;",
+      [id]
+    );
+
+    res.status(200).json({ message: "Data deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while deleting data" });
+  }
+});
+
+// POST route to add new data
+router.post("/stopper/", async (req, res) => {
+  try {
+    const {
+      item_code,
+      item_building,
+      item_owner_cc,
+      item_sub_process,
+      item_iot_group1,
+      stopper,
+      stopper_plan_date,
+      stopper_finish_date,
+      stopper_status,
+    } = req.body;
+
+    // Rest of the code remains unchanged
+    const result = await query(
+      `INSERT INTO smart_machine_connect_list
+      (item_code,
+       item_building,
+       item_owner_cc,
+       item_sub_process,
+       item_iot_group1,
+       stopper,
+       stopper_plan_date,
+       stopper_finish_date,
+       stopper_status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`,
+      [
+        item_code,
+        item_building,
+        item_owner_cc,
+        item_sub_process,
+        item_iot_group1,
+        stopper,
+        stopper_plan_date,
+        stopper_finish_date,
+        stopper_status,
+      ]
+    );
+
+    res.status(201).json({ message: "Data added successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while adding data" });
+  }
+});
+
 module.exports = router;
