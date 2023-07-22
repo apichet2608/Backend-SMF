@@ -422,7 +422,7 @@ router.get("/tablebarcodeid", async (req, res) => {
       status_barcodeid
     from
       public.smart_machine_connect_list
-     WHERE status IN ('Finished', 'Planed', 'Wait for plan', '')
+     WHERE status_barcodeid IN ('Finished', 'Planed', 'Wait for plan', '')
      and  barcodeid = 'Y'
       `;
     } else {
@@ -440,7 +440,7 @@ router.get("/tablebarcodeid", async (req, res) => {
 	status_barcodeid
 from
 	public.smart_machine_connect_list
- WHERE status = $1
+ WHERE status_barcodeid = $1
  and  barcodeid = 'Y'
       `;
       queryParams = [status];
@@ -593,7 +593,7 @@ router.get("/tablestopper", async (req, res) => {
 	stopper_status
 from
 	public.smart_machine_connect_list
- WHERE status IN ('Finished', 'Planed', 'Wait for plan', '')
+ WHERE stopper_status IN ('Finished', 'Planed', 'Wait for plan', '')
  and stopper = 'Y'
       `;
     } else {
@@ -611,7 +611,7 @@ from
 	stopper_status
 from
 	public.smart_machine_connect_list
- WHERE status = $1
+ WHERE stopper_status = $1
  and stopper = 'Y'
       `;
       queryParams = [status];
