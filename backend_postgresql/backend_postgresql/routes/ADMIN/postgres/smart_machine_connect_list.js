@@ -581,6 +581,7 @@ router.get("/tablestopper", async (req, res) => {
     if (status === "total") {
       queryStr = `
       select
+  id,
 	item_code, 
 	item_building,
 	item_owner_cc,
@@ -598,6 +599,7 @@ from
     } else {
       queryStr = `
       select
+  id,
 	item_code, 
 	item_building,
 	item_owner_cc,
