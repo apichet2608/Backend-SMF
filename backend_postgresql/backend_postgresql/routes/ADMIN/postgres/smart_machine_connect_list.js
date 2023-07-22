@@ -147,7 +147,7 @@ router.get("/count-status", async (req, res) => {
   }
 });
 
-router.get("/table", async (req, res) => {
+router.get("/tablescada", async (req, res) => {
   try {
     const { status } = req.query;
 
@@ -179,7 +179,7 @@ router.get("/table", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/scada/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -271,7 +271,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // DELETE route to delete data
-router.delete("/:id", async (req, res) => {
+router.delete("/scada/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -288,7 +288,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // POST route to add new data
-router.post("/", async (req, res) => {
+router.post("/scada/", async (req, res) => {
   try {
     const {
       item_factory,
