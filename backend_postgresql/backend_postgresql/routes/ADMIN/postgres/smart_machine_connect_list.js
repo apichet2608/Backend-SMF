@@ -206,6 +206,14 @@ router.put("/scada/:id", async (req, res) => {
       finish_date,
       remark,
       feeder_no,
+      barcodeid,
+      barcodeid_plan_date,
+      barcodeid_finish_date,
+      status_barcodeid,
+      stopper,
+      stopper_plan_date,
+      stopper_finish_date,
+      stopper_status,
     } = req.body;
 
     const result = await query(
@@ -234,7 +242,15 @@ router.put("/scada/:id", async (req, res) => {
          finish_date = $21,
          remark = $22,
          feeder_no = $23
-       WHERE id = $24;`,
+         barcodeid  = $24
+        barcodeid_plan_date  = $25
+        barcodeid_finish_date  = $26
+        status_barcodeid  = $27
+        stopper  = $28
+        stopper_plan_date  = $29
+        stopper_finish_date  = $30
+        stopper_status  = $31
+       WHERE id = $32;`,
       [
         item_factory,
         item_code,
@@ -259,6 +275,14 @@ router.put("/scada/:id", async (req, res) => {
         finish_date,
         remark,
         feeder_no,
+        barcodeid,
+        barcodeid_plan_date,
+        barcodeid_finish_date,
+        status_barcodeid,
+        stopper,
+        stopper_plan_date,
+        stopper_finish_date,
+        stopper_status,
         id,
       ]
     );
@@ -314,6 +338,14 @@ router.post("/scada/", async (req, res) => {
       remark,
       feeder_no,
       item_desc1,
+      barcodeid,
+      barcodeid_plan_date,
+      barcodeid_finish_date,
+      status_barcodeid,
+      stopper,
+      stopper_plan_date,
+      stopper_finish_date,
+      stopper_status,
     } = req.body;
 
     const result = await query(
@@ -342,7 +374,15 @@ router.post("/scada/", async (req, res) => {
       finish_date,
       remark,
       feeder_no,
-      item_desc1)
+      item_desc1,
+      barcodeid,
+	barcodeid_plan_date,
+	barcodeid_finish_date,
+	status_barcodeid,
+	stopper,
+	stopper_plan_date,
+	stopper_finish_date,
+	stopper_status)
     values($1,
     $2,
     $3,
@@ -365,7 +405,14 @@ router.post("/scada/", async (req, res) => {
     $20,
     $21,
     $22,
-    $23);`,
+    $23,
+    $24,
+    $25,
+    $26,
+    $27,
+    $28,
+    $29,
+    $30);`,
       [
         item_factory,
         item_code,
@@ -390,6 +437,14 @@ router.post("/scada/", async (req, res) => {
         remark,
         feeder_no,
         item_desc1,
+        barcodeid,
+        barcodeid_plan_date,
+        barcodeid_finish_date,
+        status_barcodeid,
+        stopper,
+        stopper_plan_date,
+        stopper_finish_date,
+        stopper_status,
       ]
     );
 
