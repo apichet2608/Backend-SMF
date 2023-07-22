@@ -410,6 +410,7 @@ router.get("/table2did", async (req, res) => {
     if (status === "total") {
       queryStr = `
       select
+  id,
       item_code, 
       item_building,
       item_owner_cc,
@@ -427,6 +428,7 @@ router.get("/table2did", async (req, res) => {
     } else {
       queryStr = `
       select
+  id,
 	item_code, 
 	item_building,
 	item_owner_cc,
