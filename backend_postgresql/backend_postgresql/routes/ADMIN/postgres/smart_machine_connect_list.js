@@ -400,7 +400,7 @@ router.post("/scada/", async (req, res) => {
   }
 });
 
-router.get("/table2did", async (req, res) => {
+router.get("/tablebarcodeid", async (req, res) => {
   try {
     const { status } = req.query;
 
@@ -416,14 +416,14 @@ router.get("/table2did", async (req, res) => {
       item_owner_cc,
       item_sub_process,
       item_iot_group1,
-      twodid ,
-      twodid_plan_date ,
-      twodid_finish_date ,
-      status_2did
+      barcodeid ,
+      barcodeid_plan_date ,
+      barcodeid_finish_date ,
+      status_barcodeid
     from
       public.smart_machine_connect_list
      WHERE status IN ('Finished', 'Planed', 'Wait for plan', '')
-     and  twodid = 'Y'
+     and  barcodeid = 'Y'
       `;
     } else {
       queryStr = `
@@ -434,14 +434,14 @@ router.get("/table2did", async (req, res) => {
 	item_owner_cc,
 	item_sub_process,
 	item_iot_group1,
-	twodid ,
-	twodid_plan_date ,
-	twodid_finish_date ,
-	status_2did
+	barcodeid ,
+	barcodeid_plan_date ,
+	barcodeid_finish_date ,
+	status_barcodeid
 from
 	public.smart_machine_connect_list
  WHERE status = $1
- and  twodid = 'Y'
+ and  barcodeid = 'Y'
       `;
       queryParams = [status];
     }
@@ -455,7 +455,7 @@ from
 });
 
 // PUT route to update data
-router.put("/2did/:id", async (req, res) => {
+router.put("/barcodeid/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -464,10 +464,10 @@ router.put("/2did/:id", async (req, res) => {
       item_owner_cc,
       item_sub_process,
       item_iot_group1,
-      twodid,
-      twodid_plan_date,
-      twodid_finish_date,
-      status_2did,
+      barcodeid,
+      barcodeid_plan_date,
+      barcodeid_finish_date,
+      status_barcodeid,
     } = req.body;
 
     // Rest of the code remains unchanged
@@ -479,10 +479,10 @@ router.put("/2did/:id", async (req, res) => {
          item_owner_cc = $3,
          item_sub_process = $4,
          item_iot_group1 = $5,
-         twodid = $6,
-         twodid_plan_date = $7,
-         twodid_finish_date = $8,
-         status_2did = $9
+         barcodeid = $6,
+         barcodeid_plan_date = $7,
+         barcodeid_finish_date = $8,
+         status_barcodeid = $9
        WHERE id = $10;`,
       [
         item_code,
@@ -490,10 +490,10 @@ router.put("/2did/:id", async (req, res) => {
         item_owner_cc,
         item_sub_process,
         item_iot_group1,
-        twodid,
-        twodid_plan_date,
-        twodid_finish_date,
-        status_2did,
+        barcodeid,
+        barcodeid_plan_date,
+        barcodeid_finish_date,
+        status_barcodeid,
         id,
       ]
     );
@@ -506,7 +506,7 @@ router.put("/2did/:id", async (req, res) => {
 });
 
 // DELETE route to delete data
-router.delete("/2did/:id", async (req, res) => {
+router.delete("/barcodeid/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -524,7 +524,7 @@ router.delete("/2did/:id", async (req, res) => {
 });
 
 // POST route to add new data
-router.post("/2did/", async (req, res) => {
+router.post("/barcodeid/", async (req, res) => {
   try {
     const {
       item_code,
@@ -532,10 +532,10 @@ router.post("/2did/", async (req, res) => {
       item_owner_cc,
       item_sub_process,
       item_iot_group1,
-      twodid,
-      twodid_plan_date,
-      twodid_finish_date,
-      status_2did,
+      barcodeid,
+      barcodeid_plan_date,
+      barcodeid_finish_date,
+      status_barcodeid,
     } = req.body;
 
     // Rest of the code remains unchanged
@@ -546,10 +546,10 @@ router.post("/2did/", async (req, res) => {
        item_owner_cc,
        item_sub_process,
        item_iot_group1,
-       twodid,
-       twodid_plan_date,
-       twodid_finish_date,
-       status_2did)
+       barcodeid,
+       barcodeid_plan_date,
+       barcodeid_finish_date,
+       status_barcodeid)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`,
       [
         item_code,
@@ -557,10 +557,10 @@ router.post("/2did/", async (req, res) => {
         item_owner_cc,
         item_sub_process,
         item_iot_group1,
-        twodid,
-        twodid_plan_date,
-        twodid_finish_date,
-        status_2did,
+        barcodeid,
+        barcodeid_plan_date,
+        barcodeid_finish_date,
+        status_barcodeid,
       ]
     );
 
