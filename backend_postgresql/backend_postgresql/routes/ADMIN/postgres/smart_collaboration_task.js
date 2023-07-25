@@ -674,22 +674,32 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/smart_collaboration_task/:id", async (req, res) => {
+router.put("/sub_action/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { subaction } = req.body;
-    console.log(subaction);
-    if (!subaction) {
-      return res.status(400).json({ error: "Missing subaction data" });
-    }
 
-    const subActionJson = JSON.stringify(subaction); // แปลง Array of Objects เป็น JSON
-    const result = await query(
-      `UPDATE smart_project_task
-       SET sub_action = $1
-       WHERE id = $2`,
-      [subActionJson, id]
-    );
+    if (subaction === "Finished") {
+      const result = await query(
+        `update
+        smart_project_task
+      set
+        sub_action = $1
+      where
+        id = $2`,
+        [subaction, id]
+      );
+    } else {
+      const result = await query(
+        `update
+        smart_project_task
+      set
+        sub_action = $1
+      where
+        id = $2`,
+        [subaction, id]
+      );
+    }
 
     res.status(200).json({ message: "Data updated successfully" });
   } catch (error) {
@@ -697,6 +707,5 @@ router.put("/smart_collaboration_task/:id", async (req, res) => {
     res.status(500).json({ error: "An error occurred while updating data" });
   }
 });
-
 
 module.exports = router;
