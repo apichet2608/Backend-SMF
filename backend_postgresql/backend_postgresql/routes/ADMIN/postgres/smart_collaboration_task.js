@@ -685,7 +685,7 @@ router.put("/smart_collaboration_task/:id", async (req, res) => {
 
     const result = await query(
       `UPDATE smart_project_task
-       SET sub_action = $1
+       SET sub_action = '$1'
        WHERE id = $2`,
       [subaction, id]
     );
