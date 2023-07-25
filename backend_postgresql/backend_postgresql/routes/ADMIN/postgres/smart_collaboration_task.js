@@ -610,6 +610,7 @@ router.post("/", async (req, res) => {
       email,
       link,
       no,
+      sub_action, // เพิ่ม sub_action ในการรับข้อมูล
     } = req.body;
 
     let querrydata;
@@ -625,8 +626,9 @@ router.post("/", async (req, res) => {
          status,
          email,
          link,
-         "no"
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
+         "no",
+         sub_action
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`;
       values = [
         dept,
         project,
@@ -637,6 +639,7 @@ router.post("/", async (req, res) => {
         email,
         link,
         no,
+        JSON.stringify(sub_action), // แปลง Array of Objects เป็น JSON
       ];
     } else {
       querrydata = `INSERT INTO smart_project_task (
@@ -649,8 +652,9 @@ router.post("/", async (req, res) => {
          status,
          email,
          link,
-         "no"
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`;
+         "no",
+         sub_action
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`;
       values = [
         dept,
         project,
@@ -662,6 +666,7 @@ router.post("/", async (req, res) => {
         email,
         link,
         no,
+        JSON.stringify(sub_action), // แปลง Array of Objects เป็น JSON
       ];
     }
 
