@@ -674,4 +674,38 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.put("/sub_action/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { subaction } = req.body;
+
+    if (subaction === "Finished") {
+      const result = await query(
+        `update
+        smart_project_task
+      set
+        sub_action = $1
+      where
+        id = $2`,
+        [subaction, id]
+      );
+    } else {
+      const result = await query(
+        `update
+        smart_project_task
+      set
+        sub_action = $1
+      where
+        id = $2`,
+        [subaction, id]
+      );
+    }
+
+    res.status(200).json({ message: "Data updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while updating data" });
+  }
+});
+
 module.exports = router;
