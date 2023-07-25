@@ -683,11 +683,12 @@ router.put("/smart_collaboration_task/:id", async (req, res) => {
       return res.status(400).json({ error: "Missing subaction data" });
     }
 
+    const subActionJson = JSON.stringify(subaction); // แปลง Array of Objects เป็น JSON
     const result = await query(
       `UPDATE smart_project_task
-       SET sub_action = '$1'
+       SET sub_action = $1
        WHERE id = $2`,
-      [subaction, id]
+      [subActionJson, id]
     );
 
     res.status(200).json({ message: "Data updated successfully" });
@@ -696,5 +697,6 @@ router.put("/smart_collaboration_task/:id", async (req, res) => {
     res.status(500).json({ error: "An error occurred while updating data" });
   }
 });
+
 
 module.exports = router;
