@@ -678,7 +678,7 @@ router.put("/smart_collaboration_task/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { subaction } = req.body;
-
+    console.log(subaction);
     if (!subaction) {
       return res.status(400).json({ error: "Missing subaction data" });
     }
@@ -696,6 +696,5 @@ router.put("/smart_collaboration_task/:id", async (req, res) => {
     res.status(500).json({ error: "An error occurred while updating data" });
   }
 });
-
 
 module.exports = router;
