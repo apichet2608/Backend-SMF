@@ -41,7 +41,7 @@ router.get("/page1/distinctfixture_code", async (req, res) => {
   where model_name = $1
   order by fixture_code desc
     `;
-    const queryParams = [aspects];
+    const queryParams = [model_name];
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
