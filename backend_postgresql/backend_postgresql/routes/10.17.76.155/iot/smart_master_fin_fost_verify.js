@@ -50,4 +50,61 @@ router.get("/page1/distinctfixture_code", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
+
+router.get("/page1/table", async (req, res) => {
+  try {
+    const { model_name, fixture_code } = req.query;
+
+    if (fixture_code === "ALL") {
+      queryStr = `
+      select
+	create_at,
+	update_time,
+	master_type,
+	test_datetime,
+	machine_id,
+	model_name,
+	program_rev,
+	lot_no,
+	fixture_code,
+	piece_index,
+	judge,
+	id
+from
+	public.smart_master_fin_fost_verify
+where model_name = $1
+and fixture_code = $2
+        `;
+      queryParams = [model_name];
+    } else {
+      queryStr = `
+      select
+      create_at,
+      update_time,
+      master_type,
+      test_datetime,
+      machine_id,
+      model_name,
+      program_rev,
+      lot_no,
+      fixture_code,
+      piece_index,
+      judge,
+      id
+    from
+      public.smart_master_fin_fost_verify
+    where model_name = $1
+    and fixture_code = $2
+        `;
+      queryParams = [model_name, fixture_code];
+    }
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
