@@ -29,4 +29,25 @@ router.get("/page1/distinctmodel_name", async (req, res) => {
   }
 });
 
+router.get("/page1/distinctfixture_code", async (req, res) => {
+  try {
+    const { model_name } = req.query;
+
+    const queryStr = `
+    select
+    distinct fixture_code 
+  from
+    public.smart_master_fin_fost_verify
+  where model_name = $1
+  order by fixture_code desc
+    `;
+    const queryParams = [aspects];
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 module.exports = router;
