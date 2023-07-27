@@ -84,6 +84,7 @@ router.get("/page6/plotbyarea", async (req, res) => {
 
     const queryStr = `
     select
+    ROW_NUMBER() OVER () AS id,
     mdb_code,
     feeder,
     mc_equip_name,
