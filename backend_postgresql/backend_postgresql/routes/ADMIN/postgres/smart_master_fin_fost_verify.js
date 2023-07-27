@@ -17,7 +17,7 @@ router.get("/page1/distinctmodel_name", async (req, res) => {
       `select
       distinct model_name
     from
-      public.smart_master_fin_fost_verify
+      public.smart_master_verify_fost
     order by model_name desc
     `
     );
