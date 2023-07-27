@@ -78,4 +78,49 @@ order by
   }
 });
 
+router.get("/page6/plotbyarea", async (req, res) => {
+  try {
+    const { building, dept_2, load_type } = req.query;
+
+    const queryStr = `
+    select
+    mdb_code,
+    feeder,
+    mc_equip_name,
+    energy_use_type,
+    load_type,
+    "desc",
+    building,
+    cost_ceter,
+    room_type,
+    dept_1,
+    dept_2,
+    area,
+    power_ratio,
+    max_energy_use,
+    energy_usage,
+    month_code,
+    "date",
+    unit_price_bth_per_kwh,
+    diff_energy_usage,
+    energy_cost_baht,
+    auto_check
+  from
+    public.smart_energy_by_day
+  where
+    building = $1
+  and dept_2  = $2
+  and load_type = $3
+  order by "date"  asc
+    `;
+    const queryParams = [building, dept_2, load_type];
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
