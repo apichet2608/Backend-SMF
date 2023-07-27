@@ -72,9 +72,8 @@ router.get("/page1/table", async (req, res) => {
     smart_master_verify_fost a
     where 
     model_name = $1
-    and fixture_code  = $2
-    and test_datetime :: date >= $3 
-    and test_datetime :: date <= $4 
+    and test_datetime :: date >= $2 
+    and test_datetime :: date <= $3 
     group by
     a.master_type ,
     a.test_datetime ,
