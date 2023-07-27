@@ -100,17 +100,28 @@ router.get("/page1/tablemaster", async (req, res) => {
     const { model_name, fixture_code, start_date, stop_date } = req.query;
 
     queryStr = `
-    select 
-*
-from 
-smart_master_verify_fost
-where 
-model_name = $1
-and fixture_code  = $2
-and test_datetime :: date >= $3 
-and test_datetime :: date <= $4 
-order by
-test_datetime desc;   
+    select
+    row_number() over () as id,
+    master_type,
+    test_datetime,
+    machine_id,
+    model_name,
+    program_rev,
+    lot_no,
+    fixture_code,
+    piece_index,
+    judge,
+    master_judge,
+    judgement
+  from
+    smart_master_verify_fost
+  where
+    model_name = $1
+    and fixture_code = $2
+    and test_datetime :: date >= $3
+    and test_datetime :: date <= $4
+  order by
+    test_datetime desc;
         `;
     queryParams = [model_name, fixture_code, start_date, stop_date];
 
