@@ -95,4 +95,31 @@ router.get("/page1/table", async (req, res) => {
   }
 });
 
+router.get("/page1/tablemaster", async (req, res) => {
+  try {
+    const { model_name, fixture_code, start_date, stop_date } = req.query;
+
+    queryStr = `
+    select 
+*
+from 
+smart_master_verify_fost
+where 
+model_name = $1
+and fixture_code  = $2
+and test_datetime :: date >= $3 
+and test_datetime :: date <= $4 
+order by
+test_datetime desc;   
+        `;
+    queryParams = [model_name, fixture_code, start_date, stop_date];
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
