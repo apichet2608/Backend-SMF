@@ -50,7 +50,7 @@ const smart_cost_kpi = require("./routes/ADMIN/postgres/smart_cost_kpi");
 const smart_energy_month_bue_dept = require("./routes/ADMIN/postgres/smart_energy_month_bue_dept");
 const smart_energy_month_bue_deptbuild = require("./routes/ADMIN/postgres/smart_energy_month_bue_deptbuild");
 const smart_overall_require_08003809 = require("./routes/ADMIN/postgres/smart_overall_require_08003809");
-const smart_master_fin_fost_verify = require("./routes/10.17.76.155/iot/smart_master_fin_fost_verify");
+const smart_master_fin_fost_verify = require("./routes/ADMIN/postgres/smart_master_fin_fost_verify");
 const app = express();
 
 // app.use(compression()); // ใช้งาน compression middleware
