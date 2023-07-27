@@ -50,80 +50,50 @@ router.get("/page1/distinctmodel_name", async (req, res) => {
 //   }
 // });
 
-// router.get("/page1/table", async (req, res) => {
-//   try {
-//     const { model_name, fixture_code } = req.query;
+router.get("/page1/table", async (req, res) => {
+  try {
+    const { model_name, start_date, stop_date } = req.query;
 
-//     if (fixture_code === "ALL") {
-//       queryStr = `
-//       select
-// a.master_type ,
-// a.test_datetime ,
-// a.machine_id ,
-// a.model_name ,
-// a.program_rev ,
-// a.lot_no ,
-// a.fixture_code ,
-// CASE
-// WHEN NOT EXISTS (SELECT 1 FROM smart_master_verify_fost WHERE judgement <> 'PASS') THEN 'PASS'
-// ELSE 'FAIL'
-// END AS verify_result
-// from
-// smart_master_verify_fost a
-// where
-// model_name = $1
-// and fixture_code  = $2
-// group by
-// a.master_type ,
-// a.test_datetime ,
-// a.machine_id ,
-// a.model_name ,
-// a.program_rev ,
-// a.lot_no ,
-// a.fixture_code
-// order by
-// a.test_datetime desc;
-//         `;
-//       queryParams = [model_name];
-//     } else {
-//       queryStr = `
-//       select
-//       a.master_type ,
-//       a.test_datetime ,
-//       a.machine_id ,
-//       a.model_name ,
-//       a.program_rev ,
-//       a.lot_no ,
-//       a.fixture_code ,
-//       CASE
-//       WHEN NOT EXISTS (SELECT 1 FROM smart_master_verify_fost WHERE judgement <> 'PASS') THEN 'PASS'
-//       ELSE 'FAIL'
-//       END AS verify_result
-//       from
-//       smart_master_verify_fost a
-//       where
-//       model_name = $1
-//       and fixture_code  = $2
-//       group by
-//       a.master_type ,
-//       a.test_datetime ,
-//       a.machine_id ,
-//       a.model_name ,
-//       a.program_rev ,
-//       a.lot_no ,
-//       a.fixture_code
-//       order by
-//       a.test_datetime desc;
-//         `;
-//       queryParams = [model_name, fixture_code];
-//     }
+    queryStr = `
+    select
+    ROW_NUMBER() OVER () AS id,
+    a.master_type ,
+    a.test_datetime ,
+    a.machine_id ,
+    a.model_name ,
+    a.program_rev ,
+    a.lot_no ,
+    a.fixture_code ,
+    CASE
+    WHEN NOT EXISTS (SELECT 1 FROM smart_master_verify_fost WHERE judgement <> 'PASS') THEN 'PASS'
+    ELSE 'FAIL'
+    END AS verify_result
+    from 
+    smart_master_verify_fost a
+    where 
+    model_name = $1
+    and fixture_code  = $2
+    and test_datetime :: date >= $3 
+    and test_datetime :: date <= $4 
+    group by
+    a.master_type ,
+    a.test_datetime ,
+    a.machine_id ,
+    a.model_name ,
+    a.program_rev ,
+    a.lot_no ,
+    a.fixture_code
+    order by
+    a.test_datetime desc;    
+        `;
+    queryParams = [model_name, start_date, stop_date];
 
-//     const result = await query(queryStr, queryParams);
-//     res.status(200).json(result.rows);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "An error occurred while fetching data" });
-//   }
-// });
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 
 module.exports = router;
