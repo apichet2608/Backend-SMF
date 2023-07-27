@@ -125,3 +125,51 @@ router.get("/page6/plotbyarea", async (req, res) => {
 });
 
 module.exports = router;
+
+// select
+// ROW_NUMBER() OVER () AS id,
+// area,
+// "date",
+// SUM(diff_energy_usage) as result
+// from
+// public.smart_energy_by_day
+// where
+// building = 'A'
+// and dept_2  = 'CVC'
+// and load_type = 'Air Conditioner'
+// and area = 'BLK'
+// group by   area,
+// "date"
+// order by "date"  asc
+
+// select
+// ROW_NUMBER() OVER () AS id,
+// mdb_code,
+// feeder,
+// mc_equip_name,
+// energy_use_type,
+// load_type,
+// "desc",
+// building,
+// cost_ceter,
+// room_type,
+// dept_1,
+// dept_2,
+// area,
+// power_ratio,
+// max_energy_use,
+// energy_usage,
+// month_code,
+// "date",
+// unit_price_bth_per_kwh,
+// diff_energy_usage,
+// energy_cost_baht,
+// auto_check
+// from
+// public.smart_energy_by_day
+// where
+// building = 'A'
+// and dept_2  = 'CVC'
+// and load_type = 'Air Conditioner'
+// and area = 'BLK'
+// order by "date"  asc
