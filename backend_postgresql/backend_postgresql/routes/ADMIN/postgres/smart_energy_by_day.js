@@ -16,10 +16,10 @@ router.get("/page6/distinctbuilding", async (req, res) => {
   try {
     const result = await query(
       `select
-      distinct model_name
+      distinct building
     from
-      public.smart_master_verify_fost
-    order by model_name desc
+      public.smart_energy_by_day
+    order by building asc
     `
     );
     res.status(200).json(result.rows);
