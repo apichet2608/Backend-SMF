@@ -52,6 +52,7 @@ const smart_energy_month_bue_deptbuild = require("./routes/ADMIN/postgres/smart_
 const smart_overall_require_08003809 = require("./routes/ADMIN/postgres/smart_overall_require_08003809");
 const smart_master_fin_fost_verify = require("./routes/ADMIN/postgres/smart_master_fin_fost_verify");
 const smart_energy_by_day = require("./routes/ADMIN/postgres/smart_energy_by_day");
+const smart_cost_item_daily_kpi = require("./routes/ADMIN/postgres/smart_cost_item_daily_kpi");
 
 const app = express();
 
@@ -119,6 +120,7 @@ app.use(
 app.use("/api/smart_overall_require", smart_overall_require_08003809);
 app.use("/api/smart_master_fin_fost_verify", smart_master_fin_fost_verify);
 app.use("/api/smart_energy_by_day", smart_energy_by_day);
+app.use("/api/smart_cost_item_daily_kpi", smart_cost_item_daily_kpi);
 
 app.use(function (req, res, next) {
   next(createError(404));
