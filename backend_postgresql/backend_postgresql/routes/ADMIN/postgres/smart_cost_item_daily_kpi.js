@@ -40,7 +40,7 @@ router.get("/page1/plot1", async (req, res) => {
     public.smart_cost_item_daily_kpi
   where
     factory = 'A1'
-    and year_month_date :: Date >= NOW() - interval '60 days'
+    and year_month_date :: Date >= NOW() - interval '45 days'
     and division = $1
     and department = $2
     and cost_type = $3
