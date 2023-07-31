@@ -78,6 +78,31 @@ order by
   }
 });
 
+router.get("/page6/distinctarea", async (req, res) => {
+  try {
+    const { building, dept_2, load_type } = req.query;
+
+    const queryStr = `
+    select
+	distinct area 
+from
+	public.smart_energy_by_day
+where
+    building = $1
+  and dept_2  = $2
+  and load_type = $3
+  order by "date"  asc
+    `;
+    const queryParams = [building, dept_2, load_type];
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/page6/plotbyarea", async (req, res) => {
   try {
     const { building, dept_2, load_type } = req.query;
