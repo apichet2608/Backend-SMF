@@ -103,6 +103,32 @@ where
   }
 });
 
+router.get("/page6/distinctmdb_code", async (req, res) => {
+  try {
+    const { building, dept_2, load_type, area } = req.query;
+
+    const queryStr = `
+    select
+	distinct mdb_code 
+from
+	public.smart_energy_by_day
+where
+    building = $1
+  and dept_2  = $2
+  and load_type = $3
+  and area = $4
+  order by mdb_code  asc
+    `;
+    const queryParams = [building, dept_2, load_type, area];
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/page6/plotbyarea", async (req, res) => {
   try {
     const { building, dept_2, load_type, area } = req.query;
