@@ -91,7 +91,7 @@ where
     building = $1
   and dept_2  = $2
   and load_type = $3
-  order by "date"  asc
+  order by area  asc
     `;
     const queryParams = [building, dept_2, load_type];
 
