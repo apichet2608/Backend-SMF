@@ -161,6 +161,41 @@ router.get("/page6/plotbyarea", async (req, res) => {
   }
 });
 
+router.get("/page6/plotbymdb_code", async (req, res) => {
+  try {
+    const { building, dept_2, load_type, area, mdb_code } = req.query;
+
+    const queryStr = `
+    select
+    row_number() over () as id,
+    area,
+    "date",
+    SUM(diff_energy_usage) as result
+  from
+    public.smart_energy_by_day
+  where
+    building = $1
+    and dept_2 = $2
+    and load_type = $3
+    and area = $4
+    and mdb_code = $5
+    and "date" >= NOW() - interval '90 days'
+  group by
+    area,
+    "date"
+  order by
+    "date" asc
+    `;
+    const queryParams = [building, dept_2, load_type, area, mdb_code];
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
 
 // select
