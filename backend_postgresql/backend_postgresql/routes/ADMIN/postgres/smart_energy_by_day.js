@@ -116,10 +116,11 @@ router.get("/page6/plotbyarea", async (req, res) => {
     from
     public.smart_energy_by_day
     where
-    building = $1
-    and dept_2  = $2
-    and load_type = $3
-    and area = $4
+    building = 'A'
+    and dept_2  = 'CVC'
+    and load_type = 'Air Conditioner'
+    and area = 'BLK'
+    AND "date" >= NOW() - INTERVAL '90 days'
     group by   area,
     "date"
     order by "date"  asc
