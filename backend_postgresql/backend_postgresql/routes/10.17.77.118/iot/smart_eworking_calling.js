@@ -101,4 +101,33 @@ where
   }
 });
 
+router.get("/pageverify/table", async (req, res) => {
+  try {
+    const { jwpv_dept, jwpv_proc_group, jwpv_job_type, jwpv_mc_code } =
+      req.query;
+    let queryStr = "";
+    let queryParams = [];
+
+    queryStr = `
+    SELECT *
+FROM public.smart_eworking_calling
+WHERE DATE(create_at) = (
+    SELECT MAX(DATE(create_at))
+    FROM public.smart_eworking_calling
+)
+	and jwpv_dept = $1
+	and jwpv_proc_group = $2
+	and jwpv_job_type = $3
+	and jwpv_mc_code = $4
+        `;
+    queryParams = [jwpv_dept, jwpv_proc_group, jwpv_job_type, jwpv_mc_code];
+    const result = await query(queryStr, queryParams);
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
