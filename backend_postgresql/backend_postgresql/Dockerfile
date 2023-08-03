@@ -19,6 +19,5 @@ EXPOSE 3001
 # รันแอปพลิเคชัน Express.js
 CMD ["node", "./bin/www"]
 
-
 # docker build -t smf-backend-pg .
 # docker run -p 3001:3001 --name smf-backend-pg-container smf-backend-pg
