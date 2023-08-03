@@ -32,3 +32,7 @@ EXPOSE 3001
 
 # รัน Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
+
+# docker build -t backend-pg .
+# docker run -p 3001:3001 --name backend-pg-container backend-pg
