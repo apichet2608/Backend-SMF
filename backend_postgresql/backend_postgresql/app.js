@@ -55,6 +55,7 @@ const smart_energy_by_day = require("./routes/ADMIN/postgres/smart_energy_by_day
 const smart_cost_item_daily_kpi = require("./routes/ADMIN/postgres/smart_cost_item_daily_kpi");
 const smart_cost_div_kpi = require("./routes/ADMIN/postgres/smart_cost_div_kpi");
 const smart_eworking_calling = require("./routes/10.17.77.118/iot/smart_eworking_calling");
+const smt_reflow_tamura_set_log = require("./routes/10.17.71.21/10.17.71.21-data_log/smt_reflow_tamura_set_log");
 
 const app = express();
 
@@ -125,6 +126,7 @@ app.use("/api/smart_energy_by_day", smart_energy_by_day);
 app.use("/api/smart_cost_item_daily_kpi", smart_cost_item_daily_kpi);
 app.use("/api/smart_cost_div_kpi", smart_cost_div_kpi);
 app.use("/api/smart_eworking_calling", smart_eworking_calling);
+app.use("/api/smt_reflow_tamura_set_log", smt_reflow_tamura_set_log);
 
 app.use(function (req, res, next) {
   next(createError(404));
