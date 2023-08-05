@@ -135,4 +135,38 @@ WHERE
   }
 });
 
+router.get("/pageverify/plot", async (req, res) => {
+  try {
+    const { jwpv_dept, jwpv_proc_group, jwpv_job_type, jwpv_mc_code } =
+      req.query;
+    let queryStr = "";
+    let queryParams = [];
+
+    queryStr = `
+    SELECT id, create_at, update_at, jwpv_dept, jwpv_proc_group, jwpv_job_type, jwpv_mc_code, jwpv_graph_label, jwpv_graph_value, jwpv_check_time
+FROM public.smart_eworking_raw
+ where jwpv_dept = $1
+	and jwpv_proc_group = $2
+	and jwpv_job_type = $3
+	and jwpv_mc_code = $4
+		and DATE(jwpv_check_time) = (
+    SELECT MAX(DATE(jwpv_check_time))
+    FROM public.smart_eworking_raw
+    where jwpv_dept = $1
+	and jwpv_proc_group = $2
+	and jwpv_job_type = $3
+	and jwpv_mc_code = $4
+)
+order by jwpv_check_time asc
+        `;
+    queryParams = [jwpv_dept, jwpv_proc_group, jwpv_job_type, jwpv_mc_code];
+    const result = await query(queryStr, queryParams);
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
