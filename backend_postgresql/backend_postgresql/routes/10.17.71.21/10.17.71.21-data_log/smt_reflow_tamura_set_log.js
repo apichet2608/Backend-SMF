@@ -65,6 +65,7 @@ router.get("/page2/tab2/table", async (req, res) => {
   where
     line = $1
   and machine  = $2
+  order by update_datetime asc
         `;
     queryParams = [line, machine];
 
