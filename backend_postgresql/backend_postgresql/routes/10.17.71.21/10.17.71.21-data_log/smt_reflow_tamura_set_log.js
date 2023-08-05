@@ -49,4 +49,30 @@ router.get("/distinctmachine", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
+
+router.get("/page2/tab2/table", async (req, res) => {
+  try {
+    const { line, machine } = req.query;
+
+    let queryStr = "";
+    let queryParams = [];
+
+    queryStr = `
+    select
+    *
+  from
+    public.smt_reflow_tamura_set_log
+  where
+    line = $1
+  and machine  = $2
+        `;
+    queryParams = [line, machine];
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 module.exports = router;
