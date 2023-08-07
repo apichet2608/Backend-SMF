@@ -246,13 +246,14 @@ router.get("/tablescada/distinctitem_sub_process", async (req, res) => {
     let queryStr = `
       SELECT DISTINCT item_sub_process
       FROM public.smart_machine_connect_list
+      WHERE status IN ('Finished', 'Planed', 'Wait for plan', '')
     `;
 
     const queryParams = [];
 
     // Check if item_iot_group1 is not "ALL"
     if (item_iot_group1 !== "ALL") {
-      queryStr += `WHERE item_iot_group1 = $1`;
+      queryStr += `AND item_iot_group1 = $1`;
       queryParams.push(item_iot_group1);
     }
 
@@ -274,13 +275,15 @@ router.get("/tablescada/distinctitem_iot_group1", async (req, res) => {
     if (item_sub_process === "ALL") {
       result = await query(
         `SELECT DISTINCT item_iot_group1
-         FROM public.smart_machine_connect_list`
+         FROM public.smart_machine_connect_list
+         WHERE status IN ('Finished', 'Planed', 'Wait for plan', '')`
       );
     } else {
       result = await query(
         `SELECT DISTINCT item_iot_group1
          FROM public.smart_machine_connect_list
-         WHERE item_sub_process = $1`,
+         WHERE item_sub_process = $1
+         AND status IN ('Finished', 'Planed', 'Wait for plan', '')`,
         [item_sub_process]
       );
     }
