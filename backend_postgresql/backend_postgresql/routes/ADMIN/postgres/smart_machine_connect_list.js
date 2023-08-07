@@ -241,13 +241,23 @@ router.get("/tablescada", async (req, res) => {
 
 router.get("/tablescada/distinctitem_sub_process", async (req, res) => {
   try {
-    const result = await query(
-      `select
-      distinct item_sub_process
-    from
-      public.smart_machine_connect_list;
-    `
-    );
+    const { item_iot_group1 } = req.query;
+
+    let queryStr = `
+      SELECT DISTINCT item_sub_process
+      FROM public.smart_machine_connect_list
+    `;
+
+    const queryParams = [];
+
+    // Check if item_iot_group1 is not "ALL"
+    if (item_iot_group1 !== "ALL") {
+      queryStr += `WHERE item_iot_group1 = $1`;
+      queryParams.push(item_iot_group1);
+    }
+
+    const result = await query(queryStr, queryParams);
+
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
@@ -257,13 +267,24 @@ router.get("/tablescada/distinctitem_sub_process", async (req, res) => {
 
 router.get("/tablescada/distinctitem_iot_group1", async (req, res) => {
   try {
-    const result = await query(
-      `select
-      distinct item_iot_group1
-    from
-      public.smart_machine_connect_list;    
-    `
-    );
+    const { item_sub_process } = req.query;
+
+    let result;
+
+    if (item_sub_process === "ALL") {
+      result = await query(
+        `SELECT DISTINCT item_iot_group1
+         FROM public.smart_machine_connect_list`
+      );
+    } else {
+      result = await query(
+        `SELECT DISTINCT item_iot_group1
+         FROM public.smart_machine_connect_list
+         WHERE item_sub_process = $1`,
+        [item_sub_process]
+      );
+    }
+
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
