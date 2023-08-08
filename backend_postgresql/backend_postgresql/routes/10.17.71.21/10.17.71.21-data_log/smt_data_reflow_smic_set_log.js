@@ -12,15 +12,15 @@ const pool = new Pool({
 
 const query = (text, params) => pool.query(text, params);
 
-router.get("/distinctline", async (req, res) => {
+router.get("/distinctline_no", async (req, res) => {
   try {
     const result = await query(
       `select
-      distinct line
+      distinct line_no
     from
       public.smt_data_reflow_smic_set_log
     order by
-      line`
+      line_no`
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -38,7 +38,7 @@ router.get("/distinctmachine", async (req, res) => {
     from
       public.smt_data_reflow_smic_set_log
     where
-      line = $1
+      line_no = $1
     order by
       machine`,
       [machine]
@@ -63,7 +63,7 @@ router.get("/page2/tab2/table", async (req, res) => {
   from
     public.smt_data_reflow_smic_set_log
   where
-    line = $1
+    line_no = $1
   and machine  = $2
   order by update_datetime asc
         `;
