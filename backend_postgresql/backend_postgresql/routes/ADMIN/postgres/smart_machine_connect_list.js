@@ -787,9 +787,9 @@ router.get("/tablestopper", async (req, res) => {
 from
 	public.smart_machine_connect_list
 where
-	stopper = 'Y'
-	and stopper_status in ('Finished', 'Planed', 'Wait for plan', '')
+	stopper_status in ('Finished', 'Planed', 'Wait for plan', '')
 	or stopper_status is null
+	and stopper = 'Y'
       `;
     } else {
       if (status === "") {
@@ -808,9 +808,9 @@ where
       from
         public.smart_machine_connect_list
       where
-        stopper = 'Y'
-        and stopper_status = $1
-        OR stopper_status is null      
+        stopper_status = $1
+        OR stopper_status is null    
+        and stopper = 'Y'  
       `;
         queryParams = [status];
       } else {
@@ -829,8 +829,8 @@ where
       from
         public.smart_machine_connect_list
       where
-        stopper = 'Y'
-        and stopper_status = $1
+        stopper_status = $1
+        and stopper = 'Y'
       `;
         queryParams = [status];
       }
