@@ -594,28 +594,49 @@ router.get("/tablebarcodeid", async (req, res) => {
       status_barcodeid
     from
       public.smart_machine_connect_list
-     WHERE status_barcodeid IN ('Finished', 'Planed', 'Wait for plan', '')
+     WHERE status_barcodeid IN ('Finished', 'Planed', 'Wait for plan', '')  OR status_barcodeid IS NULL
      and  barcodeid = 'Y'
       `;
     } else {
-      queryStr = `
-      select
-  id,
-	item_code, 
-	item_building,
-	item_owner_cc,
-	item_sub_process,
-	item_iot_group1,
-	barcodeid ,
-	barcodeid_plan_date ,
-	barcodeid_finish_date ,
-	status_barcodeid
-from
-	public.smart_machine_connect_list
- WHERE status_barcodeid = $1
- and  barcodeid = 'Y'
-      `;
-      queryParams = [status];
+      if (status === "") {
+        queryStr = `
+        select
+    id,
+    item_code, 
+    item_building,
+    item_owner_cc,
+    item_sub_process,
+    item_iot_group1,
+    barcodeid ,
+    barcodeid_plan_date ,
+    barcodeid_finish_date ,
+    status_barcodeid
+  from
+    public.smart_machine_connect_list
+   WHERE status_barcodeid = $1 and status_barcodeid IS NULL
+   and  barcodeid = 'Y'
+        `;
+        queryParams = [status];
+      } else {
+        queryStr = `
+        select
+    id,
+    item_code, 
+    item_building,
+    item_owner_cc,
+    item_sub_process,
+    item_iot_group1,
+    barcodeid ,
+    barcodeid_plan_date ,
+    barcodeid_finish_date ,
+    status_barcodeid
+  from
+    public.smart_machine_connect_list
+   WHERE status_barcodeid = $1
+   and  barcodeid = 'Y'
+        `;
+        queryParams = [status];
+      }
     }
 
     const result = await query(queryStr, queryParams);
@@ -765,11 +786,12 @@ router.get("/tablestopper", async (req, res) => {
 	stopper_status
 from
 	public.smart_machine_connect_list
- WHERE stopper_status IN ('Finished', 'Planed', 'Wait for plan', '')
+ WHERE stopper_status IN ('Finished', 'Planed', 'Wait for plan', '') OR stopper_status IS NULL
  and stopper = 'Y'
       `;
     } else {
-      queryStr = `
+      if (status === "") {
+        queryStr = `
       select
   id,
 	item_code, 
@@ -783,10 +805,30 @@ from
 	stopper_status
 from
 	public.smart_machine_connect_list
- WHERE stopper_status = $1
+ WHERE stopper_status = $1 and stopper_status IS NULL
  and stopper = 'Y'
       `;
-      queryParams = [status];
+        queryParams = [status];
+      } else {
+        queryStr = `
+      select
+  id,
+	item_code, 
+	item_building,
+	item_owner_cc,
+	item_sub_process,
+	item_iot_group1,
+	stopper,
+	stopper_plan_date,
+	stopper_finish_date,
+	stopper_status
+from
+	public.smart_machine_connect_list
+ WHERE stopper_status = $1 
+ and stopper = 'Y'
+      `;
+        queryParams = [status];
+      }
     }
 
     const result = await query(queryStr, queryParams);
