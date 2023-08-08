@@ -774,8 +774,8 @@ router.get("/tablestopper", async (req, res) => {
     if (status === "total") {
       queryStr = `
       select
-  id,
-	item_code, 
+	id,
+	item_code,
 	item_building,
 	item_owner_cc,
 	item_sub_process,
@@ -786,46 +786,51 @@ router.get("/tablestopper", async (req, res) => {
 	stopper_status
 from
 	public.smart_machine_connect_list
- WHERE stopper_status IN ('Finished', 'Planed', 'Wait for plan', '') OR stopper_status IS NULL
- and stopper = 'Y'
+where
+	stopper = 'Y'
+	and stopper_status in ('Finished', 'Planed', 'Wait for plan', '')
+	or stopper_status is null
       `;
     } else {
       if (status === "") {
         queryStr = `
-      select
-  id,
-	item_code, 
-	item_building,
-	item_owner_cc,
-	item_sub_process,
-	item_iot_group1,
-	stopper,
-	stopper_plan_date,
-	stopper_finish_date,
-	stopper_status
-from
-	public.smart_machine_connect_list
- WHERE stopper_status = $1 and stopper_status OR NULL
- and stopper = 'Y'
+        select
+        id,
+        item_code, 
+        item_building,
+        item_owner_cc,
+        item_sub_process,
+        item_iot_group1,
+        stopper,
+        stopper_plan_date,
+        stopper_finish_date,
+        stopper_status
+      from
+        public.smart_machine_connect_list
+      where
+        stopper = 'Y'
+        and stopper_status = $1
+        OR stopper_status is null      
       `;
         queryParams = [status];
       } else {
         queryStr = `
-      select
-  id,
-	item_code, 
-	item_building,
-	item_owner_cc,
-	item_sub_process,
-	item_iot_group1,
-	stopper,
-	stopper_plan_date,
-	stopper_finish_date,
-	stopper_status
-from
-	public.smart_machine_connect_list
- WHERE stopper_status = $1 
- and stopper = 'Y'
+        select
+        id,
+        item_code, 
+        item_building,
+        item_owner_cc,
+        item_sub_process,
+        item_iot_group1,
+        stopper,
+        stopper_plan_date,
+        stopper_finish_date,
+        stopper_status
+      from
+        public.smart_machine_connect_list
+      where
+        stopper = 'Y'
+        and stopper_status = $1
       `;
         queryParams = [status];
       }
