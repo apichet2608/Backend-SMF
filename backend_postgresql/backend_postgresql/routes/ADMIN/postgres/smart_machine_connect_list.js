@@ -613,7 +613,7 @@ router.get("/tablebarcodeid", async (req, res) => {
     status_barcodeid
   from
     public.smart_machine_connect_list
-   WHERE status_barcodeid = $1 and status_barcodeid IS NULL
+   WHERE status_barcodeid = $1 OR status_barcodeid IS NULL
    and  barcodeid = 'Y'
         `;
         queryParams = [status];
@@ -805,7 +805,7 @@ from
 	stopper_status
 from
 	public.smart_machine_connect_list
- WHERE stopper_status = $1 and stopper_status IS NULL
+ WHERE stopper_status = $1 and stopper_status OR NULL
  and stopper = 'Y'
       `;
         queryParams = [status];
