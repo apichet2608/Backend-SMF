@@ -115,19 +115,11 @@ router.get("/page1/distinctdept_concern", async (req, res) => {
 
     const queryStr = `
     select
-    dept_concern ,
-    no,
-    sub_no
+    distinct dept_concern 
   from
     public.smart_overall_require_08003809
   where
     aspects = $1
-  group by
-    dept_concern ,
-    no,
-    sub_no
-  order by
-  sub_no asc
     `;
     const queryParams = [aspects];
 
