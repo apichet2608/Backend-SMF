@@ -146,7 +146,7 @@ router.get("/page6/plotbyarea", async (req, res) => {
     and dept_2  = $2
     and load_type = $3
     and area = $4
-    AND "date" >= NOW() - INTERVAL '90 days'
+    AND "date"::timestamp with time zone >= NOW() - INTERVAL '90 days'
     group by   area,
     "date"
     order by "date"  asc
@@ -179,7 +179,7 @@ router.get("/page6/plotbymdb_code", async (req, res) => {
     and load_type = $3
     and area = $4
     and mdb_code = $5
-    and "date" >= NOW() - interval '90 days'
+    and "date"::timestamp with time zone >= NOW() - INTERVAL '90 days'
   group by
     area,
     "date"
