@@ -31,7 +31,7 @@ router.get("/page1/distinctsheet_no", async (req, res) => {
 
 router.get("/page1/distinctmachine_no", async (req, res) => {
   try {
-    const { sheet_no } = req.query;
+    const { sheet_no,start_date, stop_date } = req.query;
 
     const queryStr = `
       select
@@ -39,10 +39,12 @@ router.get("/page1/distinctmachine_no", async (req, res) => {
       from
         public.smart_master_verify_zaoi
       where sheet_no = $1
+    and aoi_inspect_date :: date >= $2 
+    and aoi_inspect_date :: date <= $3 
       order by machine_no desc
     `;
 
-    const queryParams = [sheet_no];
+    const queryParams = [sheet_no,start_date, stop_date];
 
     const resultRows = await query(queryStr, queryParams);
     res.status(200).json(resultRows.rows);
