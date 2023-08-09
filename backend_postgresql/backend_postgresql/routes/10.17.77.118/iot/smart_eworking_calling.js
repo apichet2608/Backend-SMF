@@ -143,7 +143,7 @@ router.get("/pageverify/plot", async (req, res) => {
     let queryParams = [];
 
     queryStr = `
-    SELECT id, create_at, update_at, jwpv_dept, jwpv_proc_group, jwpv_job_type, jwpv_mc_code, jwpv_graph_label, jwpv_graph_value, jwpv_check_time
+    SELECT *
 FROM public.smart_eworking_raw
  where jwpv_dept = $1
 	and jwpv_proc_group = $2
