@@ -60,6 +60,7 @@ router.get("/page1/table", async (req, res) => {
 t.aoi_inspect_date,
 t.sheet_no,
 t.aoi_inspect_count,
+t.machine_no,
 CASE
 WHEN NOT EXISTS (
 SELECT 1
@@ -80,7 +81,8 @@ where
 GROUP BY
 t.aoi_inspect_date,
 t.sheet_no,
-t.aoi_inspect_count
+t.aoi_inspect_count,
+t.machine_no
 ORDER BY
 t.aoi_inspect_date ASC,
 t.aoi_inspect_count ASC;   
