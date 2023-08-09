@@ -15,22 +15,39 @@ const query = (text, params) => pool.query(text, params);
 router.get("/page1/raderchart", async (req, res) => {
   try {
     const queryStr = `
-    SELECT
-    ROW_NUMBER() OVER () AS id,
-    no,
-    aspects,
-    COUNT(*) as count,
-    SUM(CASE WHEN score > 0 THEN score ELSE 0 END) as score_1_count,
-    SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) as score_0_count,
-    (SUM(CASE WHEN score > 0 THEN score ELSE 0 END) * 100.0) / COUNT(*) as score_1_percentage,
-    (SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) * 100.0) / COUNT(*) as score_0_percentage
-FROM
-    public.smart_overall_require_08003809
-GROUP BY
-    no,
-    aspects
-ORDER BY
-    no ASC;
+    WITH main_query AS (
+      SELECT
+          ROW_NUMBER() OVER () AS id,
+          no,
+          aspects,
+          COUNT(*) as count,
+          SUM(CASE WHEN score > 0 THEN score ELSE 0 END) as score_1_count,
+          SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) as score_0_count,
+          (SUM(CASE WHEN score > 0 THEN score ELSE 0 END) * 100.0) / COUNT(*) as score_1_percentage,
+          (SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) * 100.0) / COUNT(*) as score_0_percentage
+      FROM
+          public.smart_overall_require_08003809
+      GROUP BY
+          no,
+          aspects
+  ),
+  max_no AS (
+      SELECT MAX(no) FROM main_query
+  )
+  SELECT
+      ROW_NUMBER() OVER () + (SELECT MAX(id) FROM main_query) AS id,
+      (SELECT MAX(no) + 1 FROM max_no) AS no,
+      'Total' AS aspects,
+      COUNT(*) as count,
+      SUM(CASE WHEN score > 0 THEN score ELSE 0 END) as score_1_count,
+      SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) as score_0_count,
+      (SUM(CASE WHEN score > 0 THEN score ELSE 0 END) * 100.0) / COUNT(*) as score_1_percentage,
+      (SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) * 100.0) / COUNT(*) as score_0_percentage
+  FROM
+      public.smart_overall_require_08003809
+  UNION ALL
+  SELECT * FROM main_query
+  ORDER BY no;  
     `;
 
     const result = await query(queryStr);
