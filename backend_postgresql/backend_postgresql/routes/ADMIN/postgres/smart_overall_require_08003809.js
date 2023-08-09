@@ -109,30 +109,60 @@ router.get("/page1/distinctaspect", async (req, res) => {
   }
 });
 
-router.get("/page1/table", async (req, res) => {
+router.get("/page1/distinctdept_concern", async (req, res) => {
   try {
-    const { aspects, aspect } = req.query;
+    const { aspects } = req.query;
 
-    let queryStr = `
+    const queryStr = `
     select
-    id,
-    "no",
-    aspects,
-    sub_no,
-    aspect,
-    sub_sub_no,
-    request,
-    score,
-    description_proof,
-    done,
-    total,
-    update_by,
-    fjk_comment,
-    dept_concern,
-    email
+    dept_concern ,
+    no,
+    sub_no
   from
     public.smart_overall_require_08003809
-  `;
+  where
+    aspects = $1
+  group by
+    dept_concern ,
+    no,
+    sub_no
+  order by
+  sub_no asc
+    `;
+    const queryParams = [aspects];
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+router.get("/page1/table", async (req, res) => {
+  try {
+    const { aspects, aspect, dept_concern } = req.query;
+
+    let queryStr = `
+      select
+        id,
+        "no",
+        aspects,
+        sub_no,
+        aspect,
+        sub_sub_no,
+        request,
+        score,
+        description_proof,
+        done,
+        total,
+        update_by,
+        fjk_comment,
+        dept_concern,
+        email
+      from
+        public.smart_overall_require_08003809
+    `;
 
     let queryParams = [];
 
@@ -154,9 +184,18 @@ router.get("/page1/table", async (req, res) => {
       queryParams.push(aspect);
     }
 
+    if (dept_concern !== "ALL") {
+      queryStr += `
+        ${queryParams.length > 0 ? "AND" : "where"} dept_concern = $${
+        queryParams.length + 1
+      }
+      `;
+      queryParams.push(dept_concern);
+    }
+
     queryStr += `
-    order by
-      sub_sub_no asc
+      order by
+        sub_sub_no asc
     `;
 
     const result = await query(queryStr, queryParams);
