@@ -78,7 +78,7 @@ router.get("/page1/distinctmachine_no", async (req, res) => {
 
 router.get("/page1/table", async (req, res) => {
   try {
-    const { sheet_no, start_date, stop_date } = req.query;
+    const { sheet_no, start_date, stop_date ,machine_no} = req.query;
 
     queryStr = `
     SELECT
@@ -104,6 +104,7 @@ where
     master_sheet_no = $1
     and aoi_inspect_date :: date >= $2 
     and aoi_inspect_date :: date <= $3 
+    and machine_no = $4
 GROUP BY
 t.aoi_inspect_date,
 t.master_sheet_no,
@@ -113,7 +114,7 @@ ORDER BY
 t.aoi_inspect_date ASC,
 t.aoi_inspect_count ASC;   
         `;
-    queryParams = [sheet_no, start_date, stop_date];
+    queryParams = [sheet_no, start_date, stop_date,machine_no];
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
