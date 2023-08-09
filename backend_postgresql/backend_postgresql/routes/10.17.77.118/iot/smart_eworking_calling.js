@@ -141,8 +141,26 @@ router.get("/pageverify/plot", async (req, res) => {
       req.query;
     let queryStr = "";
     let queryParams = [];
-
-    queryStr = `
+    if (jwpv_job_type === "Reflow Profile") {
+      queryStr = `
+      SELECT *
+      FROM public.smart_eworking_raw
+       where jwpv_dept = $1
+        and jwpv_proc_group = $2
+        and jwpv_job_type = $3
+        and jwpv_mc_code = $4
+          and DATE(create_at) = (
+          SELECT MAX(DATE(create_at))
+          FROM public.smart_eworking_raw
+          where jwpv_dept = $1
+        and jwpv_proc_group = $2
+        and jwpv_job_type = $3
+        and jwpv_mc_code = $4
+      )
+      order by create_at asc
+              `;
+    } else {
+      queryStr = `
     SELECT *
 FROM public.smart_eworking_raw
  where jwpv_dept = $1
@@ -159,6 +177,8 @@ FROM public.smart_eworking_raw
 )
 order by jwpv_check_time asc
         `;
+    }
+
     queryParams = [jwpv_dept, jwpv_proc_group, jwpv_job_type, jwpv_mc_code];
     const result = await query(queryStr, queryParams);
 
