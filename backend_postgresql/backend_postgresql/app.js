@@ -57,6 +57,7 @@ const smart_cost_div_kpi = require("./routes/ADMIN/postgres/smart_cost_div_kpi")
 const smart_eworking_calling = require("./routes/10.17.77.118/iot/smart_eworking_calling");
 const smt_reflow_tamura_set_log = require("./routes/10.17.71.21/10.17.71.21-data_log/smt_reflow_tamura_set_log");
 const smt_data_reflow_smic_set_log = require("./routes/10.17.71.21/10.17.71.21-data_log/smt_data_reflow_smic_set_log");
+const smart_master_verify_zaoi = require("./routes/ADMIN/postgres/smart_master_verify_zaoi");
 
 const app = express();
 
@@ -129,6 +130,7 @@ app.use("/api/smart_cost_div_kpi", smart_cost_div_kpi);
 app.use("/api/smart_eworking_calling", smart_eworking_calling);
 app.use("/api/smt_reflow_tamura_set_log", smt_reflow_tamura_set_log);
 app.use("/api/smt_data_reflow_smic_set_log", smt_data_reflow_smic_set_log);
+app.use("/api/smart_master_verify_zaoi", smart_master_verify_zaoi);
 
 app.use(function (req, res, next) {
   next(createError(404));
