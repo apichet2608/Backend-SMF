@@ -191,6 +191,44 @@ router.get("/tablescada", async (req, res) => {
         `;
         queryParams = [item_sub_process, item_iot_group1];
       }
+    } else if (status === "UserRequest") {
+      if (item_sub_process === "ALL" && item_iot_group1 === "ALL") {
+        queryStr = `
+        SELECT *
+        FROM public.smart_machine_connect_list smcl
+        WHERE status = ''
+          ORDER BY finish_date ASC
+        `;
+        queryParams = []; // Use the correct parameter value
+      } else if (item_sub_process === "ALL") {
+        queryStr = `
+        SELECT *
+        FROM public.smart_machine_connect_list smcl
+        WHERE status = ''
+          AND item_iot_group1 = $1
+          ORDER BY finish_date ASC
+        `;
+        queryParams = [item_iot_group1]; // Use the correct parameter values
+      } else if (item_iot_group1 === "ALL") {
+        queryStr = `
+        SELECT *
+        FROM public.smart_machine_connect_list smcl
+        WHERE status = ''
+          AND item_sub_process = $1
+          ORDER BY finish_date ASC
+        `;
+        queryParams = [item_sub_process]; // Use the correct parameter values
+      } else {
+        queryStr = `
+        SELECT *
+        FROM public.smart_machine_connect_list smcl
+        WHERE status = ''
+          AND item_sub_process = $1
+          AND item_iot_group1 = $2
+          ORDER BY finish_date ASC
+        `;
+        queryParams = [item_sub_process, item_iot_group1]; // Use the correct parameter values
+      }
     } else {
       if (item_sub_process === "ALL" && item_iot_group1 === "ALL") {
         queryStr = `
