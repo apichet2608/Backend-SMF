@@ -109,8 +109,8 @@ router.get("/page1/table", async (req, res) => {
   t.aoi_inspect_count,
   t.machine_no
   ORDER BY
-  t.aoi_inspect_date ASC,
-  t.aoi_inspect_count ASC;   
+  t.aoi_inspect_date desc,
+  t.aoi_inspect_count desc;   
           `;
       queryParams = [sheet_no, start_date, stop_date];
     } else {
@@ -145,8 +145,8 @@ t.master_sheet_no,
 t.aoi_inspect_count,
 t.machine_no
 ORDER BY
-t.aoi_inspect_date ASC,
-t.aoi_inspect_count ASC;   
+t.aoi_inspect_date desc,
+t.aoi_inspect_count desc;   
       `;
       queryParams = [sheet_no, start_date, stop_date, machine_no];
     }
