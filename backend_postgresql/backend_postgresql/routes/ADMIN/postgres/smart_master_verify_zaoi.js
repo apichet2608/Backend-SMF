@@ -183,19 +183,12 @@ where
   and aoi_inspect_date :: date >= $2 
   and aoi_inspect_date :: date <= $3 
 and aoi_inspect_count = $4
-and machine_no = $5
 order by
 3 desc,
 1 desc,
 2 asc,
 4 asc`;
-      queryParams = [
-        sheet_no,
-        start_date,
-        stop_date,
-        aoi_inspect_count,
-        machine_no,
-      ];
+      queryParams = [sheet_no, start_date, stop_date, aoi_inspect_count];
     } else {
       queryStr = `
   select 
@@ -216,12 +209,19 @@ where
   and aoi_inspect_date :: date >= $2 
   and aoi_inspect_date :: date <= $3 
 and aoi_inspect_count = $4
+and machine_no = $5
 order by
 3 desc,
 1 desc,
 2 asc,
 4 asc`;
-      queryParams = [sheet_no, start_date, stop_date, aoi_inspect_count];
+      queryParams = [
+        sheet_no,
+        start_date,
+        stop_date,
+        aoi_inspect_count,
+        machine_no,
+      ];
     }
 
     const result = await query(queryStr, queryParams);

@@ -80,73 +80,87 @@ router.get("/page1/table", async (req, res) => {
     const { sheet_no, start_date, stop_date, xray_machine } = req.query;
     if (xray_machine === "ALL") {
       queryStr = `
-      SELECT
-      ROW_NUMBER() OVER () AS id,
-  t.xray_date,
-  t.master_sheet_no,
-  t.aoi_inspect_count,
-  t.xray_machine,
-  CASE
-  WHEN NOT EXISTS (
-  SELECT 1
-  FROM smart_master_verify_xray  sub
-  WHERE sub.xray_date = t.xray_date
-  AND sub.master_sheet_no = t.master_sheet_no
-  AND sub.aoi_inspect_count = t.aoi_inspect_count
-  AND sub.judgement <> 'PASS'
-  ) THEN 'PASS'
-  ELSE 'FAIL'
-  END AS judgement
-  FROM 
-  smart_master_verify_xray  t
-  where 
-      master_sheet_no = $1
-      and xray_date :: date >= $2 
-      and xray_date :: date <= $3 
-  GROUP BY
-  t.xray_date,
-  t.master_sheet_no,
-  t.aoi_inspect_count,
-  t.xray_machine
-  ORDER BY
-  t.xray_date desc,
-  t.aoi_inspect_count desc;   
+      select
+	t.xray_date,
+	t.xray_machine,
+	t.xray_program,
+	t.sheet_no,
+	t.xray_inspect_count,
+	case
+		when not exists
+
+(
+		select
+			1
+		from
+			smart_master_verify_xray sub
+		where
+			sub.xray_date = t.xray_date
+			and sub.sheet_no = t.sheet_no
+			and sub.xray_inspect_count = t.xray_inspect_count
+			and sub.judgement <> 'PASS'
+
+) then 'PASS'
+		else 'FAIL'
+	end as judgement
+from
+	smart_master_verify_xray t
+where
+	t.sheet_no = $1
+	and t.xray_date :: date >= $2
+	and t.xray_date :: date <= $3
+group by
+	t.xray_date,
+	t.xray_machine,
+	t.xray_program,
+	t.sheet_no,
+	t.xray_inspect_count
+order by
+	t.xray_date desc,
+	t.xray_inspect_count desc; 
           `;
       queryParams = [sheet_no, start_date, stop_date];
     } else {
       queryStr = `
-  SELECT
-  ROW_NUMBER() OVER () AS id,
-t.xray_date,
-t.master_sheet_no,
-t.aoi_inspect_count,
-t.xray_machine,
-CASE
-WHEN NOT EXISTS (
-SELECT 1
-FROM smart_master_verify_xray  sub
-WHERE sub.xray_date = t.xray_date
-AND sub.master_sheet_no = t.master_sheet_no
-AND sub.aoi_inspect_count = t.aoi_inspect_count
-AND sub.judgement <> 'PASS'
-) THEN 'PASS'
-ELSE 'FAIL'
-END AS judgement
-FROM 
-smart_master_verify_xray  t
-where 
-  master_sheet_no = $1
-  and xray_date :: date >= $2 
-  and xray_date :: date <= $3 
-  and xray_machine = $4
-GROUP BY
-t.xray_date,
-t.master_sheet_no,
-t.aoi_inspect_count,
-t.xray_machine
-ORDER BY
-t.xray_date desc,
-t.aoi_inspect_count desc;   
+      select
+      t.xray_date,
+      t.xray_machine,
+      t.xray_program,
+      t.sheet_no,
+      t.xray_inspect_count,
+      case
+        when not exists
+    
+    (
+        select
+          1
+        from
+          smart_master_verify_xray sub
+        where
+          sub.xray_date = t.xray_date
+          and sub.sheet_no = t.sheet_no
+          and sub.xray_inspect_count = t.xray_inspect_count
+          and sub.judgement <> 'PASS'
+    
+    ) then 'PASS'
+        else 'FAIL'
+      end as judgement
+    from
+      smart_master_verify_xray t
+    where
+      t.sheet_no = $1
+      and t.xray_date :: date >= $2
+      and t.xray_date :: date <= $3
+      and t.xray_machine = $4
+    group by
+      t.xray_date,
+      t.xray_machine,
+      t.xray_program,
+      t.sheet_no,
+      t.xray_inspect_count
+    order by
+      t.xray_date desc,
+      t.xray_inspect_count desc;
       `;
       queryParams = [sheet_no, start_date, stop_date, xray_machine];
     }
@@ -160,68 +174,61 @@ t.aoi_inspect_count desc;
 
 router.get("/page1/tablemaster", async (req, res) => {
   try {
-    const { sheet_no, aoi_inspect_count, start_date, stop_date, xray_machine } =
-      req.query;
+    const {
+      sheet_no,
+      xray_inspection_count,
+      start_date,
+      stop_date,
+      xray_machine,
+    } = req.query;
 
     if (xray_machine === "ALL") {
       queryStr = `
-  select 
-row_number() over () as id,
-t.xray_date ,
-t.sheet_no ,
-t.aoi_inspect_count ,
-t."POSITION" ,
-t.component ,
-t.verify_result ,
-t.verify_item ,
-t.master_result ,
-t.master_item ,
-judgement
-from smart_master_verify_xray  t
-where 
-  sheet_no = $1
-  and xray_date :: date >= $2 
-  and xray_date :: date <= $3 
-and aoi_inspect_count = $4
-and xray_machine = $5
-order by
-3 desc,
-1 desc,
-2 asc,
-4 asc`;
+      select
+      t.sheet_no ,
+      t.sample_no ,
+      t.verify_result ,
+      t.master_result ,
+      t.verify_operator ,
+      t.master_operator ,
+      t.judgement
+    from
+      smart_master_verify_xray t
+    where
+      sheet_no = $1
+      and t.xray_date :: date >= $2
+      and t.xray_date :: date <= $3
+      and t.xray_inspect_count  = $4
+    order by
+      t.sample_no asc`;
+      queryParams = [sheet_no, start_date, stop_date, xray_inspection_count];
+    } else {
+      queryStr = `
+      select
+      t.sheet_no ,
+      t.sample_no ,
+      t.verify_result ,
+      t.master_result ,
+      t.verify_operator ,
+      t.master_operator ,
+      t.judgement
+    from
+      smart_master_verify_xray t
+    where
+      sheet_no = $1
+      and t.xray_date :: date >= $2
+      and t.xray_date :: date <= $3
+      and t.xray_inspect_count  = $4
+      and t.xray_machine  = $5
+    order by
+      t.sample_no asc`;
       queryParams = [
         sheet_no,
         start_date,
         stop_date,
-        aoi_inspect_count,
+        xray_inspection_count,
         xray_machine,
       ];
-    } else {
-      queryStr = `
-  select 
-row_number() over () as id,
-t.xray_date ,
-t.sheet_no ,
-t.aoi_inspect_count ,
-t."POSITION" ,
-t.component ,
-t.verify_result ,
-t.verify_item ,
-t.master_result ,
-t.master_item ,
-judgement
-from smart_master_verify_xray  t
-where 
-  sheet_no = $1
-  and xray_date :: date >= $2 
-  and xray_date :: date <= $3 
-and aoi_inspect_count = $4
-order by
-3 desc,
-1 desc,
-2 asc,
-4 asc`;
-      queryParams = [sheet_no, start_date, stop_date, aoi_inspect_count];
     }
 
     const result = await query(queryStr, queryParams);
