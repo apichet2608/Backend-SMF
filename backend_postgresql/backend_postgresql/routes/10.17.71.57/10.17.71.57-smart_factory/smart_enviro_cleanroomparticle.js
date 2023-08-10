@@ -10,7 +10,6 @@ const pool = new Pool({
   database: "smart_factory", // แทนที่ด้วยชื่อฐานข้อมูลของคุณ
 });
 
-
 const query = (text, params) => pool.query(text, params);
 
 router.get("/factory", async (req, res) => {
@@ -46,9 +45,32 @@ where factory = $1`,
   }
 });
 
+router.get("/dept", async (req, res) => {
+  try {
+    const { factory, area } = req.query;
+    const result = await query(
+      `
+select
+	distinct dept 
+from
+	public.smart_enviro_cleanroomparticle
+where 
+    factory = $1
+    and area = $2
+
+    `,
+      [factory, area]
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/processmachine", async (req, res) => {
   try {
-    const { factory, room } = req.query;
+    const { factory, room, dept } = req.query;
     const result = await query(
       `
 select
@@ -56,8 +78,9 @@ select
 from
 	public.smart_enviro_cleanroomparticle
    where factory = $1
-   and area =$2`,
-      [factory, room]
+   and area =$2
+   and dept = $3`,
+      [factory, room, dept]
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -68,7 +91,7 @@ from
 
 router.get("/querry", async (req, res) => {
   try {
-    const { process_machine, factory, area } = req.query;
+    const { process_machine, factory, area, dept } = req.query;
     const day = parseInt(req.query.day); // ชั่วโมงที่ผู้ใช้กำหนด
 
     if (isNaN(day)) {
@@ -82,9 +105,10 @@ from
 where process_machine = $1
 and factory = $2
 and area = $3
+and dept = $4
 and measuretime :: timestamp >= (now() - interval '${day}' day)
 order by measuretime asc`,
-      [process_machine, factory, area]
+      [process_machine, factory, area, dept]
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -95,7 +119,7 @@ order by measuretime asc`,
 
 router.get("/isoclass", async (req, res) => {
   try {
-    const { process_machine, factory, area } = req.query;
+    const { process_machine, factory, area, dept } = req.query;
     const day = parseInt(req.query.day); // ชั่วโมงที่ผู้ใช้กำหนด
 
     if (isNaN(day)) {
@@ -109,8 +133,9 @@ from
 where process_machine = $1
 and factory = $2
 and area = $3
+and dept = $4
 and measuretime :: timestamp >= (now() - interval '${day}' day)`,
-      [process_machine, factory, area]
+      [process_machine, factory, area, dept]
     );
     res.status(200).json(result.rows);
   } catch (error) {
