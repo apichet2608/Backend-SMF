@@ -86,6 +86,7 @@ router.get("/page1/table", async (req, res) => {
 	t.xray_machine,
 	t.xray_program,
 	t.sheet_no,
+	t.lot_no ,
 	t.xray_inspect_count,
 	case
 		when not exists
@@ -115,10 +116,11 @@ group by
 	t.xray_machine,
 	t.xray_program,
 	t.sheet_no,
+	t.lot_no ,
 	t.xray_inspect_count
 order by
 	t.xray_date desc,
-	t.xray_inspect_count desc; 
+	t.xray_inspect_count desc;
           `;
       queryParams = [sheet_no, start_date, stop_date];
     } else {
@@ -129,6 +131,7 @@ order by
       t.xray_machine,
       t.xray_program,
       t.sheet_no,
+      t.lot_no ,
       t.xray_inspect_count,
       case
         when not exists
@@ -159,6 +162,7 @@ order by
       t.xray_machine,
       t.xray_program,
       t.sheet_no,
+      t.lot_no ,
       t.xray_inspect_count
     order by
       t.xray_date desc,
