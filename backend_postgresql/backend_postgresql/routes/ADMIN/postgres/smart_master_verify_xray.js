@@ -81,6 +81,7 @@ router.get("/page1/table", async (req, res) => {
     if (xray_machine === "ALL") {
       queryStr = `
       select
+  row_number() over () as id,
 	t.xray_date,
 	t.xray_machine,
 	t.xray_program,
@@ -123,6 +124,7 @@ order by
     } else {
       queryStr = `
       select
+      row_number() over () as id,
       t.xray_date,
       t.xray_machine,
       t.xray_program,
@@ -185,6 +187,7 @@ router.get("/page1/tablemaster", async (req, res) => {
     if (xray_machine === "ALL") {
       queryStr = `
       select
+      row_number() over () as id,
       t.sheet_no ,
       t.sample_no ,
       t.verify_result ,
@@ -205,6 +208,7 @@ router.get("/page1/tablemaster", async (req, res) => {
     } else {
       queryStr = `
       select
+      row_number() over () as id,
       t.sheet_no ,
       t.sample_no ,
       t.verify_result ,
