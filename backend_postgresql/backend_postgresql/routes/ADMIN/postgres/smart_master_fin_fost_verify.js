@@ -56,34 +56,39 @@ router.get("/page1/table", async (req, res) => {
 
     queryStr = `
     select
-    ROW_NUMBER() OVER () AS id,
-    a.master_type ,
-    a.test_datetime ,
-    a.machine_id ,
-    a.model_name ,
-    a.program_rev ,
-    a.lot_no ,
-    a.fixture_code ,
-    CASE
-    WHEN NOT EXISTS (SELECT 1 FROM smart_master_verify_fost WHERE judgement <> 'PASS') THEN 'PASS'
-    ELSE 'FAIL'
-    END AS verify_result
-    from 
-    smart_master_verify_fost a
-    where 
-    model_name = $1
-    and test_datetime :: date >= $2 
-    and test_datetime :: date <= $3 
-    group by
-    a.master_type ,
-    a.test_datetime ,
-    a.machine_id ,
-    a.model_name ,
-    a.program_rev ,
-    a.lot_no ,
-    a.fixture_code
-    order by
-    a.test_datetime desc;    
+        t.master_type ,
+        t.test_datetime ,
+        t.machine_id ,
+        t.model_name ,
+        t.lot_no ,
+        t.fixture_code ,
+        case
+    when not exists (
+        select 1
+            from smart_master_verify_fost sub
+        where
+            sub.test_datetime = t.test_datetime
+            and sub.model_name = t.model_name
+            and sub.fixture_code = t.fixture_code
+            and sub.judgement <> 'PASS'
+        ) then 'PASS'
+     else 'FAIL'
+         end as verify_result
+     from
+        smart_master_verify_fost t
+     where 
+        model_name = $1
+        and test_datetime :: date >= $2 
+        and test_datetime :: date <= $3
+     group by
+        t.master_type ,
+        t.test_datetime ,
+        t.machine_id ,
+        t.model_name ,
+        t.lot_no ,
+        t.fixture_code
+        order by
+        t.test_datetime desc;    
         `;
     queryParams = [model_name, start_date, stop_date];
 
