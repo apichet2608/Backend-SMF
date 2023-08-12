@@ -56,6 +56,7 @@ router.get("/page1/table", async (req, res) => {
 
     queryStr = `
     select
+        row_number() over () as id,
         t.master_type ,
         t.test_datetime ,
         t.machine_id ,
