@@ -77,7 +77,7 @@ router.get("/page1/distinctxray_machine", async (req, res) => {
 
 router.get("/page1/table", async (req, res) => {
   try {
-    const { sheet_no, time, xray_machine } = req.query;
+    const { sheet_no, start_date, stop_date, xray_machine } = req.query;
     if (xray_machine === "ALL") {
       queryStr = `
       select
@@ -109,7 +109,8 @@ from
 	smart_master_verify_xray t
 where
 	t.sheet_no = $1
-	and t.xray_date = $2
+	and t.xray_date :: date >= $2
+	and t.xray_date :: date <= $3
 group by
 	t.xray_date,
 	t.xray_machine,
@@ -121,7 +122,7 @@ order by
 	t.xray_date desc,
 	t.xray_inspect_count desc;
           `;
-      queryParams = [sheet_no, time];
+      queryParams = [sheet_no, start_date, stop_date];
     } else {
       queryStr = `
       select
@@ -153,8 +154,9 @@ order by
       smart_master_verify_xray t
     where
       t.sheet_no = $1
-      and t.xray_date = $2
-      and t.xray_machine = $3
+      and t.xray_date :: date >= $2
+      and t.xray_date :: date <= $3
+      and t.xray_machine = $4
     group by
       t.xray_date,
       t.xray_machine,
@@ -166,7 +168,7 @@ order by
       t.xray_date desc,
       t.xray_inspect_count desc;
       `;
-      queryParams = [sheet_no, time, xray_machine];
+      queryParams = [sheet_no, start_date, stop_date, xray_machine];
     }
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
@@ -178,13 +180,7 @@ order by
 
 router.get("/page1/tablemaster", async (req, res) => {
   try {
-    const {
-      sheet_no,
-      xray_inspection_count,
-      start_date,
-      stop_date,
-      xray_machine,
-    } = req.query;
+    const { sheet_no, xray_inspection_count, time, xray_machine } = req.query;
 
     if (xray_machine === "ALL") {
       queryStr = `
@@ -201,12 +197,11 @@ router.get("/page1/tablemaster", async (req, res) => {
       smart_master_verify_xray t
     where
       sheet_no = $1
-      and t.xray_date :: date >= $2
-      and t.xray_date :: date <= $3
-      and t.xray_inspect_count  = $4
+      and t.xray_date = $2
+      and t.xray_inspect_count  = $3
     order by
       t.sample_no asc`;
-      queryParams = [sheet_no, start_date, stop_date, xray_inspection_count];
+      queryParams = [sheet_no, time, xray_inspection_count];
     } else {
       queryStr = `
       select
@@ -222,19 +217,12 @@ router.get("/page1/tablemaster", async (req, res) => {
       smart_master_verify_xray t
     where
       sheet_no = $1
-      and t.xray_date :: date >= $2
-      and t.xray_date :: date <= $3
-      and t.xray_inspect_count  = $4
-      and t.xray_machine  = $5
+      and t.xray_date = $2
+      and t.xray_inspect_count  = $3
+      and t.xray_machine  = $4
     order by
       t.sample_no asc`;
-      queryParams = [
-        sheet_no,
-        start_date,
-        stop_date,
-        xray_inspection_count,
-        xray_machine,
-      ];
+      queryParams = [sheet_no, time, xray_inspection_count, xray_machine];
     }
 
     const result = await query(queryStr, queryParams);
