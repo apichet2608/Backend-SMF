@@ -103,7 +103,7 @@ router.get("/page1/table", async (req, res) => {
 
 router.get("/page1/tablemaster", async (req, res) => {
   try {
-    const { model_name, fixture_code, start_date, stop_date } = req.query;
+    const { model_name, fixture_code, time } = req.query;
 
     queryStr = `
     select
@@ -128,7 +128,7 @@ router.get("/page1/tablemaster", async (req, res) => {
   order by
     test_datetime desc;
         `;
-    queryParams = [model_name, fixture_code, start_date, stop_date];
+    queryParams = [model_name, fixture_code, time];
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
