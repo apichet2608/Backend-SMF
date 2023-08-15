@@ -160,8 +160,7 @@ t.aoi_inspect_count desc;
 
 router.get("/page1/tablemaster", async (req, res) => {
   try {
-    const { sheet_no, aoi_inspect_count, start_date, stop_date, machine_no } =
-      req.query;
+    const { sheet_no, aoi_inspect_count, time, machine_no } = req.query;
 
     if (machine_no === "ALL") {
       queryStr = `
@@ -180,15 +179,14 @@ judgement
 from smart_master_verify_zaoi t
 where 
   sheet_no = $1
-  and aoi_inspect_date :: date >= $2 
-  and aoi_inspect_date :: date <= $3 
-and aoi_inspect_count = $4
+  and aoi_inspect_date = $2 
+and aoi_inspect_count = $3
 order by
 3 desc,
 1 desc,
 2 asc,
 4 asc`;
-      queryParams = [sheet_no, start_date, stop_date, aoi_inspect_count];
+      queryParams = [sheet_no, time, aoi_inspect_count];
     } else {
       queryStr = `
   select 
@@ -206,22 +204,15 @@ judgement
 from smart_master_verify_zaoi t
 where 
   sheet_no = $1
-  and aoi_inspect_date :: date >= $2 
-  and aoi_inspect_date :: date <= $3 
-and aoi_inspect_count = $4
-and machine_no = $5
+  and aoi_inspect_date = $2 
+and aoi_inspect_count = $3
+and machine_no = $4
 order by
 3 desc,
 1 desc,
 2 asc,
 4 asc`;
-      queryParams = [
-        sheet_no,
-        start_date,
-        stop_date,
-        aoi_inspect_count,
-        machine_no,
-      ];
+      queryParams = [sheet_no, time, aoi_inspect_count, machine_no];
     }
 
     const result = await query(queryStr, queryParams);

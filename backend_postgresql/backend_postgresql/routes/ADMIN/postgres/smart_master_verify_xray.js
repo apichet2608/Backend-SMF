@@ -77,7 +77,7 @@ router.get("/page1/distinctxray_machine", async (req, res) => {
 
 router.get("/page1/table", async (req, res) => {
   try {
-    const { sheet_no, start_date, stop_date, xray_machine } = req.query;
+    const { sheet_no, time, xray_machine } = req.query;
     if (xray_machine === "ALL") {
       queryStr = `
       select
@@ -109,8 +109,7 @@ from
 	smart_master_verify_xray t
 where
 	t.sheet_no = $1
-	and t.xray_date :: date >= $2
-	and t.xray_date :: date <= $3
+	and t.xray_date = $2
 group by
 	t.xray_date,
 	t.xray_machine,
@@ -122,7 +121,7 @@ order by
 	t.xray_date desc,
 	t.xray_inspect_count desc;
           `;
-      queryParams = [sheet_no, start_date, stop_date];
+      queryParams = [sheet_no, time];
     } else {
       queryStr = `
       select
@@ -154,9 +153,8 @@ order by
       smart_master_verify_xray t
     where
       t.sheet_no = $1
-      and t.xray_date :: date >= $2
-      and t.xray_date :: date <= $3
-      and t.xray_machine = $4
+      and t.xray_date = $2
+      and t.xray_machine = $3
     group by
       t.xray_date,
       t.xray_machine,
@@ -168,7 +166,7 @@ order by
       t.xray_date desc,
       t.xray_inspect_count desc;
       `;
-      queryParams = [sheet_no, start_date, stop_date, xray_machine];
+      queryParams = [sheet_no, time, xray_machine];
     }
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
