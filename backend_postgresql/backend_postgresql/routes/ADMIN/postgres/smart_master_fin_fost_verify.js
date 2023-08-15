@@ -124,8 +124,7 @@ router.get("/page1/tablemaster", async (req, res) => {
   where
     model_name = $1
     and fixture_code = $2
-    and test_datetime :: date >= $3
-    and test_datetime :: date <= $4
+    and test_datetime = $3
   order by
     test_datetime desc;
         `;
