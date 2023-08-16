@@ -170,10 +170,12 @@ FROM (
     SELECT
         no,
         aspects,
-        COUNT(*) as actioncount,
+       COUNT(CASE WHEN sub_sub_no IS NOT NULL THEN 1 ELSE NULL END) AS actioncount,
         this_years_target
     FROM
         public.smart_overall_require_08003809_action
+--         where 
+--         sub_sub_no is not null
     GROUP BY
         no,
         aspects,
@@ -226,7 +228,7 @@ JOIN (
     SELECT
         no,
         aspects,
-         COUNT(*) as actioncount,
+         COUNT(CASE WHEN sub_sub_no IS NOT NULL THEN 1 ELSE NULL END) AS actioncount,
         this_years_target
     FROM
         public.smart_overall_require_08003809_action
@@ -237,7 +239,7 @@ JOIN (
 ) t1 ON t1.no = t2.no AND t1.aspects = t2.aspects
 
 ORDER BY
-    no ASC, aspects DESC; -- เรียงลำดับตามเลขที่และชื่อ aspects       
+    no ASC, aspects DESC; -- เรียงลำดับตามเลขที่และชื่อ aspects     
     `;
 
     const result = await query(queryStr);
