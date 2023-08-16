@@ -448,16 +448,7 @@ router.get("/page2/tableaction", async (req, res) => {
 
     let queryStr = `
     select
-      id,
-      "no",
-      aspects,
-      this_years_target,
-      sub_sub_no,
-      improvement,
-      "update",
-      status,
-      check_point,
-      finished
+     *
     from
       public.smart_overall_require_08003809_action
     `;
