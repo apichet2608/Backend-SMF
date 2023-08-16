@@ -126,10 +126,7 @@ router.post("/", async (req, res) => {
       check_point,
       link)
     VALUES
-      ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-    ON CONFLICT (aspects) DO UPDATE
-    SET
-      this_years_target = EXCLUDED.this_years_target`,
+      ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
       [
         no,
         aspects,
@@ -143,12 +140,18 @@ router.post("/", async (req, res) => {
       ]
     );
 
-    res.status(201).json({ message: "Data added or updated successfully" });
+    // Update this_years_target to 0 where aspects matches
+    const updateResult = await query(
+      `UPDATE smart_overall_require_08003809_action
+       SET this_years_target = 0
+       WHERE aspects = $1`,
+      [aspects]
+    );
+
+    res.status(201).json({ message: "Data added and updated successfully" });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while adding or updating data" });
+    res.status(500).json({ error: "An error occurred while adding data" });
   }
 });
 
