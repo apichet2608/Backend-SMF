@@ -59,6 +59,7 @@ const smt_reflow_tamura_set_log = require("./routes/10.17.71.21/10.17.71.21-data
 const smt_data_reflow_smic_set_log = require("./routes/10.17.71.21/10.17.71.21-data_log/smt_data_reflow_smic_set_log");
 const smart_master_verify_zaoi = require("./routes/ADMIN/postgres/smart_master_verify_zaoi");
 const smart_master_verify_xray = require("./routes/ADMIN/postgres/smart_master_verify_xray");
+const smart_overall_require_08003809_action = require("./routes/ADMIN/postgres/smart_overall_require_08003809_action");
 
 const app = express();
 
@@ -133,6 +134,10 @@ app.use("/api/smt_reflow_tamura_set_log", smt_reflow_tamura_set_log);
 app.use("/api/smt_data_reflow_smic_set_log", smt_data_reflow_smic_set_log);
 app.use("/api/smart_master_verify_zaoi", smart_master_verify_zaoi);
 app.use("/api/smart_master_verify_xray", smart_master_verify_xray);
+app.use(
+  "/api/smart_overall_require_08003809_action",
+  smart_overall_require_08003809_action
+);
 
 app.use(function (req, res, next) {
   next(createError(404));
