@@ -484,4 +484,53 @@ router.get("/page2/tableaction", async (req, res) => {
   }
 });
 
+router.get("/page2/tablesub_sub_no", async (req, res) => {
+  try {
+    const { sub_sub_no } = req.query;
+
+    let queryStr = `
+    select
+	id,
+	"no",
+	aspects,
+	sub_no,
+	aspect,
+	sub_sub_no,
+	request,
+	score,
+	description_proof,
+	done,
+	total,
+	update_by,
+	fjk_comment,
+	dept_concern,
+	email,
+	create_at,
+	update_date
+from
+	public.smart_overall_require_08003809
+    `;
+
+    let queryParams = [];
+
+    if (sub_sub_no !== "total") {
+      queryStr += `
+        where
+        sub_sub_no = $1
+      `;
+      queryParams.push(sub_sub_no);
+    }
+
+    queryStr += `
+    order by no asc
+    `;
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
