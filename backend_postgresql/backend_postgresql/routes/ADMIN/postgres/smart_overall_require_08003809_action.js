@@ -20,7 +20,7 @@ router.delete("/:id", async (req, res) => {
     const result = await query(
       `delete
       from
-        smart_overall_require_08003809
+      smart_overall_require_08003809_action
       where
         id = $1;
         `,
