@@ -441,4 +441,47 @@ router.get("/page2/table", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
+
+router.get("/page2/tableaction", async (req, res) => {
+  try {
+    const { aspects } = req.query;
+
+    let queryStr = `
+    select
+      id,
+      "no",
+      aspects,
+      this_years_target,
+      sub_sub_no,
+      improvement,
+      "update",
+      status,
+      check_point,
+      finished
+    from
+      public.smart_overall_require_08003809_action
+    `;
+
+    let queryParams = [];
+
+    if (aspects !== "total") {
+      queryStr += `
+        where
+          aspects = $1
+      `;
+      queryParams.push(aspects);
+    }
+
+    queryStr += `
+    order by no asc
+    `;
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
