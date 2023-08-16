@@ -40,6 +40,7 @@ router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const {
+      aspects,
       this_years_target,
       improvement,
       update,
@@ -79,7 +80,13 @@ router.put("/:id", async (req, res) => {
     queryParams.push(id);
 
     const result = await query(queryStr, queryParams);
-
+    // Update this_years_target to 0 where aspects matches
+    const updateResult = await query(
+      `UPDATE smart_overall_require_08003809_action
+       SET this_years_target = $1
+       WHERE aspects = $2`,
+      [this_years_target, aspects]
+    );
     res.status(200).json({ message: "Data updated successfully" });
   } catch (error) {
     console.error(error);
