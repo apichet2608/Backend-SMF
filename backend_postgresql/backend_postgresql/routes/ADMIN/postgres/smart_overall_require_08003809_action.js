@@ -156,84 +156,88 @@ router.get("/page2/table", async (req, res) => {
     const queryStr = `
     -- ข้อมูลปกติที่มีในต้นแบบ SQL ของคุณ
     SELECT
-        row_number() over () as id,
-        t2.no,
-        t2.aspects,
-        t1.this_years_target,
-        t2.count,
-        t2.score_1_count,
-        t2.score_0_count,
-        t2.score_1_percentage,
-        t2.score_0_percentage
-    FROM (
-        SELECT
-            no,
-            aspects,
-            this_years_target
-        FROM
-            public.smart_overall_require_08003809_action
-        GROUP BY
-            no,
-            aspects,
-            this_years_target
-    ) t1
-    JOIN (
-        SELECT
-            no,
-            aspects,
-            COUNT(*) as count,
-            SUM(CASE WHEN score > 0 THEN score ELSE 0 END) as score_1_count,
-            SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) as score_0_count,
-            (SUM(CASE WHEN score > 0 THEN score ELSE 0 END) * 100.0) / COUNT(*) as score_1_percentage,
-            (SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) * 100.0) / COUNT(*) as score_0_percentage
-        FROM
-            public.smart_overall_require_08003809
-        GROUP BY
-            no,
-            aspects
-    ) t2 ON t1.no = t2.no AND t1.aspects = t2.aspects
-    
-    UNION ALL
-    
-    -- แถวที่มีชื่อ "total" และคำนวณค่ารวม
+    row_number() over () as id,
+    t2.no,
+    t2.aspects,
+    t1.this_years_target,
+    t1.actioncount,
+    t2.count,
+    t2.score_1_count,
+    t2.score_0_count,
+    t2.score_1_percentage,
+    t2.score_0_percentage
+FROM (
     SELECT
-        count(*)+1 as id,
-        count(*)+1 as no,
-        'total' as aspects,
-        SUM(t1.this_years_target) / COUNT(*) as this_years_target,
-        SUM(t2.count) as count,
-        SUM(t2.score_1_count) as score_1_count,
-        SUM(t2.score_0_count) as score_0_count,
-        (SUM(t2.score_1_count) * 100.0) / SUM(t2.count) as score_1_percentage,
-        (SUM(t2.score_0_count) * 100.0) / SUM(t2.count) as score_0_percentage
-    FROM (
-        SELECT
-            no,
-            aspects,
-            COUNT(*) as count,
-            SUM(CASE WHEN score > 0 THEN score ELSE 0 END) as score_1_count,
-            SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) as score_0_count
-        FROM
-            public.smart_overall_require_08003809
-        GROUP BY
-            no,
-            aspects
-    ) t2
-    JOIN (
-        SELECT
-            no,
-            aspects,
-            this_years_target
-        FROM
-            public.smart_overall_require_08003809_action
-        GROUP BY
-            no,
-            aspects,
-            this_years_target
-    ) t1 ON t1.no = t2.no AND t1.aspects = t2.aspects
-    
-    ORDER BY
-        no ASC, aspects DESC; -- เรียงลำดับตามเลขที่และชื่อ aspects    
+        no,
+        aspects,
+        COUNT(*) as actioncount,
+        this_years_target
+    FROM
+        public.smart_overall_require_08003809_action
+    GROUP BY
+        no,
+        aspects,
+        this_years_target
+) t1
+JOIN (
+    SELECT
+        no,
+        aspects,
+        COUNT(*) as count,
+        SUM(CASE WHEN score > 0 THEN score ELSE 0 END) as score_1_count,
+        SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) as score_0_count,
+        (SUM(CASE WHEN score > 0 THEN score ELSE 0 END) * 100.0) / COUNT(*) as score_1_percentage,
+        (SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) * 100.0) / COUNT(*) as score_0_percentage
+    FROM
+        public.smart_overall_require_08003809
+    GROUP BY
+        no,
+        aspects
+) t2 ON t1.no = t2.no AND t1.aspects = t2.aspects
+
+UNION ALL
+
+-- แถวที่มีชื่อ "total" และคำนวณค่ารวม
+SELECT
+    count(*)+1 as id,
+    count(*)+1 as no,
+    'total' as aspects,
+    SUM(t1.this_years_target) / COUNT(*) as this_years_target,
+    SUM(t1.actioncount) as actioncount,
+    SUM(t2.count) as count,
+    SUM(t2.score_1_count) as score_1_count,
+    SUM(t2.score_0_count) as score_0_count,
+    (SUM(t2.score_1_count) * 100.0) / SUM(t2.count) as score_1_percentage,
+    (SUM(t2.score_0_count) * 100.0) / SUM(t2.count) as score_0_percentage
+FROM (
+    SELECT
+        no,
+        aspects,
+        COUNT(*) as count,
+        SUM(CASE WHEN score > 0 THEN score ELSE 0 END) as score_1_count,
+        SUM(CASE WHEN score = 0 THEN 1 ELSE 0 END) as score_0_count
+    FROM
+        public.smart_overall_require_08003809
+    GROUP BY
+        no,
+        aspects
+) t2
+JOIN (
+    SELECT
+        no,
+        aspects,
+         COUNT(*) as actioncount,
+        this_years_target
+    FROM
+        public.smart_overall_require_08003809_action
+    GROUP BY
+        no,
+        aspects,
+        this_years_target
+) t1 ON t1.no = t2.no AND t1.aspects = t2.aspects
+
+ORDER BY
+    no ASC, aspects DESC; -- เรียงลำดับตามเลขที่และชื่อ aspects       
     `;
 
     const result = await query(queryStr);
