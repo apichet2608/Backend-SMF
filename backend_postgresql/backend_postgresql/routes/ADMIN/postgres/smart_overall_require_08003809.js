@@ -513,7 +513,7 @@ from
     }
 
     queryStr += `
-    order by no asc
+    order by sub_sub_no asc
     `;
 
     const result = await query(queryStr, queryParams);
