@@ -100,6 +100,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+// ADD route to ADD data
 router.post("/", async (req, res) => {
   try {
     const {
