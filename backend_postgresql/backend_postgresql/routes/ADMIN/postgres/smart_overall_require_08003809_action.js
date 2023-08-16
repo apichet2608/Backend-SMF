@@ -143,9 +143,9 @@ router.post("/", async (req, res) => {
     // Update this_years_target to 0 where aspects matches
     const updateResult = await query(
       `UPDATE smart_overall_require_08003809_action
-       SET this_years_target = 0
-       WHERE aspects = $1`,
-      [aspects]
+       SET this_years_target = $1
+       WHERE aspects = $2`,
+      [this_years_target, aspects]
     );
 
     res.status(201).json({ message: "Data added and updated successfully" });
