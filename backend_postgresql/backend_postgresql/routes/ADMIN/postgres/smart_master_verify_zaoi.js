@@ -30,7 +30,7 @@ router.get("/page1/distinctsheet_no", async (req, res) => {
 
 router.get("/page1/distinctmachine_no", async (req, res) => {
   try {
-    const { sheet_no, start_date, stop_date } = req.query;
+    const { master_sheet_no, start_date, stop_date } = req.query;
 
     const queryStr = `
       select
@@ -43,7 +43,7 @@ router.get("/page1/distinctmachine_no", async (req, res) => {
       order by machine_no desc
     `;
 
-    const queryParams = [sheet_no, start_date, stop_date];
+    const queryParams = [master_sheet_no, start_date, stop_date];
 
     const resultRows = await query(queryStr, queryParams);
     res.status(200).json(resultRows.rows);
@@ -77,7 +77,7 @@ router.get("/page1/distinctmachine_no", async (req, res) => {
 
 router.get("/page1/table", async (req, res) => {
   try {
-    const { sheet_no, start_date, stop_date, machine_no } = req.query;
+    const { master_sheet_no, start_date, stop_date, machine_no } = req.query;
     if (machine_no === "ALL") {
       queryStr = `
       SELECT
@@ -112,7 +112,7 @@ router.get("/page1/table", async (req, res) => {
   t.aoi_inspect_date desc,
   t.aoi_inspect_count desc;   
           `;
-      queryParams = [sheet_no, start_date, stop_date];
+      queryParams = [master_sheet_no, start_date, stop_date];
     } else {
       queryStr = `
   SELECT
@@ -148,7 +148,7 @@ ORDER BY
 t.aoi_inspect_date desc,
 t.aoi_inspect_count desc;   
       `;
-      queryParams = [sheet_no, start_date, stop_date, machine_no];
+      queryParams = [master_sheet_no, start_date, stop_date, machine_no];
     }
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
@@ -160,7 +160,7 @@ t.aoi_inspect_count desc;
 
 router.get("/page1/tablemaster", async (req, res) => {
   try {
-    const { sheet_no, aoi_inspect_count, time, machine_no } = req.query;
+    const { master_sheet_no, aoi_inspect_count, time, machine_no } = req.query;
 
     if (machine_no === "ALL") {
       queryStr = `
@@ -186,7 +186,7 @@ order by
 1 desc,
 2 asc,
 4 asc`;
-      queryParams = [sheet_no, time, aoi_inspect_count];
+      queryParams = [master_sheet_no, time, aoi_inspect_count];
     } else {
       queryStr = `
   select 
@@ -212,7 +212,7 @@ order by
 1 desc,
 2 asc,
 4 asc`;
-      queryParams = [sheet_no, time, aoi_inspect_count, machine_no];
+      queryParams = [master_sheet_no, time, aoi_inspect_count, machine_no];
     }
 
     const result = await query(queryStr, queryParams);
