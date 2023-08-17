@@ -68,25 +68,34 @@ router.get("/page1/table", async (req, res) => {
     const { job_name, layer_no } = req.query;
 
     let queryStr = `
-    select
-	*
-from
-	public.fpc_raoi_set_camtek
-where job_name = $1
+    SELECT *
+    FROM public.fpc_raoi_set_camtek
     `;
 
-    let queryParams = [job_name];
+    let queryParams = [];
+
+    if (job_name !== "ALL") {
+      queryStr += `
+      WHERE job_name = $1
+      `;
+      queryParams.push(job_name);
+    }
 
     if (layer_no !== "ALL") {
-      queryStr += `
-         AND layer_no = $2
-      `;
+      if (queryParams.length > 0) {
+        queryStr += `
+        AND layer_no = $${queryParams.length + 1}
+        `;
+      } else {
+        queryStr += `
+        WHERE layer_no = $1
+        `;
+      }
       queryParams.push(layer_no);
     }
 
     queryStr += `
-    order by 
-    create_at desc
+    ORDER BY create_at DESC
     `;
 
     const result = await query(queryStr, queryParams);
