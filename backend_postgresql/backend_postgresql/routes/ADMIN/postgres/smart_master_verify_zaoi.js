@@ -180,7 +180,7 @@ router.get("/page1/tablemaster", async (req, res) => {
       smart_master_verify_zaoi t
     where
       master_sheet_no = $1
-      and aoi_inspect_date = $2
+      and aoi_inspect_date :: date = $2
       and aoi_inspect_count = $3
     order by
       t.aoi_inspect_date desc ,
@@ -206,7 +206,7 @@ router.get("/page1/tablemaster", async (req, res) => {
       smart_master_verify_zaoi t
 where 
   sheet_no = $1
-  and aoi_inspect_date = $2 
+  and aoi_inspect_date :: date = $2
 and aoi_inspect_count = $3
 and machine_no = $4
 order by
