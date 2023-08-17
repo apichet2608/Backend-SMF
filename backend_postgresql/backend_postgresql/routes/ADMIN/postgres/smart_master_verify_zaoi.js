@@ -15,10 +15,10 @@ router.get("/page1/distinctsheet_no", async (req, res) => {
   try {
     const result = await query(
       `select
-      distinct sheet_no
+      distinct master_sheet_no
       from
       public.smart_master_verify_zaoi
-    order by sheet_no desc
+    order by master_sheet_no desc
     `
     );
     res.status(200).json(result.rows);
@@ -37,7 +37,7 @@ router.get("/page1/distinctmachine_no", async (req, res) => {
         distinct machine_no
       from
         public.smart_master_verify_zaoi
-      where sheet_no = $1
+      where master_sheet_no = $1
     and aoi_inspect_date :: date >= $2 
     and aoi_inspect_date :: date <= $3 
       order by machine_no desc
