@@ -11,7 +11,7 @@ const pool = new Pool({
 });
 const query = (text, params) => pool.query(text, params);
 
-router.get("/page1/distinctsheet_no", async (req, res) => {
+router.get("/page1/distinctmaster_sheet_no", async (req, res) => {
   try {
     const result = await query(
       `select
