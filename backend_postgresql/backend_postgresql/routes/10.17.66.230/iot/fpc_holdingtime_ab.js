@@ -16,10 +16,11 @@ router.get("/page1/distinctproc_status", async (req, res) => {
   try {
     const result = await query(
       `select
-      distinct proc_statu
-      from
+      distinct proc_status
+    from
       public.fpc_holdingtime_ab
-    order by proc_statu desc
+    order by
+      proc_status desc
     `
     );
     res.status(200).json(result.rows);
