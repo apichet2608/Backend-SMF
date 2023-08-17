@@ -42,7 +42,7 @@ router.get("/distinctlayer_no", async (req, res) => {
 
     let queryParams = [];
 
-    if (proc_status !== "ALL") {
+    if (job_name !== "ALL") {
       queryStr += `
         where
         job_name = $1
