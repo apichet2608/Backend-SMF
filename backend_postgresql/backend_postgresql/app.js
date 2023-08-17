@@ -63,6 +63,7 @@ const smt_data_reflow_smic_set_log = require("./routes/10.17.71.21/10.17.71.21-d
 const smart_master_verify_zaoi = require("./routes/ADMIN/postgres/smart_master_verify_zaoi");
 const smart_master_verify_xray = require("./routes/ADMIN/postgres/smart_master_verify_xray");
 const smart_overall_require_08003809_action = require("./routes/ADMIN/postgres/smart_overall_require_08003809_action");
+const fpc_holdingtime_ab = require("./routes/10.17.66.230/iot/fpc_holdingtime_ab");
 
 const app = express();
 
@@ -141,6 +142,7 @@ app.use(
   "/api/smart_overall_require_08003809_action",
   smart_overall_require_08003809_action
 );
+app.use("/api/fpc_holdingtime_ab", fpc_holdingtime_ab);
 
 app.use(function (req, res, next) {
   next(createError(404));
