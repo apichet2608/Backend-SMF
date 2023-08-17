@@ -10,7 +10,6 @@ const pool = new Pool({
   database: "iot",
 });
 
-
 const query = (text, params) => pool.query(text, params);
 
 router.get("/page1/table", async (req, res) => {
@@ -53,7 +52,7 @@ from
 
     let queryParams = [];
 
-    if (proc_status !== "total") {
+    if (proc_status !== "ALL") {
       queryStr += `
         where
         proc_status = $1
