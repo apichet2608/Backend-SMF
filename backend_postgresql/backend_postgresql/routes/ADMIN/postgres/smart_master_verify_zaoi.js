@@ -165,6 +165,7 @@ router.get("/page1/tablemaster", async (req, res) => {
     if (machine_no === "ALL") {
       queryStr = `
       select
+      ROW_NUMBER() OVER () AS id,
       t.aoi_inspect_date ,
       t.master_sheet_no ,
       t.aoi_inspect_count ,
@@ -191,6 +192,7 @@ router.get("/page1/tablemaster", async (req, res) => {
     } else {
       queryStr = `
       select
+      ROW_NUMBER() OVER () AS id,
       t.aoi_inspect_date ,
       t.master_sheet_no ,
       t.aoi_inspect_count ,
