@@ -12,6 +12,23 @@ const pool = new Pool({
 
 const query = (text, params) => pool.query(text, params);
 
+router.get("/page1/distinctproc_status", async (req, res) => {
+  try {
+    const result = await query(
+      `select
+      distinct proc_statu
+      from
+      public.fpc_holdingtime_ab
+    order by proc_statu desc
+    `
+    );
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/page1/table", async (req, res) => {
   try {
     const { proc_status } = req.query;
