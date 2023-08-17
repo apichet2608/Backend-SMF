@@ -164,54 +164,56 @@ router.get("/page1/tablemaster", async (req, res) => {
 
     if (machine_no === "ALL") {
       queryStr = `
-  select 
-row_number() over () as id,
-t.aoi_inspect_date ,
-t.sheet_no ,
-t.aoi_inspect_count ,
-t."position" ,
-t.component ,
-t.verify_result ,
-t.verify_item ,
-t.master_result ,
-t.master_item ,
-judgement
-from smart_master_verify_zaoi t
-where 
-  sheet_no = $1
-  and aoi_inspect_date = $2 
-and aoi_inspect_count = $3
-order by
-3 desc,
-1 desc,
-2 asc,
-4 asc`;
+      select
+      t.aoi_inspect_date ,
+      t.master_sheet_no ,
+      t.aoi_inspect_count ,
+      t."position" ,
+      t.master_component ,
+      t.verify_component ,
+      t.verify_result ,
+      t.verify_item ,
+      t.master_result ,
+      t.master_item ,
+      judgement
+    from
+      smart_master_verify_zaoi t
+    where
+      master_sheet_no = $1
+      and aoi_inspect_date = $2
+      and aoi_inspect_count = $3
+    order by
+      t.aoi_inspect_date desc ,
+      t.aoi_inspect_count desc ,
+      t."position" asc ,
+      t.master_component asc`;
       queryParams = [master_sheet_no, time, aoi_inspect_count];
     } else {
       queryStr = `
-  select 
-row_number() over () as id,
-t.aoi_inspect_date ,
-t.sheet_no ,
-t.aoi_inspect_count ,
-t."position" ,
-t.component ,
-t.verify_result ,
-t.verify_item ,
-t.master_result ,
-t.master_item ,
-judgement
-from smart_master_verify_zaoi t
+      select
+      t.aoi_inspect_date ,
+      t.master_sheet_no ,
+      t.aoi_inspect_count ,
+      t."position" ,
+      t.master_component ,
+      t.verify_component ,
+      t.verify_result ,
+      t.verify_item ,
+      t.master_result ,
+      t.master_item ,
+      judgement
+    from
+      smart_master_verify_zaoi t
 where 
   sheet_no = $1
   and aoi_inspect_date = $2 
 and aoi_inspect_count = $3
 and machine_no = $4
 order by
-3 desc,
-1 desc,
-2 asc,
-4 asc`;
+t.aoi_inspect_date desc ,
+t.aoi_inspect_count desc ,
+t."position" asc ,
+t.master_component asc`;
       queryParams = [master_sheet_no, time, aoi_inspect_count, machine_no];
     }
 
