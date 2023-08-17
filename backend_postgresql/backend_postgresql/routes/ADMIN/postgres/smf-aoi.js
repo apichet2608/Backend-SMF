@@ -2,14 +2,21 @@ const express = require("express");
 const router = express.Router();
 const { Pool } = require("pg");
 
+// const pool = new Pool({
+//   host: "10.17.71.57",
+//   port: 5432,
+//   user: "postgres",
+//   password: "fujikura",
+//   database: "smart_factory", // แทนที่ด้วยชื่อฐานข้อมูลของคุณ
+// });
+
 const pool = new Pool({
-  host: "10.17.71.57",
+  host: "10.17.77.111",
   port: 5432,
   user: "postgres",
-  password: "fujikura",
-  database: "smart_factory", // แทนที่ด้วยชื่อฐานข้อมูลของคุณ
+  password: "postgres",
+  database: "postgres",
 });
-
 const query = (text, params) => pool.query(text, params);
 
 router.get("/distinctaoi_prd_name", async (req, res) => {

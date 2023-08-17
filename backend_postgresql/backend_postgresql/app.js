@@ -18,7 +18,10 @@ const pool = new Pool({
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const customRouter = require("./routes/10.17.71.57/10.17.71.57-smart_factory/smf-aoi");
-const smt_aoi = require("./routes/10.17.71.57/10.17.71.57-smart_factory/smt-aoi");
+
+// const smt_aoi = require("./routes/10.17.71.57/10.17.71.57-smart_factory/smt-aoi");
+const smt_aoi = require("./routes/ADMIN/postgres/smf-aoi");
+
 const jwdb_r23662_actv = require("./routes/10.17.71.21/10.17.71.21-postgres/jwdb_r23662_actv");
 const smart_mil_common = require("./routes/ADMIN/postgres/smart_mil_common");
 const smart_enviro_cleanroomparticle = require("./routes/10.17.71.57/10.17.71.57-smart_factory/smart_enviro_cleanroomparticle");
