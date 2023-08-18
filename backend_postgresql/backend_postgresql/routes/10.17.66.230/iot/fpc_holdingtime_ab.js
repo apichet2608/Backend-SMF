@@ -30,6 +30,39 @@ router.get("/page1/distinctproc_status", async (req, res) => {
   }
 });
 
+router.get("/page1/distinctcondition_desc", async (req, res) => {
+  try {
+    const { proc_status } = req.query;
+    let queryStr = `
+    select
+    distinct condition_desc
+  from
+    public.fpc_holdingtime_ab
+    `;
+
+    let queryParams = [];
+
+    if (proc_status !== "ALL") {
+      queryStr += `
+        where
+        proc_status = $1
+      `;
+      queryParams.push(proc_status);
+    }
+
+    queryStr += `
+    order by 
+    condition_desc desc
+    `;
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/page1/table", async (req, res) => {
   try {
     const { proc_status } = req.query;
