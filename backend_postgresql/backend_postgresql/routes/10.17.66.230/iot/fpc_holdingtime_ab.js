@@ -63,9 +63,44 @@ router.get("/page1/distinctcondition_desc", async (req, res) => {
   }
 });
 
+router.get("/page1/distinctcondition_desc", async (req, res) => {
+  try {
+    const { proc_status, condition_desc } = req.query;
+    let queryStr = `
+    select
+	distinct prd_item_code
+from
+	public.fpc_holdingtime_ab
+where
+	proc_status = $1
+    `;
+
+    let queryParams = [proc_status];
+
+    if (proc_status !== "ALL") {
+      queryStr += `
+        AND
+        condition_desc = $2
+      `;
+      queryParams.push(condition_desc);
+    }
+
+    queryStr += `
+    order by 
+    prd_item_code desc
+    `;
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/page1/table", async (req, res) => {
   try {
-    const { proc_status } = req.query;
+    const { proc_status, condition_desc, prd_item_code } = req.query;
 
     let queryStr = `
     select
@@ -105,15 +140,45 @@ from
 
     if (proc_status !== "ALL") {
       queryStr += `
-        where
-        proc_status = $1
+        WHERE
+          proc_status = $1
       `;
       queryParams.push(proc_status);
     }
 
+    if (condition_desc !== "ALL") {
+      if (queryParams.length === 0) {
+        queryStr += `
+          WHERE
+            condition_desc = $2
+        `;
+      } else {
+        queryStr += `
+          AND
+            condition_desc = $2
+        `;
+      }
+      queryParams.push(condition_desc);
+    }
+
+    if (prd_item_code !== "ALL") {
+      if (queryParams.length === 0) {
+        queryStr += `
+          WHERE
+            prd_item_code = $3
+        `;
+      } else {
+        queryStr += `
+          AND
+            prd_item_code = $3
+        `;
+      }
+      queryParams.push(prd_item_code);
+    }
+
     queryStr += `
-    order by 
-    a2b1_time desc
+      ORDER BY 
+        a2b1_time DESC
     `;
 
     const result = await query(queryStr, queryParams);
