@@ -63,7 +63,7 @@ router.get("/page1/distinctcondition_desc", async (req, res) => {
   }
 });
 
-router.get("/page1/distinctcondition_desc", async (req, res) => {
+router.get("/page1/distinctprd_item_code", async (req, res) => {
   try {
     const { proc_status, condition_desc } = req.query;
     let queryStr = `
