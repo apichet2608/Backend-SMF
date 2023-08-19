@@ -68,26 +68,39 @@ router.get("/page1/distinctprd_item_code", async (req, res) => {
     const { proc_status, condition_desc } = req.query;
     let queryStr = `
     select
-	distinct prd_item_code
-from
-	public.fpc_holdingtime_ab
-where
-	proc_status = $1
+      distinct prd_item_code
+    from
+      public.fpc_holdingtime_ab
     `;
 
-    let queryParams = [proc_status];
+    let queryParams = [];
 
     if (proc_status !== "ALL") {
       queryStr += `
-        AND
-        condition_desc = $2
+      where
+        proc_status = $1
       `;
+      queryParams.push(proc_status);
+    }
+
+    if (condition_desc !== "ALL") {
+      if (queryParams.length === 0) {
+        queryStr += `
+        where
+          condition_desc = $1
+        `;
+      } else {
+        queryStr += `
+        and
+          condition_desc = $2
+        `;
+      }
       queryParams.push(condition_desc);
     }
 
     queryStr += `
-    order by 
-    prd_item_code desc
+      order by 
+      prd_item_code desc
     `;
 
     const result = await query(queryStr, queryParams);
