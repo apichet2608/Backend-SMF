@@ -146,7 +146,7 @@ app.use(
 );
 app.use("/api/fpc_holdingtime_ab", fpc_holdingtime_ab);
 app.use("/api/fpc_raoi_set_camtek", fpc_raoi_set_camtek);
-app.use("/api/fpc_lse_alignment_noexp", fpc_raoi_set_camtek);
+app.use("/api/fpc_lse_alignment_noexp", fpc_lse_alignment_noexp);
 
 app.use(function (req, res, next) {
   next(createError(404));
