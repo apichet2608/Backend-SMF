@@ -92,7 +92,7 @@ router.get("/data-fix", async (req, res) => {
       public.foxsystem_summary_bylot
     where
       station_process = $1
-      production_date >= $2
+      and production_date >= $2
       and DATE_TRUNC('day',
       production_date) <= DATE_TRUNC('day',
       $3::TIMESTAMP)
