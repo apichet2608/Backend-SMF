@@ -65,6 +65,7 @@ const smart_master_verify_xray = require("./routes/ADMIN/postgres/smart_master_v
 const smart_overall_require_08003809_action = require("./routes/ADMIN/postgres/smart_overall_require_08003809_action");
 const fpc_holdingtime_ab = require("./routes/10.17.66.230/iot/fpc_holdingtime_ab");
 const fpc_raoi_set_camtek = require("./routes/10.17.77.118/iot/fpc_raoi_set_camtek");
+const fpc_lse_alignment_noexp = require("./routes/10.17.77.118/iot/fpc_lse_alignment_noexp");
 
 const app = express();
 
@@ -145,6 +146,7 @@ app.use(
 );
 app.use("/api/fpc_holdingtime_ab", fpc_holdingtime_ab);
 app.use("/api/fpc_raoi_set_camtek", fpc_raoi_set_camtek);
+app.use("/api/fpc_lse_alignment_noexp", fpc_lse_alignment_noexp);
 
 app.use(function (req, res, next) {
   next(createError(404));

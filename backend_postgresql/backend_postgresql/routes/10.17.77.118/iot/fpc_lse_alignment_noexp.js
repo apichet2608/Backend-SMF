@@ -12,7 +12,7 @@ const pool = new Pool({
 
 const query = (text, params) => pool.query(text, params);
 
-router.get("/page1/distinctfactory", async (req, res) => {
+router.get("/distinctfactory", async (req, res) => {
   try {
     const result = await query(
       `select
@@ -30,7 +30,7 @@ router.get("/page1/distinctfactory", async (req, res) => {
   }
 });
 
-router.get("/page1/distinctmc_code", async (req, res) => {
+router.get("/distinctmc_code", async (req, res) => {
   try {
     const { factory } = req.query;
     let queryStr = `
@@ -61,7 +61,7 @@ router.get("/page1/distinctmc_code", async (req, res) => {
   }
 });
 
-router.get("/page1/distinctprocess", async (req, res) => {
+router.get("/distinctprocess", async (req, res) => {
   try {
     const { factory, mc_code } = req.query;
     let queryStr = `
@@ -106,7 +106,7 @@ router.get("/page1/distinctprocess", async (req, res) => {
   }
 });
 
-router.get("/page1/distinctpos_no", async (req, res) => {
+router.get("/distinctpos_no", async (req, res) => {
   try {
     const { factory, mc_code, process } = req.query;
     let queryStr = `
@@ -167,7 +167,7 @@ router.get("/page1/distinctpos_no", async (req, res) => {
   }
 });
 
-router.get("/page1/distinctproduct_name", async (req, res) => {
+router.get("/distinctproduct_name", async (req, res) => {
   try {
     const { factory, mc_code, process, pos_no } = req.query;
     let queryStr = `
@@ -243,91 +243,68 @@ router.get("/page1/distinctproduct_name", async (req, res) => {
   }
 });
 
-router.get("/page1/table", async (req, res) => {
+router.get("/table", async (req, res) => {
   try {
-    const { proc_status, condition_desc, process } = req.query;
+    const { factory, mc_code, process, pos_no } = req.query;
 
     let queryStr = `
-    select
-      id,
-      lot_no,
-      process,
-      prd_name,
-      ro_rev,
-      ro_seq,
-      roll_no,
-      roll_lot_count,
-      con_lot_count,
-      current_proc_id,
-      current_process,
-      proc_status,
-      std_min_lot,
-      a1a2_b1b2_a1b1_time,
-      lock_holding_time,
-      warning_holding_time,
-      warning_std_time,
-      lock_std_time,
-      a2b1_time,
-      start_proc_id,
-      a,
-      a1,
-      a2,
-      stop_proc_id,
-      b,
-      b1,
-      b2,
-      "CURRENT_TIME" as "current_time"
-    from
-      public.fpc_lse_alignment_noexp
+      select *
+      from public.fpc_lse_alignment_noexp
     `;
 
     let queryParams = [];
+    let queryIndex = 1;
 
-    if (proc_status !== "ALL") {
+    if (factory !== "ALL") {
       queryStr += `
-        WHERE
-          proc_status = $1
+        where factory = $${queryIndex}
       `;
-      queryParams.push(proc_status);
+      queryParams.push(factory);
+      queryIndex++;
     }
 
-    if (condition_desc !== "ALL") {
-      if (queryParams.length > 0) {
-        queryStr += `
-          AND
-        `;
+    if (mc_code !== "ALL") {
+      if (queryParams.length === 0) {
+        ptime;
       } else {
         queryStr += `
-          WHERE
+          and mc_code = $${queryIndex}
         `;
       }
-      queryStr += `
-          condition_desc = $${queryParams.length + 1}
-      `;
-      queryParams.push(condition_desc);
+      queryParams.push(mc_code);
+      queryIndex++;
     }
 
     if (process !== "ALL") {
-      if (queryParams.length > 0) {
+      if (queryParams.length === 0) {
         queryStr += `
-          AND
+          where process = $${queryIndex}
         `;
       } else {
         queryStr += `
-          WHERE
+          and process = $${queryIndex}
         `;
       }
-      queryStr += `
-          process = $${queryParams.length + 1}
-      `;
       queryParams.push(process);
+      queryIndex++;
     }
 
+    if (pos_no !== "ALL") {
+      if (queryParams.length === 0) {
+        queryStr += `
+          where pos_no = $${queryIndex}
+        `;
+      } else {
+        queryStr += `
+          and pos_no = $${queryIndex}
+        `;
+      }
+      queryParams.push(pos_no);
+      queryIndex++;
+    }
     queryStr += `
-      ORDER BY 
-        a2b1_time DESC
-    `;
-
+    order by ptime DESC
+  `;
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
   } catch (error) {
