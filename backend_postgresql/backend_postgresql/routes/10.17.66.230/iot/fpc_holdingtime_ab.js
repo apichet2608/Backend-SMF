@@ -117,36 +117,36 @@ router.get("/page1/table", async (req, res) => {
 
     let queryStr = `
     select
-	id,
-	lot_no,
-	prd_item_code,
-	prd_name,
-	ro_rev,
-	ro_seq,
-	roll_no,
-	roll_lot_count,
-	con_lot_count,
-	current_proc_id,
-	current_process,
-	proc_status,
-	std_min_lot,
-	a1a2_b1b2_a1b1_time,
-	lock_holding_time,
-	warning_holding_time,
-	warning_std_time,
-	lock_std_time,
-	a2b1_time,
-	start_proc_id,
-	a,
-	a1,
-	a2,
-	stop_proc_id,
-	b,
-	b1,
-	b2,
-	"CURRENT_TIME" as "current_time"
-from
-	public.fpc_holdingtime_ab
+      id,
+      lot_no,
+      prd_item_code,
+      prd_name,
+      ro_rev,
+      ro_seq,
+      roll_no,
+      roll_lot_count,
+      con_lot_count,
+      current_proc_id,
+      current_process,
+      proc_status,
+      std_min_lot,
+      a1a2_b1b2_a1b1_time,
+      lock_holding_time,
+      warning_holding_time,
+      warning_std_time,
+      lock_std_time,
+      a2b1_time,
+      start_proc_id,
+      a,
+      a1,
+      a2,
+      stop_proc_id,
+      b,
+      b1,
+      b2,
+      "CURRENT_TIME" as "current_time"
+    from
+      public.fpc_holdingtime_ab
     `;
 
     let queryParams = [];
@@ -160,32 +160,34 @@ from
     }
 
     if (condition_desc !== "ALL") {
-      if (queryParams.length === 0) {
+      if (queryParams.length > 0) {
         queryStr += `
-          WHERE
-            condition_desc = $2
+          AND
         `;
       } else {
         queryStr += `
-          AND
-            condition_desc = $2
+          WHERE
         `;
       }
+      queryStr += `
+          condition_desc = $${queryParams.length + 1}
+      `;
       queryParams.push(condition_desc);
     }
 
     if (prd_item_code !== "ALL") {
-      if (queryParams.length === 0) {
+      if (queryParams.length > 0) {
         queryStr += `
-          WHERE
-            prd_item_code = $3
+          AND
         `;
       } else {
         queryStr += `
-          AND
-            prd_item_code = $3
+          WHERE
         `;
       }
+      queryStr += `
+          prd_item_code = $${queryParams.length + 1}
+      `;
       queryParams.push(prd_item_code);
     }
 
