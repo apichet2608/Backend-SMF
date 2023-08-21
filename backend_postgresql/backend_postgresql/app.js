@@ -29,6 +29,8 @@ const ok2s = require("./routes/ADMIN/postgres/smart-ok2s");
 const foxsystem_json_backup_header_ok = require("./routes/ADMIN/postgres/foxsystem_json_backup_header_ok");
 const foxsystem_summary_bylot = require("./routes/ADMIN/postgres/foxsystem_summary_bylot");
 const foxsystem_json_backup_header_defect = require("./routes/ADMIN/postgres/foxsystem_json_backup_header_defect");
+const foxsystem_json_backup_header_summary = require("./routes/ADMIN/postgres/foxsystem_json_backup_header_summary");
+
 const smart_oee_overall = require("./routes/10.17.66.230/postgres/smart_oee_overall");
 const fin_ost_reject_day = require("./routes/10.17.66.230/postgres/fin_ost_reject");
 const jwdb_rdflv_mck_actv = require("./routes/10.17.71.21/10.17.71.21-postgres/jwdb_rdflv_mck_actv");
@@ -144,6 +146,10 @@ app.use(
 app.use("/api/fpc_holdingtime_ab", fpc_holdingtime_ab);
 app.use("/api/fpc_raoi_set_camtek", fpc_raoi_set_camtek);
 app.use("/api/fpc_lse_alignment_noexp", fpc_lse_alignment_noexp);
+app.use(
+  "/api/foxsystem_json_backup_header_summary",
+  foxsystem_json_backup_header_summary
+);
 
 app.use(function (req, res, next) {
   next(createError(404));
