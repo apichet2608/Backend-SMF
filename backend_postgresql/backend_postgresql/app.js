@@ -27,7 +27,7 @@ const smart_mil_common = require("./routes/ADMIN/postgres/smart_mil_common");
 const smart_enviro_cleanroomparticle = require("./routes/10.17.71.57/10.17.71.57-smart_factory/smart_enviro_cleanroomparticle");
 const ok2s = require("./routes/ADMIN/postgres/smart-ok2s");
 const foxsystem_json_backup_header_ok = require("./routes/ADMIN/postgres/foxsystem_json_backup_header_ok");
-const foxsystem_json_backup_header_summary = require("./routes/ADMIN/postgres/foxsystem_json_backup_header_summary");
+const foxsystem_summary_bylot = require("./routes/ADMIN/postgres/foxsystem_summary_bylot");
 const foxsystem_json_backup_header_defect = require("./routes/ADMIN/postgres/foxsystem_json_backup_header_defect");
 const smart_oee_overall = require("./routes/10.17.66.230/postgres/smart_oee_overall");
 const fin_ost_reject_day = require("./routes/10.17.66.230/postgres/fin_ost_reject");
@@ -93,10 +93,7 @@ app.use(
   "/api/foxsystem_json_backup_header_ok",
   foxsystem_json_backup_header_ok
 );
-app.use(
-  "/api/foxsystem_json_backup_header_summary",
-  foxsystem_json_backup_header_summary
-);
+app.use("/api/foxsystem_summary_bylot", foxsystem_summary_bylot);
 app.use(
   "/api/foxsystem_json_backup_header_defect",
   foxsystem_json_backup_header_defect
