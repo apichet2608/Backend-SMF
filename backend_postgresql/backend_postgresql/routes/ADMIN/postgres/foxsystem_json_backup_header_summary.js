@@ -164,6 +164,9 @@ router.get("/data-all", async (req, res) => {
       production_date) <= DATE_TRUNC('day',
       $2::TIMESTAMP)
       and sendresultdetails_product = $3
+      GROUP BY
+      production_date,
+      sendresultdetails_product
     order by production_date  asc`,
       [startdate, stopdate, product]
     );
