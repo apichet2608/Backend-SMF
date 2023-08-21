@@ -20,14 +20,14 @@ router.get("/count-status", async (req, res) => {
 	count,
 	case
 		when status = 'Finished' then
-        (
+(
 		select
 			json_agg(json_build_object(
-            'plan_date_formatted',
+'plan_date_formatted',
 			plan_date_formatted,
 			'finished_count',
 			finished_count
-          ))
+))
 		from
 			(
 			select
@@ -42,19 +42,20 @@ router.get("/count-status", async (req, res) => {
 				TO_CHAR(plan_date,
 				'Mon-YYYY')
 			order by
-				TO_CHAR(plan_date,
-				'Mon-YYYY') desc
-          ) subquery 
-        )
+				TO_DATE(TO_CHAR(plan_date,
+				'Mon-YYYY'),
+				'Mon-YYYY') asc
+) subquery
+)
 		when status = 'Planed' then
-        (
+(
 		select
 			json_agg(json_build_object(
-            'plan_date_formatted',
+'plan_date_formatted',
 			plan_date_formatted,
 			'planed_count',
 			planed_count
-          ))
+))
 		from
 			(
 			select
@@ -69,19 +70,20 @@ router.get("/count-status", async (req, res) => {
 				TO_CHAR(plan_date,
 				'Mon-YYYY')
 			order by
-				TO_CHAR(plan_date,
-				'Mon-YYYY') desc
-          ) subquery
-        )
+				TO_DATE(TO_CHAR(plan_date,
+				'Mon-YYYY'),
+				'Mon-YYYY') asc
+) subquery
+)
 		when status = 'Wait for plan' then
-        (
+(
 		select
 			json_agg(json_build_object(
-            'plan_date_formatted',
+'plan_date_formatted',
 			plan_date_formatted,
 			'wait_for_plan_count',
 			wait_for_plan_count
-          ))
+))
 		from
 			(
 			select
@@ -96,19 +98,20 @@ router.get("/count-status", async (req, res) => {
 				TO_CHAR(plan_date,
 				'Mon-YYYY')
 			order by
-				TO_CHAR(plan_date,
-				'Mon-YYYY') desc
-          ) subquery
-        )
+				TO_DATE(TO_CHAR(plan_date,
+				'Mon-YYYY'),
+				'Mon-YYYY') asc
+) subquery
+)
 		when status = '' then
-        (
+(
 		select
 			json_agg(json_build_object(
-            'plan_date_formatted',
+'plan_date_formatted',
 			plan_date_formatted,
 			'empty_status_count',
 			empty_status_count
-          ))
+))
 		from
 			(
 			select
@@ -123,10 +126,11 @@ router.get("/count-status", async (req, res) => {
 				TO_CHAR(plan_date,
 				'Mon-YYYY')
 			order by
-				TO_CHAR(plan_date,
-				'Mon-YYYY') desc
-          ) subquery
-        )
+				TO_DATE(TO_CHAR(plan_date,
+				'Mon-YYYY'),
+				'Mon-YYYY') asc
+) subquery
+)
 		else null
 	end as sum_month
 from
@@ -148,7 +152,7 @@ union all
 		public.smart_machine_connect_list
 	where
 		status in ('Finished', 'Planed', 'Wait for plan', '')
-  ) subquery
+) subquery
 order by
 	count desc
     `);
