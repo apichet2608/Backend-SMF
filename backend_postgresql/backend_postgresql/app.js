@@ -68,6 +68,7 @@ const smart_overall_require_08003809_action = require("./routes/ADMIN/postgres/s
 const fpc_holdingtime_ab = require("./routes/10.17.66.230/iot/fpc_holdingtime_ab");
 const fpc_raoi_set_camtek = require("./routes/10.17.77.118/iot/fpc_raoi_set_camtek");
 const fpc_lse_alignment_noexp = require("./routes/10.17.77.118/iot/fpc_lse_alignment_noexp");
+const smt_reflow_smic_actv = require("./routes/10.17.71.21/10.17.71.21-data_log/smt_reflow_smic_actv");
 
 const app = express();
 
@@ -150,6 +151,7 @@ app.use(
   "/api/foxsystem_json_backup_header_summary",
   foxsystem_json_backup_header_summary
 );
+app.use("/api/smt_reflow_smic_actv", smt_reflow_smic_actv);
 
 app.use(function (req, res, next) {
   next(createError(404));
