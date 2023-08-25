@@ -70,6 +70,7 @@ const fpc_raoi_set_camtek = require("./routes/10.17.77.118/iot/fpc_raoi_set_camt
 const fpc_lse_alignment_noexp = require("./routes/10.17.77.118/iot/fpc_lse_alignment_noexp");
 const smt_reflow_smic_actv = require("./routes/10.17.71.21/10.17.71.21-data_log/smt_reflow_smic_actv");
 const smart_product_lot_status_count = require("./routes/ADMIN/postgres/smart_product_lot_status_count");
+const smart_product_lot_status = require("./routes/ADMIN/postgres/smart_product_lot_status");
 
 const app = express();
 
@@ -154,6 +155,7 @@ app.use(
 );
 app.use("/api/smt_reflow_smic_actv", smt_reflow_smic_actv);
 app.use("/api/smart_product_lot_status_count", smart_product_lot_status_count);
+app.use("/api/smart_product_lot_status", smart_product_lot_status);
 
 app.use(function (req, res, next) {
   next(createError(404));
