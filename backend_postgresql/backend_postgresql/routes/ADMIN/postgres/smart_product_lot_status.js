@@ -18,8 +18,8 @@ router.get("/pieplot1", async (req, res) => {
 
     let queryStr = `
     select
-    lot_status,
-    COUNT(lot_status) as lot_status_count
+    lot_status as status,
+    COUNT(lot_status) as status_count
   from
     public.smart_product_lot_status
   where
@@ -58,8 +58,8 @@ router.get("/pieplot2", async (req, res) => {
 
     let queryStr = `
     select
-	fac_unit_desc ,
-	COUNT(fac_unit_desc) as lot_status_count
+	fac_unit_desc as status,
+	COUNT(fac_unit_desc) as status_count
 from
 	public.smart_product_lot_status
     `;
