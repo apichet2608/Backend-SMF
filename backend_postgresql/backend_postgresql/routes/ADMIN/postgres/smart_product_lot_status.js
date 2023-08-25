@@ -98,4 +98,54 @@ from
   }
 });
 
+router.get("/pieplot3", async (req, res) => {
+  try {
+    const { factory_desc, lot_status } = req.query;
+
+    let queryStr = `
+    select
+	pending_reason as status,
+	COUNT(lot_status) as status_count
+from
+	public.smart_product_lot_status
+    `;
+
+    let queryParams = [];
+
+    if (factory_desc !== "ALL") {
+      queryStr += `
+        WHERE
+        factory_desc = $1
+      `;
+      queryParams.push(factory_desc);
+    }
+
+    if (lot_status !== "ALL") {
+      if (queryParams.length > 0) {
+        queryStr += `
+          AND
+        `;
+      } else {
+        queryStr += `
+          WHERE
+        `;
+      }
+      queryStr += `
+      lot_status = $${queryParams.length + 1}
+      `;
+      queryParams.push(lot_status);
+    }
+
+    queryStr += `
+    group by
+    pending_reason
+    `;
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
 module.exports = router;
