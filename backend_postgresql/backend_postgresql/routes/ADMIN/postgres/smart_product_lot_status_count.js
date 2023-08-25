@@ -69,7 +69,12 @@ from
       `;
       queryParams.push(lot_status);
     }
-
+    queryStr += `
+    AND
+  `;
+    queryStr += `
+    create_at >= NOW() - INTERVAL '1 year';
+    `;
     queryStr += `
       ORDER BY 
       create_at ASC
@@ -141,7 +146,12 @@ from
       `;
       queryParams.push(fac_unit_desc);
     }
-
+    queryStr += `
+    AND
+  `;
+    queryStr += `
+    create_at >= NOW() - INTERVAL '1 year';
+    `;
     queryStr += `
       ORDER BY 
       create_at ASC
