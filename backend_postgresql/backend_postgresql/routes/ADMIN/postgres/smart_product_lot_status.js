@@ -22,11 +22,6 @@ router.get("/pieplot1", async (req, res) => {
     COUNT(lot_status) as status_count
   from
     public.smart_product_lot_status
-  where
-    factory_desc = $1
-  group by
-    lot_status
-  
     `;
 
     let queryParams = [];

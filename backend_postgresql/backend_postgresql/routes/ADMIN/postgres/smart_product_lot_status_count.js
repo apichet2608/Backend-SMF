@@ -73,7 +73,7 @@ from
     AND
   `;
     queryStr += `
-    create_at >= NOW() - INTERVAL '1 year';
+    create_at >= NOW() - INTERVAL '1 year'
     `;
     queryStr += `
       ORDER BY 
@@ -150,7 +150,7 @@ from
     AND
   `;
     queryStr += `
-    create_at >= NOW() - INTERVAL '1 year';
+    create_at >= NOW() - INTERVAL '1 year'
     `;
     queryStr += `
       ORDER BY 
