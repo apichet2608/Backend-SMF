@@ -114,61 +114,68 @@ router.get("/data-all", async (req, res) => {
 
     const result = await query(
       `select
-      ROW_NUMBER() OVER (ORDER BY production_date) AS id,
-       production_date,
-       sendresultdetails_product,
-       MAX(CASE WHEN station_process = 'TEST15_spi_ky' THEN percent_yield END) AS test15_spi_ky,
-       MAX(CASE WHEN station_process = 'TEST15_spi_ky' THEN total_count END) AS test15_spi_ky_total_count,
-       MAX(CASE WHEN station_process = 'TEST15_spi_ky' THEN result_pass END) AS test15_spi_ky_result_pass,
-       MAX(CASE WHEN station_process = 'TEST15_spi_ky' THEN result_fail END) AS test15_spi_ky_result_fail,
-       MAX(CASE WHEN station_process = 'TEST18_aoi' THEN percent_yield END) AS test18_aoi,
-       MAX(CASE WHEN station_process = 'TEST18_aoi' THEN total_count END) AS test18_aoi_total_count,
-       MAX(CASE WHEN station_process = 'TEST18_aoi' THEN result_pass END) AS test18_aoi_result_pass,
-       MAX(CASE WHEN station_process = 'TEST18_aoi' THEN result_fail END) AS test18_aoi_result_fail,
-       MAX(CASE WHEN station_process = 'TEST27_holding_time_27' THEN percent_yield END) AS test27_holding_time,
-       MAX(CASE WHEN station_process = 'TEST27_holding_time_27' THEN total_count END) AS test27_holding_time_total_count,
-       MAX(CASE WHEN station_process = 'TEST27_holding_time_27' THEN result_pass END) AS test27_holding_time_result_pass,
-       MAX(CASE WHEN station_process = 'TEST27_holding_time_27' THEN result_fail END) AS test27_holding_time_result_fail,
-       MAX(CASE WHEN station_process = 'TEST12_xray' THEN percent_yield END) AS test12_xray,
-       MAX(CASE WHEN station_process = 'TEST12_xray' THEN total_count END) AS test12_xray_total_count,
-       MAX(CASE WHEN station_process = 'TEST12_xray' THEN result_pass END) AS test12_xray_result_pass,
-       MAX(CASE WHEN station_process = 'TEST12_xray' THEN result_fail END) AS test12_xray_result_fail,
-       MAX(CASE WHEN station_process = 'IQC-FLEX3_et' THEN percent_yield END) AS iqc_flex3_et,
-       MAX(CASE WHEN station_process = 'IQC-FLEX3_et' THEN total_count END) AS iqc_flex3_et_total_count,
-       MAX(CASE WHEN station_process = 'IQC-FLEX3_et' THEN result_pass END) AS iqc_flex3_et_result_pass,
-       MAX(CASE WHEN station_process = 'IQC-FLEX3_et' THEN result_fail END) AS iqc_flex3_et_result_fail,
-       MAX(CASE WHEN station_process = 'TEST42_oqc_et' THEN percent_yield END) AS test42_oqc_et,
-       MAX(CASE WHEN station_process = 'TEST42_oqc_et' THEN total_count END) AS test42_oqc_et_total_count,
-       MAX(CASE WHEN station_process = 'TEST42_oqc_et' THEN result_pass END) AS test42_oqc_et_result_pass,
-       MAX(CASE WHEN station_process = 'TEST42_oqc_et' THEN result_fail END) AS test42_oqc_et_result_fail,
-       MAX(CASE WHEN station_process = 'TEST21_avi' THEN percent_yield END) AS test21_avi_percent_yield,
-       MAX(CASE WHEN station_process = 'TEST21_avi' THEN total_count END) AS test21_avi_total_count,
-       MAX(CASE WHEN station_process = 'TEST21_avi' THEN result_pass END) AS test21_avi_result_pass,
-       MAX(CASE WHEN station_process = 'TEST21_avi' THEN result_fail END) AS test21_avi_result_fail,
-       MAX(CASE WHEN station_process = 'TEST13_oqc_fai' THEN percent_yield END) AS test13_oqc_fai,
-       MAX(CASE WHEN station_process = 'TEST13_oqc_fai' THEN total_count END) AS test13_oqc_fai_total_count,
-       MAX(CASE WHEN station_process = 'TEST13_oqc_fai' THEN result_pass END) AS test13_oqc_fai_result_pass,
-       MAX(CASE WHEN station_process = 'TEST13_oqc_fai' THEN result_fail END) AS test13_oqc_fai_result_fail,
-       MAX(CASE WHEN station_process = 'TEST39_holding_time_39' THEN percent_yield END) AS test39_holding_time,
-       MAX(CASE WHEN station_process = 'TEST39_holding_time_39' THEN total_count END) AS test39_holding_time_total_count,
-       MAX(CASE WHEN station_process = 'TEST39_holding_time_39' THEN result_pass END) AS test39_holding_time_result_pass,
-       MAX(CASE WHEN station_process = 'TEST39_holding_time_39' THEN result_fail END) AS test39_holding_time_result_fail,
-       MAX(CASE WHEN station_process = 'TEST74_holding_time_74' THEN percent_yield END) AS test74_holding_time,
-       MAX(CASE WHEN station_process = 'TEST74_holding_time_74' THEN total_count END) AS test74_holding_time_total_count,
-       MAX(CASE WHEN station_process = 'TEST74_holding_time_74' THEN result_pass END) AS test74_holding_time_result_pass,
-       MAX(CASE WHEN station_process = 'TEST74_holding_time_74' THEN result_fail END) AS test74_holding_time_result_fail
-   FROM
-   foxsystem_summary_bylot
+      row_number() over (
+    order by
+      production_date) as id,
+      production_date,
+      sendresultdetails_product,
+      MAX(case when station_process = 'TEST15_spi_ky' then percent_yield end) as test15_spi_ky,
+      MAX(case when station_process = 'TEST15_spi_ky' then total_count end) as test15_spi_ky_total_count,
+      MAX(case when station_process = 'TEST15_spi_ky' then result_pass end) as test15_spi_ky_result_pass,
+      MAX(case when station_process = 'TEST15_spi_ky' then result_fail end) as test15_spi_ky_result_fail,
+      MAX(case when station_process = 'TEST15_spi_ckd' then percent_yield end) as test15_spi_ckd,
+      MAX(case when station_process = 'TEST15_spi_ckd' then total_count end) as test15_spi_ckd_total_count,
+      MAX(case when station_process = 'TEST15_spi_ckd' then result_pass end) as test15_spi_ckd_result_pass,
+      MAX(case when station_process = 'TEST15_spi_ckd' then result_fail end) as test15_spi_ckd_result_fail,
+      MAX(case when station_process = 'TEST18_aoi' then percent_yield end) as test18_aoi,
+      MAX(case when station_process = 'TEST18_aoi' then total_count end) as test18_aoi_total_count,
+      MAX(case when station_process = 'TEST18_aoi' then result_pass end) as test18_aoi_result_pass,
+      MAX(case when station_process = 'TEST18_aoi' then result_fail end) as test18_aoi_result_fail,
+      MAX(case when station_process = 'TEST27_holding_time_27' then percent_yield end) as test27_holding_time,
+      MAX(case when station_process = 'TEST27_holding_time_27' then total_count end) as test27_holding_time_total_count,
+      MAX(case when station_process = 'TEST27_holding_time_27' then result_pass end) as test27_holding_time_result_pass,
+      MAX(case when station_process = 'TEST27_holding_time_27' then result_fail end) as test27_holding_time_result_fail,
+      MAX(case when station_process = 'TEST12_xray' then percent_yield end) as test12_xray,
+      MAX(case when station_process = 'TEST12_xray' then total_count end) as test12_xray_total_count,
+      MAX(case when station_process = 'TEST12_xray' then result_pass end) as test12_xray_result_pass,
+      MAX(case when station_process = 'TEST12_xray' then result_fail end) as test12_xray_result_fail,
+      MAX(case when station_process = 'IQC-FLEX3_et' then percent_yield end) as iqc_flex3_et,
+      MAX(case when station_process = 'IQC-FLEX3_et' then total_count end) as iqc_flex3_et_total_count,
+      MAX(case when station_process = 'IQC-FLEX3_et' then result_pass end) as iqc_flex3_et_result_pass,
+      MAX(case when station_process = 'IQC-FLEX3_et' then result_fail end) as iqc_flex3_et_result_fail,
+      MAX(case when station_process = 'TEST42_oqc_et' then percent_yield end) as test42_oqc_et,
+      MAX(case when station_process = 'TEST42_oqc_et' then total_count end) as test42_oqc_et_total_count,
+      MAX(case when station_process = 'TEST42_oqc_et' then result_pass end) as test42_oqc_et_result_pass,
+      MAX(case when station_process = 'TEST42_oqc_et' then result_fail end) as test42_oqc_et_result_fail,
+      MAX(case when station_process = 'TEST21_avi' then percent_yield end) as test21_avi_percent_yield,
+      MAX(case when station_process = 'TEST21_avi' then total_count end) as test21_avi_total_count,
+      MAX(case when station_process = 'TEST21_avi' then result_pass end) as test21_avi_result_pass,
+      MAX(case when station_process = 'TEST21_avi' then result_fail end) as test21_avi_result_fail,
+      MAX(case when station_process = 'TEST13_oqc_fai' then percent_yield end) as test13_oqc_fai,
+      MAX(case when station_process = 'TEST13_oqc_fai' then total_count end) as test13_oqc_fai_total_count,
+      MAX(case when station_process = 'TEST13_oqc_fai' then result_pass end) as test13_oqc_fai_result_pass,
+      MAX(case when station_process = 'TEST13_oqc_fai' then result_fail end) as test13_oqc_fai_result_fail,
+      MAX(case when station_process = 'TEST39_holding_time_39' then percent_yield end) as test39_holding_time,
+      MAX(case when station_process = 'TEST39_holding_time_39' then total_count end) as test39_holding_time_total_count,
+      MAX(case when station_process = 'TEST39_holding_time_39' then result_pass end) as test39_holding_time_result_pass,
+      MAX(case when station_process = 'TEST39_holding_time_39' then result_fail end) as test39_holding_time_result_fail,
+      MAX(case when station_process = 'TEST74_holding_time_74' then percent_yield end) as test74_holding_time,
+      MAX(case when station_process = 'TEST74_holding_time_74' then total_count end) as test74_holding_time_total_count,
+      MAX(case when station_process = 'TEST74_holding_time_74' then result_pass end) as test74_holding_time_result_pass,
+      MAX(case when station_process = 'TEST74_holding_time_74' then result_fail end) as test74_holding_time_result_fail
+    from
+      foxsystem_summary_bylot
     where
       production_date >= $1
       and DATE_TRUNC('day',
       production_date) <= DATE_TRUNC('day',
       $2::TIMESTAMP)
       and sendresultdetails_product = $3
-      GROUP BY
+    group by
       production_date,
       sendresultdetails_product
-    order by production_date  asc`,
+    order by
+      production_date asc`,
       [startdate, stopdate, product]
     );
 
