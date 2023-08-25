@@ -140,6 +140,55 @@ from
       if (queryParams.length > 0) {
         queryStr += `
           AND
+          fac_unit_desc = $${queryParams.length + 1}
+        `;
+      }
+
+      queryParams.push(fac_unit_desc);
+    }
+
+    queryStr += `
+    group by
+    pending_reason
+    order by 
+    status_count desc
+    limit 20
+    `;
+    console.log(queryStr);
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+router.get("/pieplot4", async (req, res) => {
+  try {
+    const { factory_desc, lot_status, fac_unit_desc } = req.query;
+
+    let queryStr = `
+    select
+    lot_prd_name as status,
+	COUNT(lot_status) as status_count
+from
+	public.smart_product_lot_status
+    `;
+
+    let queryParams = [];
+
+    if (factory_desc !== "ALL") {
+      queryStr += `
+        WHERE
+        factory_desc = $1
+      `;
+      queryParams.push(factory_desc);
+    }
+
+    if (lot_status !== "ALL") {
+      if (queryParams.length > 0) {
+        queryStr += `
+          AND
         `;
       } else {
         queryStr += `
@@ -147,16 +196,105 @@ from
         `;
       }
       queryStr += `
-      fac_unit_desc = $${queryParams.length + 1}
+      lot_status = $${queryParams.length + 1}
       `;
       queryParams.push(lot_status);
     }
 
+    if (fac_unit_desc !== "ALL") {
+      if (queryParams.length > 0) {
+        queryStr += `
+          AND
+          fac_unit_desc = $${queryParams.length + 1}
+        `;
+      }
+
+      queryParams.push(fac_unit_desc);
+    }
+
     queryStr += `
     group by
-    pending_reason
+    lot_prd_name
+    order by 
+    status_count desc
+    limit 20
+    `;
+    // console.log(queryStr);
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+router.get("/table", async (req, res) => {
+  try {
+    const { factory_desc, lot_status, fac_unit_desc } = req.query;
+
+    let queryStr = `
+    select
+	id,
+	lot_prd_name,
+	lot,
+	proc_id,
+	proc_disp,
+	lot_status,
+	input_qty,
+	pending_date,
+	pending_group,
+	pending_reason,
+	pending_remark,
+	fac_unit_desc,
+	factory_desc
+from
+	public.smart_product_lot_status
     `;
 
+    let queryParams = [];
+
+    if (factory_desc !== "ALL") {
+      queryStr += `
+        WHERE
+        factory_desc = $1
+      `;
+      queryParams.push(factory_desc);
+    }
+
+    if (lot_status !== "ALL") {
+      if (queryParams.length > 0) {
+        queryStr += `
+          AND
+        `;
+      } else {
+        queryStr += `
+          WHERE
+        `;
+      }
+      queryStr += `
+      lot_status = $${queryParams.length + 1}
+      `;
+      queryParams.push(lot_status);
+    }
+
+    if (fac_unit_desc !== "ALL") {
+      if (queryParams.length > 0) {
+        queryStr += `
+          AND
+          fac_unit_desc = $${queryParams.length + 1}
+        `;
+      }
+
+      queryParams.push(fac_unit_desc);
+    }
+
+    queryStr += `
+    order by
+	pending_date :: timestamp asc ,
+	lot_prd_name asc ,
+	proc_disp asc
+    `;
+    console.log(queryStr);
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
   } catch (error) {

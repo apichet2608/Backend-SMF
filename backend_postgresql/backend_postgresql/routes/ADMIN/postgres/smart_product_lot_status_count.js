@@ -76,8 +76,9 @@ from
     create_at >= NOW() - INTERVAL '1 year'
     `;
     queryStr += `
-      ORDER BY 
-      create_at ASC
+    ORDER BY 
+    create_at asc,
+    count_lot asc
     `;
 
     const result = await query(queryStr, queryParams);
@@ -153,8 +154,9 @@ from
     create_at >= NOW() - INTERVAL '1 year'
     `;
     queryStr += `
-      ORDER BY 
-      create_at ASC
+    ORDER BY 
+    create_at asc,
+    count_lot asc
     `;
 
     const result = await query(queryStr, queryParams);
