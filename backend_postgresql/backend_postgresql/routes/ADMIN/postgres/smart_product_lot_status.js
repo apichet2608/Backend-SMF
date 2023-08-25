@@ -100,7 +100,7 @@ from
 
 router.get("/pieplot3", async (req, res) => {
   try {
-    const { factory_desc, lot_status } = req.query;
+    const { factory_desc, lot_status, fac_unit_desc } = req.query;
 
     let queryStr = `
     select
@@ -132,6 +132,22 @@ from
       }
       queryStr += `
       lot_status = $${queryParams.length + 1}
+      `;
+      queryParams.push(lot_status);
+    }
+
+    if (fac_unit_desc !== "ALL") {
+      if (queryParams.length > 0) {
+        queryStr += `
+          AND
+        `;
+      } else {
+        queryStr += `
+          WHERE
+        `;
+      }
+      queryStr += `
+      fac_unit_desc = $${queryParams.length + 1}
       `;
       queryParams.push(lot_status);
     }
