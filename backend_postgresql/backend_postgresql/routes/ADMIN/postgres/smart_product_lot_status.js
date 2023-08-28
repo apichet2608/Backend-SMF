@@ -217,7 +217,7 @@ from
     lot_prd_name
     order by 
     status_count desc
-    limit 20
+    limit 15
     `;
     console.log(queryStr);
     const result = await query(queryStr, queryParams);
