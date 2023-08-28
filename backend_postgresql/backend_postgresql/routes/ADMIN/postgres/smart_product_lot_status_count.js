@@ -78,7 +78,7 @@ from
     queryStr += `
     ORDER BY 
     create_at asc,
-    count_lot asc
+    count_lot desc
     `;
 
     const result = await query(queryStr, queryParams);
@@ -156,7 +156,7 @@ from
     queryStr += `
     ORDER BY 
     create_at asc,
-    count_lot asc
+    count_lot desc
     `;
 
     const result = await query(queryStr, queryParams);

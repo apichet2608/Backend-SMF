@@ -219,7 +219,7 @@ from
     status_count desc
     limit 20
     `;
-    // console.log(queryStr);
+    console.log(queryStr);
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
   } catch (error) {
