@@ -154,7 +154,7 @@ from
     status_count desc
     limit 20
     `;
-    console.log(queryStr);
+
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
   } catch (error) {
@@ -219,7 +219,6 @@ from
     status_count desc
     limit 15
     `;
-    console.log(queryStr);
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
   } catch (error) {
@@ -294,7 +293,7 @@ from
 	lot_prd_name asc ,
 	proc_disp asc
     `;
-    console.log(queryStr);
+
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
   } catch (error) {

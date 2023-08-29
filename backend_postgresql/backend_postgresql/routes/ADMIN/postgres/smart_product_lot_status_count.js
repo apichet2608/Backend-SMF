@@ -27,6 +27,30 @@ router.get("/distinctfactory", async (req, res) => {
   }
 });
 
+router.get("/distinctfac_unit_desc", async (req, res) => {
+  try {
+    const { factory_desc, lot_status } = req.query;
+
+    let queryStr = `
+    select
+	distinct fac_unit_desc
+from
+	smart_product_lot_status_count
+where
+	factory_desc = $1
+	and lot_status = $2
+    `;
+
+    let queryParams = [factory_desc, lot_status];
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/plotchart1", async (req, res) => {
   try {
     const { factory_desc, lot_status } = req.query;
@@ -132,7 +156,7 @@ from
       queryParams.push(lot_status);
     }
 
-    if (fac_unit_desc !== "-") {
+    if (fac_unit_desc !== "ALL") {
       if (queryParams.length > 0) {
         queryStr += `
           AND
