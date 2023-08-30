@@ -15,37 +15,19 @@ const query = (text, params) => pool.query(text, params);
 router.get("/totalstatus", async (req, res) => {
   try {
     const result = await pool.query(
-      `
-
-        select
-
+      `select
   'Total' as title,
-
   COUNT(*) as value
-
 from
-
   public.smart_status_data_script_transform
-
 union all
-
- 
-
 select
-
   task_status as title,
-
   COUNT(*) as value
-
 from
-
   public.smart_status_data_script_transform
-
 group by
-
-  task_status
-
-        `
+  task_status`
     );
 
     // Send the JSON response back to the client
@@ -53,7 +35,6 @@ group by
     res.json(result.rows);
   } catch (error) {
     console.error("Error executing query:", error);
-
     res.status(500).json({ error: "An error occurred" });
   }
 });
@@ -61,75 +42,50 @@ group by
 router.get("/", async (req, res) => {
   try {
     const result = await pool.query(
-      `
+      `select
+	task_description as task_name,
+	start_datetime,
+	stop_datetime,
+	update_datetime,
+	from_database as from_db,
+	to_database as to_db,
+	to_table,
+	task_status as check_status,
+	task_error_details as task_error_status,
+	JSON_AGG(
 
-      SELECT
+JSON_BUILD_OBJECT(
 
-        task_description AS task_name,
+'host_name',
+	host_name,
+	'data_detail',
+	data_details,
+	'operation_time',
+	operation_time,
+	'ip_from_db',
+	ip_from_database,
+	'ip_to_db',
+	ip_to_database,
+	'cpu_percent',
+	cpu_percent,
+	'memory_percent',
+	memory_percent
 
-        start_datetime,
+)
 
-        stop_datetime,
-
-        update_datetime,
-
-        from_database AS from_db,
-
-        to_database AS to_db,
-
-        to_table,
-
-        task_status AS check_status,
-
-        task_error_details AS task_error_status,
-
-        JSON_AGG(
-
-          JSON_BUILD_OBJECT(
-
-            'host_name', host_name,
-
-            'data_detail', data_details,
-
-            'operation_time', operation_time,
-
-            'ip_from_db', ip_from_database,
-
-            'ip_to_db', ip_to_database,
-
-            'cpu_percent', cpu_percent,
-
-            'memory_percent', memory_percent
-
-          )
-
-        ) AS details
-
-      FROM
-
-        public.smart_status_data_script_transform
-
-      GROUP BY
-
-        task_description,
-
-        start_datetime,
-
-        stop_datetime,
-
-        update_datetime,
-
-        from_database,
-
-        to_database,
-
-        to_table,
-
-        task_status,
-
-        task_error_details;
-
-      `
+) as details
+from
+	public.smart_status_data_script_transform
+group by
+	task_description,
+	start_datetime,
+	stop_datetime,
+	update_datetime,
+	from_database,
+	to_database,
+	to_table,
+	task_status,
+	task_error_details;`
     );
 
     // Send the JSON response back to the client
@@ -147,91 +103,64 @@ router.get("/querry", async (req, res) => {
     const { task_status } = req.query;
 
     let queryStr = `
+select
+	task_description as task_name,
+	start_datetime,
+	stop_datetime,
+	update_datetime,
+	from_database as from_db,
+	to_database as to_db,
+	to_table,
+	task_status as check_status,
+	task_error_details as task_error_status,
+	JSON_AGG(
 
-      SELECT
+JSON_BUILD_OBJECT(
 
-        task_description AS task_name,
+'host_name',
+	host_name,
+	'data_detail',
+	data_details,
+	'operation_time',
+	operation_time,
+	'ip_from_db',
+	ip_from_database,
+	'ip_to_db',
+	ip_to_database,
+	'cpu_percent',
+	cpu_percent,
+	'memory_percent',
+	memory_percent
 
-        start_datetime,
+)
 
-        stop_datetime,
-
-        update_datetime,
-
-        from_database AS from_db,
-
-        to_database AS to_db,
-
-        to_table,
-
-        task_status AS check_status,
-
-        task_error_details AS task_error_status,
-
-        JSON_AGG(
-
-          JSON_BUILD_OBJECT(
-
-            'host_name', host_name,
-
-            'data_detail', data_details,
-
-            'operation_time', operation_time,
-
-            'ip_from_db', ip_from_database,
-
-            'ip_to_db', ip_to_database,
-
-            'cpu_percent', cpu_percent,
-
-            'memory_percent', memory_percent
-
-          )
-
-        ) AS details
-
-      FROM
-
-        public.smart_status_data_script_transform
-
+) as details
+from
+	public.smart_status_data_script_transform
       `;
 
     let queryParams = [];
 
     if (task_status !== "Total") {
       queryStr += `
-
           WHERE
-
           task_status = $1
-
         `;
 
       queryParams.push(task_status);
     }
 
     queryStr += `
-
       GROUP BY
-
         task_description,
-
         start_datetime,
-
         stop_datetime,
-
         update_datetime,
-
         from_database,
-
         to_database,
-
         to_table,
-
         task_status,
-
         task_error_details;
-
       `;
 
     const result = await query(queryStr, queryParams);
@@ -239,7 +168,6 @@ router.get("/querry", async (req, res) => {
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
-
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 });
