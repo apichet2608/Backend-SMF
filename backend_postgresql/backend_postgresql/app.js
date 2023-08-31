@@ -73,6 +73,7 @@ const smart_product_lot_status_count = require("./routes/ADMIN/postgres/smart_pr
 const smart_product_lot_status = require("./routes/ADMIN/postgres/smart_product_lot_status");
 const smart_qa_aql_header = require("./routes/10.17.77.118/iot/smart_qa_aql_header");
 const smart_status_data_script_transform = require("./routes/ADMIN/postgres/smart_status_data_script_transform");
+const smart_qa_aql_record = require("./routes/ADMIN/postgres/smart_qa_aql_record");
 
 const app = express();
 
@@ -163,6 +164,7 @@ app.use(
   "/api/smart_status_data_script_transform",
   smart_status_data_script_transform
 );
+app.use("/api/smart_qa_aql_record", smart_qa_aql_record);
 
 app.use(function (req, res, next) {
   next(createError(404));
