@@ -141,13 +141,21 @@ from
 
     let queryParams = [];
 
-    if (task_status !== "Total") {
+    if (task_status !== "Total" && task_status !== "NULL") {
       queryStr += `
           WHERE
           task_status = $1
         `;
 
       queryParams.push(task_status);
+    }
+
+    if (task_status === "NULL") {
+      queryStr += `
+          WHERE
+          task_status IS NULL
+        `;
+      //  queryParams.push(task_status);
     }
 
     queryStr += `
