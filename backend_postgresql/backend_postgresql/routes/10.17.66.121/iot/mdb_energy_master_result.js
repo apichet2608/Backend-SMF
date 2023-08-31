@@ -32,6 +32,7 @@ router.get("/distinctmdb_code", async (req, res) => {
 router.get("/table", async (req, res) => {
   try {
     const { startdate, stopdate, mdb_code } = req.query;
+
     let queryStr = `
     select
     *
@@ -39,10 +40,22 @@ router.get("/table", async (req, res) => {
     public.mdb_energy_master_result
   where 
     create_at::date  >= $1 and create_at::date <= $2 
-    and mdb_code = $3
-  order by create_at asc 
-    `;
-    const queryParams = [startdate, stopdate, mdb_code];
+          `;
+
+    let queryParams = [];
+    queryParams.push(startdate, stopdate);
+    if (mdb_code !== "ALL") {
+      queryStr += `
+      and mdb_code = $3
+            `;
+
+      queryParams.push(mdb_code);
+    }
+
+    queryStr += `
+    order by create_at asc
+          `;
+
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
   } catch (error) {
