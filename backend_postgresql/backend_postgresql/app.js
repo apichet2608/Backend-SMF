@@ -166,7 +166,7 @@ app.use(
   smart_status_data_script_transform
 );
 app.use("/api/smart_qa_aql_record", smart_qa_aql_record);
-app.use("/api/mdb_energy_master_result", smart_qa_aql_record);
+app.use("/api/mdb_energy_master_result", mdb_energy_master_result);
 
 app.use(function (req, res, next) {
   next(createError(404));
