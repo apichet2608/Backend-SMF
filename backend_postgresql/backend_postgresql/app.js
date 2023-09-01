@@ -73,7 +73,7 @@ const smart_product_lot_status_count = require("./routes/ADMIN/postgres/smart_pr
 const smart_product_lot_status = require("./routes/ADMIN/postgres/smart_product_lot_status");
 const smart_qa_aql_header = require("./routes/10.17.77.118/iot/smart_qa_aql_header");
 const smart_status_data_script_transform = require("./routes/ADMIN/postgres/smart_status_data_script_transform");
-const smart_qa_aql_record = require("./routes/ADMIN/postgres/smart_qa_aql_record");
+const smart_qa_aql_record = require("./routes/10.17.77.118/iot/smart_qa_aql_record");
 const mdb_energy_master_result = require("./routes/10.17.66.121/iot/mdb_energy_master_result");
 
 const app = express();
