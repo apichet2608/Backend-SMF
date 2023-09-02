@@ -14,7 +14,7 @@ const query = (text, params) => pool.query(text, params);
 
 router.get("/pieplot1", async (req, res) => {
   try {
-    const { factory_desc } = req.query;
+    const { factory_desc, fac_unit_desc } = req.query;
 
     let queryStr = `
     select
@@ -32,6 +32,13 @@ router.get("/pieplot1", async (req, res) => {
       factory_desc = $1
       `;
       queryParams.push(factory_desc);
+    }
+    if (fac_unit_desc !== "ALL") {
+      queryStr += `
+      AND
+      factory_desc = $2
+      `;
+      queryParams.push(fac_unit_desc);
     }
 
     queryStr += `
