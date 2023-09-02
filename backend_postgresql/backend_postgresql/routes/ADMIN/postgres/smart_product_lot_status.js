@@ -36,7 +36,7 @@ router.get("/pieplot1", async (req, res) => {
     if (fac_unit_desc !== "ALL") {
       queryStr += `
       AND
-      factory_desc = $2
+      fac_unit_desc = $2
       `;
       queryParams.push(fac_unit_desc);
     }
