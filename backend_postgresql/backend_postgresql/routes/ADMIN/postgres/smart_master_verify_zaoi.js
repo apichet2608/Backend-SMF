@@ -207,7 +207,7 @@ router.get("/page1/tablemaster", async (req, res) => {
     from
       smart_master_verify_zaoi t
 where 
-  sheet_no = $1
+master_sheet_no = $1
   and aoi_inspect_date :: date = $2
 and aoi_inspect_count = $3
 and machine_no = $4
