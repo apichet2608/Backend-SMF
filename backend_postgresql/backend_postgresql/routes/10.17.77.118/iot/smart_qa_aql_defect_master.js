@@ -29,4 +29,22 @@ router.get("/distinctdefect_code", async (req, res) => {
   }
 });
 
+router.get("/autodata", async (req, res) => {
+  try {
+    const { defect_code } = req.query;
+    let queryStr = `
+      SELECT *
+      FROM public.smart_qa_aql_defect_master
+      WHERE defect_code = $1
+      order by defect_code desc
+    `;
+    const queryParams = [defect_code];
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 module.exports = router;
