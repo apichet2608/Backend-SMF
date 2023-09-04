@@ -24,7 +24,7 @@ const smt_aoi = require("./routes/10.17.71.57/10.17.71.57-smart_factory/smt-aoi"
 
 const jwdb_r23662_actv = require("./routes/10.17.71.21/10.17.71.21-postgres/jwdb_r23662_actv");
 const smart_mil_common = require("./routes/ADMIN/postgres/smart_mil_common");
-const smart_enviro_cleanroomparticle = require("./routes/10.17.71.57/10.17.71.57-smart_factory/smart_enviro_cleanroomparticle");
+const smart_enviro_cleanroomparticle = require("./routes/ADMIN/postgres/smart_enviro_cleanroomparticle");
 const ok2s = require("./routes/ADMIN/postgres/smart-ok2s");
 const foxsystem_json_backup_header_ok = require("./routes/ADMIN/postgres/foxsystem_json_backup_header_ok");
 const foxsystem_summary_bylot = require("./routes/ADMIN/postgres/foxsystem_summary_bylot");
