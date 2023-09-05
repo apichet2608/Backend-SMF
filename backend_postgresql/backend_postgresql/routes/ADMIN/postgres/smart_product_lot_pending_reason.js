@@ -45,7 +45,7 @@ order by
 	fac_unit_desc asc
     `;
 
-    let queryParams = [factory_desc, fac_unit_desc];
+    let queryParams = [factory_desc];
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
