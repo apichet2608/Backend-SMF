@@ -45,7 +45,7 @@ order by
 	fac_unit_desc asc
     `;
 
-    let queryParams = [factory_desc, lot_status];
+    let queryParams = [factory_desc, fac_unit_desc];
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
@@ -101,6 +101,65 @@ factory_desc = $1
 	create_at
 order by
 	pending_reason asc;
+    `;
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+router.get("/plotareachart", async (req, res) => {
+  try {
+    const { factory_desc, fac_unit_desc } = req.query;
+
+    let queryStr = `
+    select
+    id,
+    lot_prd_name,
+    fac_unit_desc,
+    factory_desc,
+    pending_reason,
+    count_lot,
+    sum_inputqty,
+    create_at,
+    update_date
+from
+	public.smart_product_lot_pending_reason
+    `;
+
+    let queryParams = [];
+
+    if (factory_desc !== "ALL") {
+      queryStr += `
+        WHERE
+        factory_desc = $1
+      `;
+      queryParams.push(factory_desc);
+    }
+
+    if (fac_unit_desc !== "ALL") {
+      if (queryParams.length > 0) {
+        queryStr += `
+          AND
+        `;
+      } else {
+        queryStr += `
+          WHERE
+        `;
+      }
+      queryStr += `
+      fac_unit_desc = $${queryParams.length + 1}
+      `;
+      queryParams.push(fac_unit_desc);
+    }
+
+    queryStr += `
+    ORDER BY 
+    create_at asc,
+    count_lot desc
     `;
 
     const result = await query(queryStr, queryParams);
