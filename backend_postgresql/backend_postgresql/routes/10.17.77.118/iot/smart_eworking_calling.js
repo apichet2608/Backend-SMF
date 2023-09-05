@@ -142,6 +142,7 @@ WHERE
   and jwpv_job_type = $3
   and jwpv_mc_code = $4
 )
+order by create_at asc
         `;
     queryParams = [jwpv_dept, jwpv_proc_group, jwpv_job_type, jwpv_mc_code];
     const result = await query(queryStr, queryParams);
