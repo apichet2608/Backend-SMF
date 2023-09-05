@@ -14,14 +14,21 @@ const query = (text, params) => pool.query(text, params);
 
 router.get("/header", async (req, res) => {
   try {
-    const result = await query(
-      `select
-      *
-    from
-      public.smart_qa_aql_header
-    order by id desc
-    `
+    // Extract the 'process' query parameter from the request
+    const { process } = req.query;
+
+    if (!process) {
+      // If 'process' query parameter is missing, return a 400 Bad Request response
+      return res
+        .status(400)
+        .json({ error: "Missing 'process' query parameter" });
+    }
+
+    const result = await pool.query(
+      `SELECT * FROM public.smart_qa_aql_header WHERE process = $1 ORDER BY id DESC`,
+      [process]
     );
+
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
