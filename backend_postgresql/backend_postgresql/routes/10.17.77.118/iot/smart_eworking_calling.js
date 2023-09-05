@@ -108,21 +108,39 @@ router.get("/pageverify/table", async (req, res) => {
     let queryStr = "";
     let queryParams = [];
 
+    //     queryStr = `
+    //     SELECT *
+    // FROM public.smart_eworking_calling
+    // WHERE
+    // 	jwpv_dept = $1
+    // 	and jwpv_proc_group = $2
+    // 	and jwpv_job_type = $3
+    // 	and jwpv_mc_code = $4
+    // 	and DATE(create_at) = (
+    //     SELECT MAX(DATE(create_at))
+    //     FROM public.smart_eworking_calling
+    //     where jwpv_dept = $1
+    // 	and jwpv_proc_group = $2
+    // 	and jwpv_job_type = $3
+    // 	and jwpv_mc_code = $4
+    // )
+    //         `;
+
     queryStr = `
     SELECT *
 FROM public.smart_eworking_calling
-WHERE 
-	jwpv_dept = $1
-	and jwpv_proc_group = $2
-	and jwpv_job_type = $3
-	and jwpv_mc_code = $4
-	and DATE(create_at) = (
-    SELECT MAX(DATE(create_at))
+WHERE
+  jwpv_dept = $1
+  and jwpv_proc_group = $2
+  and jwpv_job_type = $3
+  and jwpv_mc_code = $4
+  and DATE(create_at) = (
+   SELECT MAX(timestamp(update_file))
     FROM public.smart_eworking_calling
     where jwpv_dept = $1
-	and jwpv_proc_group = $2
-	and jwpv_job_type = $3
-	and jwpv_mc_code = $4
+  and jwpv_proc_group = $2
+  and jwpv_job_type = $3
+  and jwpv_mc_code = $4
 )
         `;
     queryParams = [jwpv_dept, jwpv_proc_group, jwpv_job_type, jwpv_mc_code];
