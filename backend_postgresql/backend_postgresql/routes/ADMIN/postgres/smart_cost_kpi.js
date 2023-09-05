@@ -287,6 +287,7 @@ router.get("/page1/table2CSV", async (req, res) => {
       queryStr = `
       SELECT
   ROW_NUMBER() OVER () AS id,
+  year_month,
   item_code,
   cost_center,
   item_desc ,
@@ -302,15 +303,18 @@ WHERE
 GROUP BY
   item_code,
   cost_center,
-  item_desc
+  item_desc,
+  year_month
 ORDER BY
-  expense_result DESC;
+  year_month::Date desc,
+  expense_result desc
         `;
       queryParams = [division, cost_type];
     } else {
       queryStr = `
       SELECT
   ROW_NUMBER() OVER () AS id,
+  year_month,
   item_code,
   cost_center,
   item_desc ,
@@ -326,9 +330,11 @@ WHERE
 GROUP BY
   item_code,
   cost_center,
-  item_desc
+  item_desc,
+  year_month
 ORDER BY
-  expense_result DESC;    
+  year_month::Date desc,
+  expense_result desc 
         `;
       queryParams = [division, department, cost_type];
     }
