@@ -15,7 +15,7 @@ const query = (text, params) => pool.query(text, params);
 router.get("/header", async (req, res) => {
   try {
     // Extract the 'process' query parameter from the request
-    const { process } = req.query;
+    const { process, type } = req.query;
 
     if (!process) {
       // If 'process' query parameter is missing, return a 400 Bad Request response
@@ -25,8 +25,8 @@ router.get("/header", async (req, res) => {
     }
 
     const result = await pool.query(
-      `SELECT * FROM public.smart_qa_aql_header WHERE process = $1 ORDER BY id DESC`,
-      [process]
+      `SELECT * FROM public.smart_qa_aql_header WHERE process = $1 AND type = $2 ORDER BY id DESC`,
+      [process, type]
     );
 
     res.status(200).json(result.rows);
