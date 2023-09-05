@@ -3,11 +3,11 @@ const router = express.Router();
 const { Pool } = require("pg");
 
 const pool = new Pool({
-  host: "127.0.0.1",
+  host: "10.17.71.57",
   port: 5432,
   user: "postgres",
-  password: "postgres",
-  database: "postgres",
+  password: "fujikura",
+  database: "smart_factory", // แทนที่ด้วยชื่อฐานข้อมูลของคุณ
 });
 
 const query = (text, params) => pool.query(text, params);

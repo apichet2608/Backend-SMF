@@ -77,6 +77,7 @@ const smart_qa_aql_record = require("./routes/10.17.77.118/iot/smart_qa_aql_reco
 const mdb_energy_master_result = require("./routes/10.17.66.121/iot/mdb_energy_master_result");
 const lpi_screen_tension = require("./routes/10.17.71.57/10.17.71.57-smart_factory/lpi_screen_tension");
 const smart_qa_aql_defect_master = require("./routes/10.17.77.118/iot/smart_qa_aql_defect_master");
+const cvc_ui_tape_test = require("./routes/10.17.71.57/10.17.71.57-smart_factory/cvc_ui_tape_test");
 
 const app = express();
 
@@ -171,6 +172,7 @@ app.use("/api/smart_qa_aql_record", smart_qa_aql_record);
 app.use("/api/mdb_energy_master_result", mdb_energy_master_result);
 app.use("/api/lpi_screen_tension", lpi_screen_tension);
 app.use("/api/smart_qa_aql_defect_master", smart_qa_aql_defect_master);
+app.use("/api/cvc_ui_tape_test", cvc_ui_tape_test);
 
 app.use(function (req, res, next) {
   next(createError(404));
