@@ -78,6 +78,7 @@ const mdb_energy_master_result = require("./routes/10.17.66.121/iot/mdb_energy_m
 const lpi_screen_tension = require("./routes/10.17.71.57/10.17.71.57-smart_factory/lpi_screen_tension");
 const smart_qa_aql_defect_master = require("./routes/10.17.77.118/iot/smart_qa_aql_defect_master");
 const cvc_ui_tape_test = require("./routes/10.17.71.57/10.17.71.57-smart_factory/cvc_ui_tape_test");
+const smart_product_lot_pending_reason = require("./routes/ADMIN/postgres/smart_product_lot_pending_reason");
 
 const app = express();
 
@@ -173,6 +174,10 @@ app.use("/api/mdb_energy_master_result", mdb_energy_master_result);
 app.use("/api/lpi_screen_tension", lpi_screen_tension);
 app.use("/api/smart_qa_aql_defect_master", smart_qa_aql_defect_master);
 app.use("/api/cvc_ui_tape_test", cvc_ui_tape_test);
+app.use(
+  "/api/smart_product_lot_pending_reason",
+  smart_product_lot_pending_reason
+);
 
 app.use(function (req, res, next) {
   next(createError(404));
