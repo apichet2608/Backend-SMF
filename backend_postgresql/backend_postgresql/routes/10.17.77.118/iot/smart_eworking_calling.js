@@ -135,7 +135,7 @@ WHERE
   and jwpv_job_type = $3
   and jwpv_mc_code = $4
   and DATE(create_at) = (
-   SELECT MAX(timestamp(update_file))
+   SELECT MAX(timestamp(create_at))
     FROM public.smart_eworking_calling
     where jwpv_dept = $1
   and jwpv_proc_group = $2
