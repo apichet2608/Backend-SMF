@@ -115,51 +115,46 @@ router.get("/plotareachart", async (req, res) => {
   try {
     const { factory_desc, fac_unit_desc } = req.query;
 
-    let queryStr = `
-    select
-	fac_unit_desc,
-	pending_reason,
-	create_at,
-	sum(count_lot) as result
-from
-	public.smart_product_lot_pending_reason
-    `;
-
+    let queryStr = "";
     let queryParams = [];
 
-    if (factory_desc !== "ALL") {
-      queryStr += `
-        WHERE
-        factory_desc = $1
+    if (fac_unit_desc !== "ALL") {
+      queryStr = `
+        select
+          fac_unit_desc,
+          pending_reason,
+          create_at,
+          count(count_lot) as result
+        from
+          public.smart_product_lot_pending_reason
+        where
+          factory_desc = $1
+          and fac_unit_desc = $2
+        group by
+          fac_unit_desc,
+          pending_reason,
+          create_at
+        ORDER BY 
+          create_at asc,
+          "result" desc
+      `;
+      queryParams.push(factory_desc, fac_unit_desc);
+    } else {
+      queryStr = `
+        select
+          factory_desc,
+          sum(count_lot) as result_sum,
+          create_at
+        from
+          public.smart_product_lot_pending_reason
+        where 
+          factory_desc = $1
+        group by 
+          factory_desc,
+          create_at
       `;
       queryParams.push(factory_desc);
     }
-
-    if (fac_unit_desc !== "ALL") {
-      if (queryParams.length > 0) {
-        queryStr += `
-          AND
-        `;
-      } else {
-        queryStr += `
-          WHERE
-        `;
-      }
-      queryStr += `
-      fac_unit_desc = $${queryParams.length + 1}
-      `;
-      queryParams.push(fac_unit_desc);
-    }
-
-    queryStr += `
-    group by
-	fac_unit_desc,
-	pending_reason,
-	create_at
-ORDER BY 
-    create_at asc,
-    "result" desc
-    `;
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
