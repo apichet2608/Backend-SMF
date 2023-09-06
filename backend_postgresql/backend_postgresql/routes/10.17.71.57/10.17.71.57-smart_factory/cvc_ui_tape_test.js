@@ -14,12 +14,16 @@ const query = (text, params) => pool.query(text, params);
 
 router.get("/distinctproduct", async (req, res) => {
   try {
+    let { startdate, stopdate } = req.query;
+
     const result = await pool.query(
       `
-select distinct product
-from cvc_ui_tape_test cutt 
-order by product asc
-        `
+        SELECT DISTINCT product
+        FROM cvc_ui_tape_test cutt 
+        WHERE create_date::date BETWEEN $1 AND $2
+        ORDER BY product ASC
+      `,
+      [startdate, stopdate]
     );
 
     // Send the JSON response back to the client
@@ -157,18 +161,23 @@ where
 
 router.get("/distinctlot_no", async (req, res) => {
   try {
-    const { product } = req.query;
+    const { product, startdate, stopdate } = req.query;
 
     let queryStr = `
-      SELECT DISTINCT lot_no
-      FROM cvc_ui_tape_test cutt
-      WHERE 1=1`;
+    SELECT DISTINCT lot_no
+    FROM cvc_ui_tape_test cutt
+    WHERE 1=1`;
 
     const queryParams = [];
 
+    // เพิ่มเงื่อนไขสำหรับ startdate และ stopdate
+    queryStr += ` AND cutt.create_date::date BETWEEN $1 AND $2`;
+    queryParams.push(startdate);
+    queryParams.push(stopdate);
+
     // ตรวจสอบและเพิ่มเงื่อนไขสำหรับ product
     if (product !== "ALL") {
-      queryStr += ` AND cutt.product = $1`;
+      queryStr += ` AND cutt.product = $3`;
       queryParams.push(product);
     }
 
