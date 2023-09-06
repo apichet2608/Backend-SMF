@@ -152,6 +152,9 @@ router.get("/plotareachart", async (req, res) => {
         group by 
           factory_desc,
           create_at
+        ORDER BY 
+          create_at asc,
+          result_sum desc
       `;
       queryParams.push(factory_desc);
     }
