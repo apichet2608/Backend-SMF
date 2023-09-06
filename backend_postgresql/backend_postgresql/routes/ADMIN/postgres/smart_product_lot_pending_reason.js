@@ -117,15 +117,10 @@ router.get("/plotareachart", async (req, res) => {
 
     let queryStr = `
     select
-    id,
-    lot_prd_name,
-    fac_unit_desc,
-    factory_desc,
-    pending_reason,
-    count_lot,
-    sum_inputqty,
-    create_at,
-    update_date
+	fac_unit_desc,
+	pending_reason,
+	create_at,
+	sum(count_lot) as result
 from
 	public.smart_product_lot_pending_reason
     `;
@@ -157,9 +152,13 @@ from
     }
 
     queryStr += `
-    ORDER BY 
+    group by
+	fac_unit_desc,
+	pending_reason,
+	create_at
+ORDER BY 
     create_at asc,
-    count_lot desc
+    "result" desc
     `;
 
     const result = await query(queryStr, queryParams);
