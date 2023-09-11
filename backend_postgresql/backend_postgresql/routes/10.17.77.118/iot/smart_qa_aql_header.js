@@ -50,53 +50,83 @@ router.get("/header_join_record_last_round_reject", async (req, res) => {
 
     const result = await pool.query(
       `
-      WITH MaxRoundPerKey AS (
-        SELECT
-            r.key_id,
-            MAX(r.round) AS max_round
-        FROM
-            public.smart_qa_aql_header h
-        JOIN
-            public.smart_qa_aql_record r
-        ON
-            h.un_id = r.key_id
-            AND h."type" = $1
-            AND h.process = $2
-        GROUP BY
-            r.key_id
-    )
-    
-    SELECT
-        h.un_id,
-        r.key_id,
-        h.process,
-        h."type",
-        r.id,
-        r.date_time::timestamp,
-        r.round,
-        r.qa_code,
-        r.qa_shift,
-        r.qa_head,
-        r.total_rej,
-        r.status,
-        r.rootcause,
-        r.corrective,
-        r.preventive,
-        r.result_res,
-        r.eff_date,
-        r.action_by,
-        r.approve_by,
-        r.sub_total_rej
-    FROM
-        public.smart_qa_aql_header h
-    JOIN
-        public.smart_qa_aql_record r
-    ON
-        h.un_id = r.key_id
-        AND h."type" = $1
-        AND h.process = $2
-        AND (r.status NOT IN ('ACCEPT', 'GOOD', 'Good', 'Accept', 'good', 'accept') OR r.status IS NULL)
-        AND r.round = (SELECT max_round FROM MaxRoundPerKey WHERE key_id = r.key_id);    
+      with MaxRoundPerKey as (
+        select
+          r.key_id,
+          MAX(r.round) as max_round
+        from
+          public.smart_qa_aql_header h
+        join
+                    public.smart_qa_aql_record r
+                on
+          h.un_id = r.key_id
+          and h."type" = $1
+          and h.process = $2
+        group by
+          r.key_id
+            )
+        select
+          h.stage,
+          h.process,
+          h."type",
+          h.product,
+          h.version,
+          h.aql,
+          h.level,
+          h.splitsize,
+          h.inspect_count,
+          h.application,
+          h.model,
+          h.from_pcs,
+          h.to_pcs,
+          h.aql_sampling_code,
+          h.ac,
+          h.rej,
+          h.aql_smapling_size,
+          h.aql_pcs_group_qty,
+          h.lot_input_qty,
+          h.sampling_group,
+          h.total_sampling_pcs,
+          h.over_sampling_pcs,
+          h.sql_sampling_size_over,
+          h.net_sampling_qty,
+          h.lot,
+          h.un_id,
+          h.create_at,
+          r.key_id,
+          r.id,
+          r.date_time::timestamp,
+          r.round,
+          r.qa_code,
+          r.qa_shift,
+          r.qa_head,
+          r.total_rej,
+          r.status,
+          r.rootcause,
+          r.corrective,
+          r.preventive,
+          r.result_res,
+          r.eff_date,
+          r.action_by,
+          r.approve_by,
+          r.sub_total_rej
+        from
+          public.smart_qa_aql_header h
+        join
+                public.smart_qa_aql_record r
+            on
+          h.un_id = r.key_id
+          and h."type" = $1
+          and h.process = $2
+          and (r.status not in ('ACCEPT', 'GOOD', 'Good', 'Accept', 'good', 'accept')
+            or r.status is null)
+          and r.round = (
+          select
+            max_round
+          from
+            MaxRoundPerKey
+          where
+            key_id = r.key_id);  
       `,
       [type, process]
     );
