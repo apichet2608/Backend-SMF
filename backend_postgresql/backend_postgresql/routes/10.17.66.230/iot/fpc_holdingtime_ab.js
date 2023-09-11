@@ -63,12 +63,12 @@ router.get("/page1/distinctcondition_desc", async (req, res) => {
   }
 });
 
-router.get("/page1/distinctprd_item_code", async (req, res) => {
+router.get("/page1/distinctprd_name", async (req, res) => {
   try {
     const { proc_status, condition_desc } = req.query;
     let queryStr = `
     select
-      distinct prd_item_code
+      distinct prd_name
     from
       public.fpc_holdingtime_ab
     `;
@@ -100,7 +100,7 @@ router.get("/page1/distinctprd_item_code", async (req, res) => {
 
     queryStr += `
       order by 
-      prd_item_code desc
+      prd_name desc
     `;
 
     const result = await query(queryStr, queryParams);
@@ -113,7 +113,7 @@ router.get("/page1/distinctprd_item_code", async (req, res) => {
 
 router.get("/page1/table", async (req, res) => {
   try {
-    const { proc_status, condition_desc, prd_item_code } = req.query;
+    const { proc_status, condition_desc, prd_name } = req.query;
 
     let queryStr = `
     SELECT
@@ -181,7 +181,7 @@ FROM
       queryParams.push(condition_desc);
     }
 
-    if (prd_item_code !== "ALL") {
+    if (prd_name !== "ALL") {
       if (queryParams.length > 0) {
         queryStr += `
           AND
@@ -192,9 +192,9 @@ FROM
         `;
       }
       queryStr += `
-          prd_item_code = $${queryParams.length + 1}
+          prd_name = $${queryParams.length + 1}
       `;
-      queryParams.push(prd_item_code);
+      queryParams.push(prd_name);
     }
 
     queryStr += `
@@ -212,7 +212,7 @@ FROM
 
 router.get("/page1/cardsummary", async (req, res) => {
   try {
-    const { proc_status, condition_desc, prd_item_code } = req.query;
+    const { proc_status, condition_desc, prd_name } = req.query;
 
     let queryStr = `
     SELECT
@@ -280,7 +280,7 @@ FROM
       queryParams.push(condition_desc);
     }
 
-    if (prd_item_code !== "ALL") {
+    if (prd_name !== "ALL") {
       if (queryParams.length > 0) {
         queryStr += `
           AND
@@ -291,9 +291,9 @@ FROM
         `;
       }
       queryStr += `
-          prd_item_code = $${queryParams.length + 1}
+          prd_name = $${queryParams.length + 1}
       `;
-      queryParams.push(prd_item_code);
+      queryParams.push(prd_name);
     }
 
     queryStr += `
@@ -330,7 +330,7 @@ FROM
 
 router.get("/page1/tablecardclick", async (req, res) => {
   try {
-    const { proc_status, condition_desc, prd_item_code, status } = req.query;
+    const { proc_status, condition_desc, prd_name, status } = req.query;
 
     let queryStr = `
     select *
@@ -400,7 +400,7 @@ FROM
       queryParams.push(condition_desc);
     }
 
-    if (prd_item_code !== "ALL") {
+    if (prd_name !== "ALL") {
       if (queryParams.length > 0) {
         queryStr += `
           AND
@@ -411,9 +411,9 @@ FROM
         `;
       }
       queryStr += `
-          prd_item_code = $${queryParams.length + 1}
+          prd_name = $${queryParams.length + 1}
       `;
-      queryParams.push(prd_item_code);
+      queryParams.push(prd_name);
     }
 
     queryStr += `
