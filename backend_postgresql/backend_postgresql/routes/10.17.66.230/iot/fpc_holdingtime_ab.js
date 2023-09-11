@@ -146,9 +146,9 @@ router.get("/page1/table", async (req, res) => {
   b2,
   "CURRENT_TIME" as "current_time",
   CASE
-    WHEN a2b1_time >= warning_holding_time AND a2b1_time < lock_holding_time THEN 'Warning'
-    WHEN a2b1_time >= lock_holding_time THEN 'Over Holding Time'
-    WHEN a2b1_time < warning_holding_time THEN 'Lot'
+    WHEN a2b1_time >= warning_holding_time AND a2b1_time < lock_holding_time THEN 'Waring'
+    WHEN a2b1_time >= lock_holding_time THEN 'Over Holding'
+    WHEN a2b1_time < warning_holding_time THEN 'Keep'
     ELSE ''
   END AS "result"
 FROM
@@ -245,9 +245,9 @@ router.get("/page1/cardsummary", async (req, res) => {
   b2,
   "CURRENT_TIME" as "current_time",
   CASE
-    WHEN a2b1_time >= warning_holding_time AND a2b1_time < lock_holding_time THEN 'Warning'
-    WHEN a2b1_time >= lock_holding_time THEN 'Over Holding Time'
-    WHEN a2b1_time < warning_holding_time THEN 'Lot'
+    WHEN a2b1_time >= warning_holding_time AND a2b1_time < lock_holding_time THEN 'Waring'
+    WHEN a2b1_time >= lock_holding_time THEN 'Over Holding'
+    WHEN a2b1_time < warning_holding_time THEN 'Keep'
     ELSE ''
   END AS "result"
 FROM
@@ -319,7 +319,7 @@ FROM
 (${queryStr}) AS subquery
 `;
 
-    console.log(queryStr2);
+    // console.log(queryStr2);
     const result = await query(queryStr2, queryParams);
     res.status(200).json(result.rows);
   } catch (error) {
@@ -365,9 +365,9 @@ from
   b2,
   "CURRENT_TIME" as "current_time",
   CASE
-  WHEN a2b1_time >= warning_holding_time AND a2b1_time < lock_holding_time THEN 'Warning'
-  WHEN a2b1_time >= lock_holding_time THEN 'Over Holding Time'
-  WHEN a2b1_time < warning_holding_time THEN 'Lot'
+  WHEN a2b1_time >= warning_holding_time AND a2b1_time < lock_holding_time THEN 'Waring'
+  WHEN a2b1_time >= lock_holding_time THEN 'Over Holding'
+  WHEN a2b1_time < warning_holding_time THEN 'Keep'
   ELSE ''
 END AS statusresult
 FROM
@@ -424,7 +424,7 @@ FROM
     if (status !== "Total") {
       if (queryParams.length > 0) {
         queryStr += `
-          AND
+          WHERE
         `;
       } else {
         queryStr += `
