@@ -57,15 +57,16 @@ router.get("/header_join_record_last_round_reject", async (req, res) => {
         from
           public.smart_qa_aql_header h
         join
-                    public.smart_qa_aql_record r
-                on
+                            public.smart_qa_aql_record r
+                        on
           h.un_id = r.key_id
           and h."type" = $1
           and h.process = $2
         group by
           r.key_id
-            )
-        select
+                    )
+                select
+          h.id,
           h.stage,
           h.process,
           h."type",
@@ -113,8 +114,8 @@ router.get("/header_join_record_last_round_reject", async (req, res) => {
         from
           public.smart_qa_aql_header h
         join
-                public.smart_qa_aql_record r
-            on
+                        public.smart_qa_aql_record r
+                    on
           h.un_id = r.key_id
           and h."type" = $1
           and h.process = $2
@@ -126,7 +127,9 @@ router.get("/header_join_record_last_round_reject", async (req, res) => {
           from
             MaxRoundPerKey
           where
-            key_id = r.key_id);  
+            key_id = r.key_id)
+        order by
+          h.id desc
       `,
       [type, process]
     );
