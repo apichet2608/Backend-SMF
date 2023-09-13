@@ -58,6 +58,60 @@ router.get("/page1/raderchart", async (req, res) => {
   }
 });
 
+router.get("/page1/pieemailplot", async (req, res) => {
+  try {
+    const { aspects, aspect, dept_concern } = req.query;
+
+    let queryStr = `
+    select
+	email,
+	COUNT(email) as result_count_status
+from
+	public.smart_overall_require_08003809
+    `;
+
+    let queryParams = [];
+
+    // Check if aspects is equal to '-'
+    if (aspects !== "-") {
+      queryStr += `
+        where
+          aspects = $1
+      `;
+      queryParams.push(aspects);
+    }
+
+    if (aspect !== "ALL") {
+      queryStr += `
+        ${queryParams.length > 0 ? "AND" : "where"} aspect = $${
+        queryParams.length + 1
+      }
+      `;
+      queryParams.push(aspect);
+    }
+
+    if (dept_concern !== "ALL") {
+      queryStr += `
+        ${queryParams.length > 0 ? "AND" : "where"} dept_concern = $${
+        queryParams.length + 1
+      }
+      `;
+      queryParams.push(dept_concern);
+    }
+
+    queryStr += `
+    group by 
+    email
+    `;
+
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/page1/distinctaspects", async (req, res) => {
   try {
     const result = await query(`
