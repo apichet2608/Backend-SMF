@@ -226,4 +226,89 @@ order by jwpv_check_time asc
   }
 });
 
+//------------------------------------------------------------------//
+router.get("/", async (req, res) => {
+  try {
+    const { mc_code } = req.query; // ดึงค่า mc_code จาก req.query
+    // สร้างคำสั่ง SQL โดยใช้ค่า mc_code
+    let queryStr = `
+      select
+        t.*
+      from
+        (
+          select
+            jwpv_proc_group,
+            jwpv_job_type,
+            jwpv_mc_code,
+            max(update_file) as max_update_file
+          from
+            smart_eworking_calling
+          where
+            jwpv_proc_group = 'A-RLSB'
+          group by
+            jwpv_proc_group,
+            jwpv_job_type,
+            jwpv_mc_code
+        ) sq
+      inner join smart_eworking_calling t
+        on
+        t.jwpv_proc_group = sq.jwpv_proc_group
+        and t.jwpv_job_type = sq.jwpv_job_type
+        and t.update_file = sq.max_update_file
+        and t.jwpv_mc_code = sq.jwpv_mc_code
+      where 
+      t.jwpv_mc_code = $1
+    `;
+    const queryParams = [mc_code]; // ใส่ค่า mc_code ใน queryParams
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+router.get("/check_status", async (req, res) => {
+  try {
+    const { mc_code } = req.query; // ดึงค่า mc_code จาก req.query
+    // สร้างคำสั่ง SQL โดยใช้ค่า mc_code
+    let queryStr = `
+    select
+    distinct  t.jwpv_param_tvalue
+   from
+     (
+       select
+         jwpv_proc_group,
+         jwpv_job_type,
+         jwpv_mc_code,
+         max(update_file) as max_update_file
+       from
+         smart_eworking_calling
+       where
+         jwpv_proc_group = 'A-RLSB'
+       group by
+         jwpv_proc_group,
+         jwpv_job_type,
+         jwpv_mc_code
+     ) sq
+   inner join smart_eworking_calling t
+     on
+     t.jwpv_proc_group = sq.jwpv_proc_group
+     and t.jwpv_job_type = sq.jwpv_job_type
+     and t.update_file = sq.max_update_file
+     and t.jwpv_mc_code = sq.jwpv_mc_code
+   where 
+   t.jwpv_mc_code = $1 AND
+   t.jwpv_param_title = 'Judgment'
+    `;
+    const queryParams = [mc_code]; // ใส่ค่า mc_code ใน queryParams
+    const result = await query(queryStr, queryParams);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+//------------------------------------------------------------------------//
+
 module.exports = router;
