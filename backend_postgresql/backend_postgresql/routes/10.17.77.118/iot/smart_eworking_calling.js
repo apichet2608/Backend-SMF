@@ -126,24 +126,54 @@ router.get("/pageverify/table", async (req, res) => {
     // )
     //         `;
 
-    queryStr = `
-    SELECT *
-FROM public.smart_eworking_calling
-WHERE
-  jwpv_dept = $1
-  and jwpv_proc_group = $2
-  and jwpv_job_type = $3
-  and jwpv_mc_code = $4
-  and DATE_TRUNC('second', create_at) = (
-  SELECT MAX(DATE_TRUNC('second', create_at))
-  FROM public.smart_eworking_calling
-  where jwpv_dept = $1
-  and jwpv_proc_group = $2
-  and jwpv_job_type = $3
-  and jwpv_mc_code = $4
-)
-order by create_at asc
-        `;
+    //     queryStr = `
+    //     SELECT *
+    // FROM public.smart_eworking_calling
+    // WHERE
+    //   jwpv_dept = $1
+    //   and jwpv_proc_group = $2
+    //   and jwpv_job_type = $3
+    //   and jwpv_mc_code = $4
+    //   and DATE_TRUNC('second', create_at) = (
+    //   SELECT MAX(DATE_TRUNC('second', create_at))
+    //   FROM public.smart_eworking_calling
+    //   where jwpv_dept = $1
+    //   and jwpv_proc_group = $2
+    //   and jwpv_job_type = $3
+    //   and jwpv_mc_code = $4
+    // )
+    // order by create_at asc
+    //         `;
+
+    queryStr = `select
+t.*
+from
+(
+  select
+    jwpv_proc_group,
+    jwpv_job_type,
+    jwpv_mc_code,
+    max(update_file) as max_update_file
+  from
+    smart_eworking_calling
+  group by
+    jwpv_proc_group,
+    jwpv_job_type,
+    jwpv_mc_code
+) sq
+inner join smart_eworking_calling t
+on
+t.jwpv_proc_group = sq.jwpv_proc_group
+and t.jwpv_job_type = sq.jwpv_job_type
+and t.update_file = sq.max_update_file
+and t.jwpv_mc_code = sq.jwpv_mc_code
+where t.jwpv_dept = $1
+and t.jwpv_proc_group = $2
+and t.jwpv_job_type = $3
+and t.jwpv_mc_code = $4
+order by
+	t.jwpv_param_code asc`;
+
     queryParams = [jwpv_dept, jwpv_proc_group, jwpv_job_type, jwpv_mc_code];
     const result = await query(queryStr, queryParams);
 
