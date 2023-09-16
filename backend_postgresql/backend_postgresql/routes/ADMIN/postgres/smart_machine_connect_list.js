@@ -295,19 +295,29 @@ router.get("/tablescada", async (req, res) => {
 
 router.get("/tablescada/distinctitem_sub_process", async (req, res) => {
   try {
-    const { item_iot_group1 } = req.query;
+    const { item_iot_group1, status } = req.query;
 
-    let queryStr = `
-      SELECT DISTINCT item_sub_process
-      FROM public.smart_machine_connect_list
-      WHERE status IN ('Finished', 'Planed', 'Wait for plan', '')
-    `;
-
+    let queryStr;
     const queryParams = [];
+
+    if (status === "total") {
+      queryStr = `
+        SELECT DISTINCT item_sub_process
+        FROM public.smart_machine_connect_list
+        WHERE status IN ('Finished', 'Planned', 'Wait for plan', '')
+      `;
+    } else {
+      queryStr = `
+        SELECT DISTINCT item_sub_process
+        FROM public.smart_machine_connect_list
+        WHERE status = $1
+      `;
+      queryParams.push(status);
+    }
 
     // Check if item_iot_group1 is not "ALL"
     if (item_iot_group1 !== "ALL") {
-      queryStr += `AND item_iot_group1 = $1`;
+      queryStr += ` AND item_iot_group1 = $${queryParams.length + 1}`;
       queryParams.push(item_iot_group1);
     }
 
@@ -322,25 +332,32 @@ router.get("/tablescada/distinctitem_sub_process", async (req, res) => {
 
 router.get("/tablescada/distinctitem_iot_group1", async (req, res) => {
   try {
-    const { item_sub_process } = req.query;
+    const { item_sub_process, status } = req.query;
 
-    let result;
+    let queryStr = `
+      SELECT DISTINCT item_iot_group1
+      FROM public.smart_machine_connect_list
+    `;
 
-    if (item_sub_process === "ALL") {
-      result = await query(
-        `SELECT DISTINCT item_iot_group1
-         FROM public.smart_machine_connect_list
-         WHERE status IN ('Finished', 'Planed', 'Wait for plan', '')`
-      );
+    const queryParams = [];
+
+    if (item_sub_process !== "ALL") {
+      queryStr += ` WHERE item_sub_process = $1`;
+      queryParams.push(item_sub_process);
     } else {
-      result = await query(
-        `SELECT DISTINCT item_iot_group1
-         FROM public.smart_machine_connect_list
-         WHERE item_sub_process = $1
-         AND status IN ('Finished', 'Planed', 'Wait for plan', '')`,
-        [item_sub_process]
-      );
+      queryStr += ` WHERE 1=1`;
     }
+
+    if (status === "total") {
+      queryStr += `
+        AND status IN ('Finished', 'Planned', 'Wait for plan', '')
+      `;
+    } else {
+      queryStr += ` AND status = $${queryParams.length + 1}`;
+      queryParams.push(status);
+    }
+
+    const result = await query(queryStr, queryParams);
 
     res.status(200).json(result.rows);
   } catch (error) {
