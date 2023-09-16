@@ -293,6 +293,57 @@ router.get("/tablescada", async (req, res) => {
   }
 });
 
+router.get("/piesumresult_count_status_scada", async (req, res) => {
+  try {
+    const { item_sub_process, item_iot_group1, status } = req.query;
+
+    let queryStr;
+    const queryParams = [];
+
+    if (status === "total") {
+      queryStr = `
+      select
+      item_sub_process ,
+      count(item_sub_process) as result_count_status
+    from
+      public.smart_machine_connect_list
+        WHERE status IN ('Finished', 'Planned', 'Wait for plan', '')
+      `;
+    } else {
+      queryStr = `
+      select
+      item_sub_process ,
+      count(item_sub_process) as result_count_status
+    from
+      public.smart_machine_connect_list
+        WHERE status = $1
+      `;
+      queryParams.push(status);
+    }
+
+    // Check if item_iot_group1 is not "ALL"
+    if (item_iot_group1 !== "ALL") {
+      queryStr += ` AND item_iot_group1 = $${queryParams.length + 1}`;
+      queryParams.push(item_iot_group1);
+    }
+    // Check if item_iot_group1 is not "ALL"
+    if (item_sub_process !== "ALL") {
+      queryStr += ` AND item_sub_process = $${queryParams.length + 1}`;
+      queryParams.push(item_sub_process);
+    }
+
+    queryStr += `group by 
+    item_sub_process`;
+
+    const result = await query(queryStr, queryParams);
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
 router.get("/tablescada/distinctitem_sub_process", async (req, res) => {
   try {
     const { item_iot_group1, status } = req.query;
