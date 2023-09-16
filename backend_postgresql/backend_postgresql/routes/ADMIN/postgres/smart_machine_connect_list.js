@@ -302,21 +302,23 @@ router.get("/piesumresult_count_status_scada", async (req, res) => {
 
     if (status === "total") {
       queryStr = `
-      select
-      item_sub_process ,
-      count(item_sub_process) as result_count_status
-    from
-      public.smart_machine_connect_list
-        WHERE status IN ('Finished', 'Planned', 'Wait for plan', '')
+      SELECT
+        item_sub_process,
+        COUNT(item_sub_process) as result_count_status
+      FROM
+        public.smart_machine_connect_list
+      WHERE
+        status IN ('Finished', 'Planned', 'Wait for plan', '')
       `;
     } else {
       queryStr = `
-      select
-      item_sub_process ,
-      count(item_sub_process) as result_count_status
-    from
-      public.smart_machine_connect_list
-        WHERE status = $1
+      SELECT
+        item_sub_process,
+        COUNT(item_sub_process) as result_count_status
+      FROM
+        public.smart_machine_connect_list
+      WHERE
+        status = $1
       `;
       queryParams.push(status);
     }
@@ -332,8 +334,12 @@ router.get("/piesumresult_count_status_scada", async (req, res) => {
       queryParams.push(item_sub_process);
     }
 
-    queryStr += `group by 
-    item_sub_process`;
+    queryStr += `
+      GROUP BY
+        item_sub_process
+      ORDER BY
+        item_sub_process
+    `;
 
     const result = await query(queryStr, queryParams);
 
