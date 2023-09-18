@@ -165,125 +165,35 @@ order by
 
 router.get("/tablescada", async (req, res) => {
   try {
-    const { status, item_sub_process, item_iot_group1 } = req.query;
+    const { status, item_sub_process, item_iot_group1, item_building } =
+      req.query;
+    let queryStr;
+    const queryParams = [];
 
-    let queryStr = "";
-    let queryParams = [];
-
+    queryStr = `SELECT * FROM public.smart_machine_connect_list`;
     if (status === "total") {
-      if (item_sub_process === "ALL" && item_iot_group1 === "ALL") {
-        queryStr = `
-          SELECT *
-          FROM public.smart_machine_connect_list smcl
-          WHERE status IN ('Finished', 'Planed', 'Wait for plan', '')
-          ORDER BY finish_date ASC
-        `;
-      } else if (item_sub_process === "ALL") {
-        queryStr = `
-          SELECT *
-          FROM public.smart_machine_connect_list smcl
-          WHERE status IN ('Finished', 'Planed', 'Wait for plan', '')
-          AND item_iot_group1 = $1
-          ORDER BY finish_date ASC
-        `;
-        queryParams = [item_iot_group1];
-      } else if (item_iot_group1 === "ALL") {
-        queryStr = `
-          SELECT *
-          FROM public.smart_machine_connect_list smcl
-          WHERE status IN ('Finished', 'Planed', 'Wait for plan', '')
-          AND item_sub_process = $1
-          ORDER BY finish_date ASC
-        `;
-        queryParams = [item_sub_process];
-      } else {
-        queryStr = `
-          SELECT *
-          FROM public.smart_machine_connect_list smcl
-          WHERE status IN ('Finished', 'Planed', 'Wait for plan', '')
-          AND item_sub_process = $1
-          AND item_iot_group1 = $2
-          ORDER BY finish_date ASC
-        `;
-        queryParams = [item_sub_process, item_iot_group1];
-      }
-    } else if (status === "UserRequest") {
-      if (item_sub_process === "ALL" && item_iot_group1 === "ALL") {
-        queryStr = `
-        SELECT *
-        FROM public.smart_machine_connect_list smcl
-        WHERE status = ''
-          ORDER BY finish_date ASC
-        `;
-        queryParams = []; // Use the correct parameter value
-      } else if (item_sub_process === "ALL") {
-        queryStr = `
-        SELECT *
-        FROM public.smart_machine_connect_list smcl
-        WHERE status = ''
-          AND item_iot_group1 = $1
-          ORDER BY finish_date ASC
-        `;
-        queryParams = [item_iot_group1]; // Use the correct parameter values
-      } else if (item_iot_group1 === "ALL") {
-        queryStr = `
-        SELECT *
-        FROM public.smart_machine_connect_list smcl
-        WHERE status = ''
-          AND item_sub_process = $1
-          ORDER BY finish_date ASC
-        `;
-        queryParams = [item_sub_process]; // Use the correct parameter values
-      } else {
-        queryStr = `
-        SELECT *
-        FROM public.smart_machine_connect_list smcl
-        WHERE status = ''
-          AND item_sub_process = $1
-          AND item_iot_group1 = $2
-          ORDER BY finish_date ASC
-        `;
-        queryParams = [item_sub_process, item_iot_group1]; // Use the correct parameter values
-      }
+      queryStr += ` WHERE status IN ('Finished', 'Planned', 'Wait for plan', '')`;
     } else {
-      if (item_sub_process === "ALL" && item_iot_group1 === "ALL") {
-        queryStr = `
-        SELECT *
-        FROM public.smart_machine_connect_list smcl
-        WHERE status = $1
-          ORDER BY finish_date ASC
-        `;
-        queryParams = [status]; // Use the correct parameter value
-      } else if (item_sub_process === "ALL") {
-        queryStr = `
-        SELECT *
-        FROM public.smart_machine_connect_list smcl
-        WHERE status = $1
-          AND item_iot_group1 = $2
-          ORDER BY finish_date ASC
-        `;
-        queryParams = [status, item_iot_group1]; // Use the correct parameter values
-      } else if (item_iot_group1 === "ALL") {
-        queryStr = `
-        SELECT *
-        FROM public.smart_machine_connect_list smcl
-        WHERE status = $1
-          AND item_sub_process = $2
-          ORDER BY finish_date ASC
-        `;
-        queryParams = [status, item_sub_process]; // Use the correct parameter values
-      } else {
-        queryStr = `
-        SELECT *
-        FROM public.smart_machine_connect_list smcl
-        WHERE status = $1
-          AND item_sub_process = $2
-          AND item_iot_group1 = $3
-          ORDER BY finish_date ASC
-        `;
-        queryParams = [status, item_sub_process, item_iot_group1]; // Use the correct parameter values
-      }
+      queryStr += ` WHERE status = $1`;
+      queryParams.push(status);
     }
+
+    if (item_sub_process !== "ALL") {
+      queryStr += ` AND item_sub_process = $${queryParams.length + 1}`;
+      queryParams.push(item_sub_process);
+    }
+
+    if (item_iot_group1 !== "ALL") {
+      queryStr += ` AND item_iot_group1 = $${queryParams.length + 1}`;
+      queryParams.push(item_iot_group1);
+    }
+
+    if (item_building !== "ALL") {
+      queryStr += ` AND item_building = $${queryParams.length + 1}`;
+      queryParams.push(item_building);
+    }
+
+    queryStr += ` ORDER BY finish_date ASC`;
 
     const result = await query(queryStr, queryParams);
     res.status(200).json(result.rows);
@@ -295,7 +205,8 @@ router.get("/tablescada", async (req, res) => {
 
 router.get("/piesumresult_count_status_scada", async (req, res) => {
   try {
-    const { item_sub_process, item_iot_group1, status } = req.query;
+    const { item_sub_process, item_iot_group1, status, item_building } =
+      req.query;
 
     let queryStr;
     const queryParams = [];
@@ -343,6 +254,12 @@ router.get("/piesumresult_count_status_scada", async (req, res) => {
       queryParams.push(item_sub_process);
     }
 
+    // Check if item_building is not "ALL"
+    if (item_building !== "ALL") {
+      queryStr += ` AND item_building = $${queryParams.length + 1}`;
+      queryParams.push(item_building);
+    }
+
     if (item_iot_group1 === "ALL") {
       queryStr += `
       GROUP BY
@@ -369,9 +286,45 @@ router.get("/piesumresult_count_status_scada", async (req, res) => {
   }
 });
 
-router.get("/tablescada/distinctitem_sub_process", async (req, res) => {
+router.get("/distinctitem_building", async (req, res) => {
   try {
-    const { item_iot_group1, status } = req.query;
+    const { item_iot_group1, item_sub_process, status } = req.query;
+
+    let queryStr;
+    const queryParams = [];
+
+    queryStr = `SELECT DISTINCT item_building FROM public.smart_machine_connect_list`;
+    if (status === "total") {
+      queryStr += ` WHERE status IN ('Finished', 'Planned', 'Wait for plan', '')`;
+    } else {
+      queryStr += ` WHERE status = $1`;
+      queryParams.push(status);
+    }
+
+    // Check if item_iot_group1 is not "ALL"
+    if (item_iot_group1 !== "ALL") {
+      queryStr += ` AND item_iot_group1 = $${queryParams.length + 1}`;
+      queryParams.push(item_iot_group1);
+    }
+    if (item_sub_process !== "ALL") {
+      queryStr += ` AND item_sub_process = $${queryParams.length + 1}`;
+      queryParams.push(item_sub_process);
+    }
+
+    queryStr += ` ORDER BY item_building ASC`;
+    console.log(queryStr);
+    const result = await query(queryStr, queryParams);
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+});
+
+router.get("/distinctitem_sub_process", async (req, res) => {
+  try {
+    const { item_iot_group1, item_building, status } = req.query;
 
     let queryStr;
     const queryParams = [];
@@ -396,7 +349,11 @@ router.get("/tablescada/distinctitem_sub_process", async (req, res) => {
       queryStr += ` AND item_iot_group1 = $${queryParams.length + 1}`;
       queryParams.push(item_iot_group1);
     }
-
+    // Check if item_iot_group1 is not "ALL"
+    if (item_building !== "ALL") {
+      queryStr += ` AND item_building = $${queryParams.length + 1}`;
+      queryParams.push(item_building);
+    }
     const result = await query(queryStr, queryParams);
 
     res.status(200).json(result.rows);
@@ -406,22 +363,26 @@ router.get("/tablescada/distinctitem_sub_process", async (req, res) => {
   }
 });
 
-router.get("/tablescada/distinctitem_iot_group1", async (req, res) => {
+router.get("/distinctitem_iot_group1", async (req, res) => {
   try {
-    const { item_sub_process, status } = req.query;
+    const { item_sub_process, item_building, status } = req.query;
 
     let queryStr = `
       SELECT DISTINCT item_iot_group1
       FROM public.smart_machine_connect_list
+      WHERE 1=1
     `;
 
     const queryParams = [];
 
     if (item_sub_process !== "ALL") {
-      queryStr += ` WHERE item_sub_process = $1`;
+      queryStr += ` AND item_sub_process = $${queryParams.length + 1}`;
       queryParams.push(item_sub_process);
-    } else {
-      queryStr += ` WHERE 1=1`;
+    }
+
+    if (item_building !== "ALL") {
+      queryStr += ` AND item_building = $${queryParams.length + 1}`;
+      queryParams.push(item_building);
     }
 
     if (status === "total") {
