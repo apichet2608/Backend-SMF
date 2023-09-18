@@ -203,7 +203,7 @@ router.get("/tablescada", async (req, res) => {
   }
 });
 
-router.get("/piesumresult_count_status_scada", async (req, res) => {
+router.get("/barchartCountbyitem_sub_process", async (req, res) => {
   try {
     const { item_sub_process, item_iot_group1, status, item_building } =
       req.query;
@@ -214,11 +214,10 @@ router.get("/piesumresult_count_status_scada", async (req, res) => {
     if (item_iot_group1 === "ALL") {
       queryStr = `
       SELECT
-        item_sub_process,
-        item_iot_group1,
-        COUNT(item_sub_process) as result_count_status
-      FROM
-        public.smart_machine_connect_list
+      item_sub_process,
+      COUNT(item_sub_process) as result_count_status
+    FROM
+      public.smart_machine_connect_list
       `;
     } else {
       queryStr = `
@@ -263,10 +262,9 @@ router.get("/piesumresult_count_status_scada", async (req, res) => {
     if (item_iot_group1 === "ALL") {
       queryStr += `
       GROUP BY
-        item_sub_process,
-        item_iot_group1
-      ORDER BY
-        item_sub_process
+      item_sub_process
+    ORDER BY
+      item_sub_process
     `;
     } else {
       queryStr += `
