@@ -6,15 +6,6 @@ const logger = require("morgan");
 const cors = require("cors");
 const compression = require("compression"); // นำเข้า compression
 
-const { Pool } = require("pg");
-const pool = new Pool({
-  host: "10.17.71.57",
-  port: 5432,
-  user: "postgres",
-  password: "fujikura",
-  database: "smart_factory", // แทนที่ด้วยชื่อฐานข้อมูลของคุณ
-});
-
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 // const customRouter = require("./routes/10.17.71.57/10.17.71.57-smart_factory/smf-aoi");
