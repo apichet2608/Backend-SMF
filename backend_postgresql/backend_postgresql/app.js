@@ -89,7 +89,19 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/custom", customRouter);
 app.use("/smt-aoi", smt_aoi);
+
+//-----------------LPI----------------------------//
 app.use("/jwdb_r23662_actv", jwdb_r23662_actv);
+app.use("/api/jwdb_rlse_beac", jwdb_rlse_beac);
+app.use("/api/jwdb_rphp_beac_actv", jwdb_rphp_beac_actv);
+app.use(
+  "/api/asteria_lsedi_screen_exposedata",
+  asteria_lsedi_screen_exposedata
+);
+app.use("/api/fpc_lse_alignment_noexp", fpc_lse_alignment_noexp);
+app.use("/api/lpi_screen_tension", lpi_screen_tension);
+//-----------------LPI----------------------------//
+
 app.use("/api/smart-mil-common", smart_mil_common);
 app.use("/api/smart_enviro_cleanroomparticle", smart_enviro_cleanroomparticle);
 app.use("/api/smart-ok2s", ok2s);
@@ -108,23 +120,18 @@ app.use("/api/jwdb_rdflv_mck_actv", jwdb_rdflv_mck_actv);
 app.use("/api/jwdb_rdfl_mck_actv", jwdb_rdfl_mck_actv);
 app.use("/api/jwdb_rdflv_gro_up_actv", jwdb_rdflv_gro_up_actv);
 app.use("/api/jwdb_rexp_two_line", jwdb_rexp_two_line);
-app.use("/api/jwdb_rlse_beac", jwdb_rlse_beac);
 app.use("/api/jwdb_rcur_b", jwdb_rcur_b);
 app.use("/api/jwdb_rcll", jwdb_rcll);
 app.use("/api/elgop_mto_ni", elgop_mto_ni);
 app.use("/api/smt_vacuum_seal_data", smt_vacuum_seal_data);
 app.use("/api/smt_binder_oven_data", smt_binder_oven_data);
 app.use("/api/smt_reflow_tamura_temp_log", smt_reflow_tamura_temp_log);
-app.use("/api/jwdb_rphp_beac_actv", jwdb_rphp_beac_actv);
 app.use("/api/foxsystem_post_by_hr", foxsystem_post_by_hr);
 app.use("/api/foxsystem_post_by_day", foxsystem_post_by_day);
 app.use("/api/smart_machine_connect_list", smart_machine_connect_list);
 app.use("/api/smart_collaboration_task", smart_collaboration_task);
 app.use("/api/smart_energy_by_month", smart_energy_by_month);
-app.use(
-  "/api/asteria_lsedi_screen_exposedata",
-  asteria_lsedi_screen_exposedata
-);
+
 app.use("/api/smart_cost_kpi", smart_cost_kpi);
 app.use("/api/smart_energy_month_bue_dept", smart_energy_month_bue_dept);
 app.use(
@@ -147,7 +154,6 @@ app.use(
 );
 app.use("/api/fpc_holdingtime_ab", fpc_holdingtime_ab);
 app.use("/api/fpc_raoi_set_camtek", fpc_raoi_set_camtek);
-app.use("/api/fpc_lse_alignment_noexp", fpc_lse_alignment_noexp);
 app.use(
   "/api/foxsystem_json_backup_header_summary",
   foxsystem_json_backup_header_summary
@@ -162,7 +168,6 @@ app.use(
 );
 app.use("/api/smart_qa_aql_record", smart_qa_aql_record);
 app.use("/api/mdb_energy_master_result", mdb_energy_master_result);
-app.use("/api/lpi_screen_tension", lpi_screen_tension);
 app.use("/api/smart_qa_aql_defect_master", smart_qa_aql_defect_master);
 app.use("/api/cvc_ui_tape_test", cvc_ui_tape_test);
 app.use(
