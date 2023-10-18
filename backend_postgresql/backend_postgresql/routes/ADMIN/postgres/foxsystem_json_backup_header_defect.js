@@ -41,10 +41,9 @@ router.get("/fix-process-product-day", async (req, res) => {
   }
 });
 
-
 router.get("/fix-process-product-day-select", async (req, res) => {
   try {
-    const { process, product ,date} = req.query;
+    const { process, product, date } = req.query;
 
     const result = await query(
       `select
@@ -62,7 +61,7 @@ router.get("/fix-process-product-day-select", async (req, res) => {
       and "date" like $3
     order by
       id`,
-      [process, product,date]
+      [process, product, date]
     );
 
     res.status(200).json(result.rows);
@@ -74,7 +73,7 @@ router.get("/fix-process-product-day-select", async (req, res) => {
 
 router.get("/fix-process-product-month-select", async (req, res) => {
   try {
-    const { process, product ,month} = req.query;
+    const { process, product, month } = req.query;
 
     const result = await query(
       `select
@@ -92,7 +91,7 @@ router.get("/fix-process-product-month-select", async (req, res) => {
       and "month" like $3
     order by
       id`,
-      [process, product,month]
+      [process, product, month]
     );
 
     res.status(200).json(result.rows);
@@ -104,7 +103,7 @@ router.get("/fix-process-product-month-select", async (req, res) => {
 
 router.get("/fix-process-product-week-select", async (req, res) => {
   try {
-    const { process, product ,week} = req.query;
+    const { process, product, week } = req.query;
 
     const result = await query(
       `select
@@ -122,7 +121,7 @@ router.get("/fix-process-product-week-select", async (req, res) => {
       and "week" like $3
     order by
       id`,
-      [process, product,week]
+      [process, product, week]
     );
 
     res.status(200).json(result.rows);
