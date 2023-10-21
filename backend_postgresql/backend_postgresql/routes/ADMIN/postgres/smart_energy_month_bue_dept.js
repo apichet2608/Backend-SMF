@@ -100,6 +100,7 @@ from
 	public.smart_energy_month_bue_dept
 where 
 	dept_2  = $1
+ order by year_month::date asc
         `;
     queryParams = [dept];
 
