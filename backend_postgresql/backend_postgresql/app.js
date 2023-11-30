@@ -92,7 +92,7 @@ app.use("/users", usersRouter);
 app.use("/custom", customRouter);
 app.use("/smt-aoi", smt_aoi);
 
-app.use("/smart-collabration-task/task/smart_users_dept", smart_users_dept);
+app.use("/smart-collaboration-task/task/smart_users_dept", smart_users_dept);
 
 //-----------------LPI----------------------------//
 app.use("/jwdb_r23662_actv", jwdb_r23662_actv);
