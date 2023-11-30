@@ -71,6 +71,8 @@ const smart_qa_aql_defect_master = require("./routes/10.17.77.118/iot/smart_qa_a
 const cvc_ui_tape_test = require("./routes/10.17.71.57/10.17.71.57-smart_factory/cvc_ui_tape_test");
 const smart_product_lot_pending_reason = require("./routes/ADMIN/postgres/smart_product_lot_pending_reason");
 
+const smart_users_dept = require("./routes/10.17.66.122/iot/smart/SmartCollabrationTask/smart_collaboration_task");
+
 const app = express();
 
 // app.use(compression()); // ใช้งาน compression middleware
@@ -89,6 +91,8 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/custom", customRouter);
 app.use("/smt-aoi", smt_aoi);
+
+app.use("/smart-collabration-task/task/smart_users_dept", smart_users_dept);
 
 //-----------------LPI----------------------------//
 app.use("/jwdb_r23662_actv", jwdb_r23662_actv);
