@@ -46,7 +46,7 @@ const smart_cost_kpi = require("./routes/ADMIN/postgres/smart_cost_kpi");
 const smart_energy_month_bue_dept = require("./routes/ADMIN/postgres/smart_energy_month_bue_dept");
 const smart_energy_month_bue_deptbuild = require("./routes/ADMIN/postgres/smart_energy_month_bue_deptbuild");
 const smart_overall_require_08003809 = require("./routes/ADMIN/postgres/smart_overall_require_08003809");
-const smart_master_fin_fost_verify = require("./routes/ADMIN/postgres/smart_master_fin_fost_verify");
+// const smart_master_fin_fost_verify = require("./routes/ADMIN/postgres/smart_master_fin_fost_verify");
 const smart_energy_by_day = require("./routes/ADMIN/postgres/smart_energy_by_day");
 const smart_cost_item_daily_kpi = require("./routes/ADMIN/postgres/smart_cost_item_daily_kpi");
 const smart_cost_div_kpi = require("./routes/ADMIN/postgres/smart_cost_div_kpi");
@@ -73,6 +73,12 @@ const smart_product_lot_pending_reason = require("./routes/ADMIN/postgres/smart_
 
 const smart_users_dept = require("./routes/10.17.66.122/iot/smart/SmartCollabrationTask/smart_collaboration_task");
 
+//----------------Smart-Vertify-Report-----------------------------//
+const smt_goldenmaster_zaoi_aoi = require("./routes/10.17.66.121/iot/smt/SmartVertifyReport/Master_Verify_Report/smt_goldenmaster_zaoi_aoi");
+const smt_goldenmaster_zxra_xray = require("./routes/10.17.66.121/iot/smt/SmartVertifyReport/Master_Verify_Report/smt_goldenmaster_zxra_xray");
+const smart_master_fin_fost_verify = require("./routes/10.17.77.111/postgres/public/SmartVertifyReport/Master_Verify_Report/smart_master_fin_fost_verify");
+//----------------Smart-Vertify-Report-----------------------------//
+
 const app = express();
 
 // app.use(compression()); // ใช้งาน compression middleware
@@ -91,6 +97,19 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/custom", customRouter);
 app.use("/smt-aoi", smt_aoi);
+
+app.use(
+  "/smart_verify_report/Master_Verify_Report/smt_goldenmaster_zaoi_aoi",
+  smt_goldenmaster_zaoi_aoi
+);
+app.use(
+  "/smart_verify_report/Master_Verify_Report/smt_goldenmaster_zxra_xray",
+  smt_goldenmaster_zxra_xray
+);
+app.use(
+  "/smart_verify_report/Master_Verify_Report/smart_master_fin_fost_verify",
+  smart_master_fin_fost_verify
+);
 
 app.use("/smart-collaboration-task/task/smart_users_dept", smart_users_dept);
 
@@ -143,7 +162,7 @@ app.use(
   smart_energy_month_bue_deptbuild
 );
 app.use("/api/smart_overall_require", smart_overall_require_08003809);
-app.use("/api/smart_master_fin_fost_verify", smart_master_fin_fost_verify);
+// app.use("/api/smart_master_fin_fost_verify", smart_master_fin_fost_verify);
 app.use("/api/smart_energy_by_day", smart_energy_by_day);
 app.use("/api/smart_cost_item_daily_kpi", smart_cost_item_daily_kpi);
 app.use("/api/smart_cost_div_kpi", smart_cost_div_kpi);
