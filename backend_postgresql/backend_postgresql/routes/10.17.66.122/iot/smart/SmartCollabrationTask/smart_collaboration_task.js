@@ -66,8 +66,100 @@ router.get("/TaskData", async (req, res) => {
   }
 });
 
+// router.get("/CardSummary", async (req, res) => {
+//   const { dept, status } = req.query;
+
+//   // Convert comma-separated string to an array
+//   const deptArray = dept.split(",");
+
+//   try {
+//     // Generate the placeholder string for the IN clause based on the length of the dept array
+//     const placeholders = deptArray
+//       .map((_, index) => `$${index + 1}`)
+//       .join(", ");
+
+//     let queryStr = `
+// WITH StatusSummary AS (
+//   SELECT
+//     status,
+//     COUNT(*) AS status_count,
+//     jsonb_object_agg(dri, status_count) AS dri_status_count,
+//     CASE
+//       WHEN status = 'total' THEN 1
+//       WHEN status = 'Finished' THEN 2
+//       WHEN status = 'Ongoing' THEN 3
+//       WHEN status = 'Open' THEN 4
+//       ELSE 5
+//     END AS status_order
+//   FROM (
+//     SELECT
+//       id,
+//       dept,
+//       project,
+//       description,
+//       "action",
+//       dri,
+//       plan_date,
+//       finished_date,
+//       status,
+//       email,
+//       link,
+//       "no",
+//       vave,
+//       sub_action,
+//       attached_file,
+//       COUNT(*) OVER (PARTITION BY dri, status) AS status_count
+//     FROM
+//       smart.smart_collaboration_task
+//     WHERE
+//       dept IN (${placeholders})
+//       ${
+//         status || status === "total"
+//           ? "AND status = $" + (deptArray.length + 1)
+//           : ""
+//       }
+//   ) AS subquery
+//   GROUP BY status
+// )
+// SELECT * FROM StatusSummary
+
+// UNION ALL
+
+// SELECT
+//   'total' as status,
+//   COUNT(*) as status_count,
+//   NULL as dri_status_count,
+//   1 as status_order
+// FROM
+//   smart.smart_collaboration_task
+// WHERE
+//   dept IN (${placeholders})
+//   ${
+//     status || status === "total"
+//       ? "AND status = $" + (deptArray.length + 1)
+//       : ""
+//   }
+// ORDER BY status_order;
+// `;
+
+//     // Check if status is provided before adding it to the query
+//     if (status || status === "total") {
+//       queryStr += ` AND status = $${deptArray.length + 1}`;
+//     }
+
+//     // Combine queryParams for both dept and status
+//     const queryParams = status ? [...deptArray, status] : deptArray;
+
+//     const result = await query(queryStr, queryParams);
+//     res.status(200).json(result.rows);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "An error occurred while fetching data" });
+//   }
+// });
+
 router.get("/CardSummary", async (req, res) => {
-  const { dept, status } = req.query;
+  const { dept } = req.query;
 
   // Convert comma-separated string to an array
   const deptArray = dept.split(",");
@@ -78,7 +170,7 @@ router.get("/CardSummary", async (req, res) => {
       .map((_, index) => `$${index + 1}`)
       .join(", ");
 
-    let queryStr = `
+    const queryStr = `
 WITH StatusSummary AS (
   SELECT
     status,
@@ -112,12 +204,7 @@ WITH StatusSummary AS (
     FROM
       smart.smart_collaboration_task
     WHERE
-      dept IN (${placeholders}) 
-      ${
-        status || status === "total"
-          ? "AND status = $" + (deptArray.length + 1)
-          : ""
-      }
+      dept IN (${placeholders})
   ) AS subquery
   GROUP BY status
 )
@@ -133,24 +220,11 @@ SELECT
 FROM
   smart.smart_collaboration_task
 WHERE
-  dept IN (${placeholders}) 
-  ${
-    status || status === "total"
-      ? "AND status = $" + (deptArray.length + 1)
-      : ""
-  }
+  dept IN (${placeholders})
 ORDER BY status_order;
 `;
 
-    // Check if status is provided before adding it to the query
-    if (status || status === "total") {
-      queryStr += ` AND status = $${deptArray.length + 1}`;
-    }
-
-    // Combine queryParams for both dept and status
-    const queryParams = status ? [...deptArray, status] : deptArray;
-
-    const result = await query(queryStr, queryParams);
+    const result = await query(queryStr, deptArray);
     res.status(200).json(result.rows);
   } catch (error) {
     console.error(error);
