@@ -232,4 +232,182 @@ ORDER BY status_order;
   }
 });
 
+router.post("/insert_task", async (req, res) => {
+  try {
+    const {
+      dept,
+      project,
+      description,
+      action,
+      dri,
+      plan_date,
+      status,
+      email,
+      link,
+      sub_action,
+    } = req.body;
+
+    let queryData;
+    let values;
+
+    if (plan_date === null || plan_date === "") {
+      queryData = `INSERT INTO smart.smart_collaboration_task (
+         dept,
+         project,
+         description,
+         action,
+         dri,
+         status,
+         email,
+         link,
+         sub_action
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`;
+      values = [
+        dept,
+        project,
+        description,
+        action,
+        dri,
+        status,
+        email,
+        link,
+        JSON.stringify(sub_action),
+      ];
+    } else {
+      queryData = `INSERT INTO smart.smart_collaboration_task (
+         dept,
+         project,
+         description,
+         action,
+         dri,
+         plan_date,
+         status,
+         email,
+         link,
+         sub_action
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`;
+      values = [
+        dept,
+        project,
+        description,
+        action,
+        dri,
+        plan_date,
+        status,
+        email,
+        link,
+        JSON.stringify(sub_action),
+      ];
+    }
+
+    const result = await query(queryData, values);
+    res.status(201).json({ message: "Data added successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while adding data" });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      dept,
+      project,
+      description,
+      action,
+      dri,
+      plan_date,
+      status,
+      email,
+      link,
+      sub_action,
+    } = req.body;
+
+    if (status === "Finished") {
+      const result = await query(
+        `UPDATE smart.smart_collaboration_task
+         SET
+           dept = $1,
+           project = $2,
+           description = $3,
+           action = $4,
+           dri = $5,
+           plan_date = $6,
+           status = $7,
+           email = $8,
+           link = $9,
+           finished_date = now(),
+           sub_action = $10
+         WHERE id = $11`,
+        [
+          dept,
+          project,
+          description,
+          action,
+          dri,
+          plan_date,
+          status,
+          email,
+          link,
+          JSON.stringify(sub_action),
+          id,
+        ]
+      );
+    } else {
+      const result = await query(
+        `UPDATE smart.smart_collaboration_task
+         SET
+           dept = $1,
+           project = $2,
+           description = $3,
+           action = $4,
+           dri = $5,
+           plan_date = $6,
+           status = $7,
+           email = $8,
+           link = $9,
+           finished_date = null,
+           sub_action = $10
+         WHERE id = $11`,
+        [
+          dept,
+          project,
+          description,
+          action,
+          dri,
+          plan_date,
+          status,
+          email,
+          link,
+          JSON.stringify(sub_action),
+          id,
+        ]
+      );
+    }
+
+    res.status(200).json({ message: "Data updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while updating data" });
+  }
+});
+
+// DELETE route to delete data
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await query(
+      "DELETE FROM smart.smart_collaboration_task WHERE id = $1;",
+      [id]
+    );
+
+    res.status(200).json({ message: "Data deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while deleting data" });
+  }
+});
+
 module.exports = router;
