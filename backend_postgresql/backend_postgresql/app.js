@@ -72,6 +72,7 @@ const cvc_ui_tape_test = require("./routes/10.17.71.57/10.17.71.57-smart_factory
 const smart_product_lot_pending_reason = require("./routes/ADMIN/postgres/smart_product_lot_pending_reason");
 
 const smart_users_dept = require("./routes/10.17.66.122/iot/smart/SmartCollabrationTask/smart_collaboration_task");
+const smart_collaboration_task_task_smart_man_master_hr = require("./routes/10.17.66.121/iot/smart/CollabrationTask/smart_man_master_hr");
 
 //----------------Smart-Vertify-Report-----------------------------//
 const smt_goldenmaster_zaoi_aoi = require("./routes/10.17.66.121/iot/smt/SmartVertifyReport/Master_Verify_Report/smt_goldenmaster_zaoi_aoi");
@@ -112,6 +113,10 @@ app.use(
 );
 
 app.use("/smart-collaboration-task/task/smart_users_dept", smart_users_dept);
+app.use(
+  "/smart-collaboration-task/task/smart_man_master_hr",
+  smart_collaboration_task_task_smart_man_master_hr
+);
 
 //-----------------LPI----------------------------//
 app.use("/jwdb_r23662_actv", jwdb_r23662_actv);

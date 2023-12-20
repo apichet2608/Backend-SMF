@@ -410,4 +410,49 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+//put
+router.put("/updateattached_fileJson/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { attached_file } = req.body;
+    console.log(attached_file);
+    if (!attached_file) {
+      return res.status(400).json({ error: "Missing attached file data" });
+    }
+
+    const attached_fileJson = attached_file; // แปลง Array of Objects เป็น JSON
+    const result = await query(
+      `UPDATE smart.smart_collaboration_task
+       SET attached_file = $1
+       WHERE id = $2`,
+      [attached_fileJson, id]
+    );
+
+    res.status(200).json({ message: "Data updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while updating data" });
+  }
+});
+
+// Delete the attached_file for a specific record
+router.put("/deleteattached_fileJson/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Perform the deletion by setting the attached_file to null
+    const result = await query(
+      `UPDATE smart.smart_collaboration_task
+       SET attached_file = null
+       WHERE id = $1`,
+      [id]
+    );
+
+    res.status(200).json({ message: "Data deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while deleting data" });
+  }
+});
+
 module.exports = router;
